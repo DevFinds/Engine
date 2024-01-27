@@ -1,9 +1,11 @@
 <?php
 
+use Core\http\Router\Route;
+
 return [
 
-    '/' => function () {
-        echo "Home Page";
-    }
+    Route::get('/home', function () {
+        echo "Main Page";
+    }),
 
 ];
