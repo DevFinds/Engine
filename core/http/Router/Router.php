@@ -2,6 +2,9 @@
 
 namespace Core\http\Router;
 
+use Core\http\Request;
+use Core\Render;
+
 class Router
 {
     private array $routes = [
@@ -11,8 +14,10 @@ class Router
 
     ];
 
-    public function __construct()
-    {
+    public function __construct(
+        private Render $render,
+        private Request $request,
+    ) {
         $this->initRoutes();
     }
 
@@ -29,10 +34,14 @@ class Router
             // В переменной $controller сейчас хранится путь до необходимого контроллера, создаем контроллер, на который указывает путь.
             $controller = new $controller();
 
-            /** @var Controller $controller */
+            /** 
+             * @var Controller $controller 
+             */
 
 
             // Вызываем action из указанного контроллера.
+            call_user_func([$controller, 'setRender'], $this->render);
+            call_user_func([$controller, 'setRequest'], $this->request);
             call_user_func([$controller, $action]);
         } else {
             // Или выполняем анонимную функцию, переданную в routes.php

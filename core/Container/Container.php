@@ -24,7 +24,7 @@ class Container
     private function registerServices()
     {
         $this->request = Request::createFromGlobals();
-        $this->render = new Render;
-        $this->router = new Router();
+        $this->render = new Render();
+        $this->router = new Router($this->render, $this->request);
     }
 }
