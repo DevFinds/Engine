@@ -23,7 +23,21 @@ class Router
             $this->notFound();
         }
 
-        $route->getAction()();
+        if (is_array($route->getAction())) {
+            // Создаем массив, в который помещаем значения из массива, возвращаемого методом getAction(), если он является таковым
+            [$controller, $action] = $route->getAction();
+            // В переменной $controller сейчас хранится путь до необходимого контроллера, создаем контроллер, на который указывает путь.
+            $controller = new $controller();
+
+            /** @var Controller $controller */
+
+
+            // Вызываем action из указанного контроллера.
+            call_user_func([$controller, $action]);
+        } else {
+            // Или выполняем анонимную функцию, переданную в routes.php
+            call_user_func($route->getAction());
+        }
     }
 
     private function initRoutes()

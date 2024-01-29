@@ -2,17 +2,22 @@
 
 namespace Core;
 
-use Core\http\Router\Router;
+use Core\Container\Container;
+
+
 
 class App
 {
 
+    private Container $container;
+
+    public function __construct()
+    {
+        $this->container = new Container();
+    }
+
     public function run(): void
     {
-
-        $uri = $_SERVER['REQUEST_URI'];
-        $method = $_SERVER['REQUEST_METHOD'];
-        $router = new Router();
-        $router->dispatch($uri, $method);
+        $this->container->router->dispatch($this->container->request->uri(), $this->container->request->method());
     }
 }
