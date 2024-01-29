@@ -7,9 +7,6 @@ class Route
 
     // Объявляем приватные переменные, которые будем использовать внутри методов класса
 
-
-
-
     public function __construct(
         private string $uri,
         private string $method,

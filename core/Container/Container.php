@@ -25,6 +25,6 @@ class Container
     {
         $this->request = Request::createFromGlobals();
         $this->render = new Render;
-        $this->router = new Router($this->render);
+        $this->router = new Router();
     }
 }
