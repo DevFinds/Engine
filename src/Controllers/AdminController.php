@@ -4,7 +4,7 @@ namespace Source\Controllers;
 
 
 use Core\Controller\Controller;
-use Core\Validator\Validator;
+use Core\http\Redirect;
 
 class AdminController extends Controller
 {
@@ -18,6 +18,7 @@ class AdminController extends Controller
 
     public function registerUser_to_db()
     {
+
         $validation = $this->request()->validate([
             'user_name' => ['required', 'min:3', 'max:25'],
             'user_email' => ['required'],
@@ -26,7 +27,14 @@ class AdminController extends Controller
         ]);
 
         if (!$validation) {
-            dd('Validation failed', $this->request()->errors());
+
+
+            foreach ($this->request()->errors() as $field => $errors) {
+                $this->session()->set($field, $errors);
+            }
+
+            $this->redirect('/admin/users/register');
+            //dd('Validation failed', $this->request()->errors());
         }
 
         dd('Validation passed');

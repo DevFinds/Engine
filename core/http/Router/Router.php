@@ -2,10 +2,12 @@
 
 namespace Core\http\Router;
 
-use Core\http\Request;
-use Core\Render;
+use Core\http\RedirectInterface;
+use Core\http\RequestInterface;
+use Core\RenderInterface;
+use Core\Session\SessionInterface;
 
-class Router
+class Router implements RouterInterface
 {
     private array $routes = [
 
@@ -15,8 +17,10 @@ class Router
     ];
 
     public function __construct(
-        private Render $render,
-        private Request $request,
+        private RenderInterface $render,
+        private RequestInterface $request,
+        private RedirectInterface $redirect,
+        private SessionInterface $session
     ) {
         $this->initRoutes();
     }
@@ -42,6 +46,8 @@ class Router
             // Вызываем action из указанного контроллера.
             call_user_func([$controller, 'setRender'], $this->render);
             call_user_func([$controller, 'setRequest'], $this->request);
+            call_user_func([$controller, 'setRedirect'], $this->redirect);
+            call_user_func([$controller, 'setSession'], $this->session);
             call_user_func([$controller, $action]);
         } else {
             // Или выполняем анонимную функцию, переданную в routes.php

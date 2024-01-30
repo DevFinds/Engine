@@ -2,8 +2,15 @@
 
 namespace Core;
 
-class Render
+use Core\Session\SessionInterface;
+
+class Render implements RenderInterface
 {
+
+    public function __construct(
+        private SessionInterface $session
+    ) {
+    }
 
     public function page($controller)
     {
@@ -13,9 +20,7 @@ class Render
             throw new \Exception("Шаблон $controller не найден");
         }
 
-        extract([
-            'render' => $this
-        ]);
+        extract($this->defaultData());
 
         include_once $pagePath;
     }
@@ -29,5 +34,13 @@ class Render
         }
 
         include_once $componentPath;
+    }
+
+    private function defaultData(): array
+    {
+        return [
+            'render' => $this,
+            'session' => $this->session,
+        ];
     }
 }

@@ -2,9 +2,8 @@
 
 /**
  * @var \Core\Render $render
+ * @var \Core\Session\Session $session
  */
-
-
 ?>
 
 
@@ -25,6 +24,30 @@
         <button href="" type="submit" class="btn btn-primary my-4">Регистрация</button>
 
     </form>
+    <div class="error-container">
+
+        <?php
+        $data_to_check = [
+            'user_name',
+            'user_email',
+            'user_login',
+            'user_password'
+        ];
+
+        foreach ($data_to_check as $data) {
+            if ($session->has($data)) {
+
+        ?>
+                <ul class="error-list d-flex flex-column">
+                    <?php foreach ($session->getFlash($data, 'nothing') as $error) {
+                    ?>
+                        <li class="error-item btn btn-outline-danger my-1"><?php echo $error; ?></li>
+            <?php  }
+                }
+            } ?>
+
+                </ul>
+    </div>
 </div>
 
 
