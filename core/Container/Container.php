@@ -2,6 +2,10 @@
 
 namespace Core\Container;
 
+use Core\Config\ConfigInterface;
+use Core\Config\Config;
+use Core\Database\Database;
+use Core\Database\DatabaseInterface;
 use Core\http\Redirect;
 use Core\http\RedirectInterface;
 use Core\http\Request;
@@ -31,6 +35,10 @@ class Container
 
     public readonly SessionInterface $session;
 
+    public readonly ConfigInterface $config;
+
+    public readonly DatabaseInterface $database;
+
     public function __construct()
     {
         $this->registerServices();
@@ -46,5 +54,7 @@ class Container
         $this->request->setValidator($this->validator);
         $this->render = new Render($this->session);
         $this->router = new Router($this->render, $this->request, $this->redirect, $this->session);
+        $this->config = new Config();
+        $this->database = new Database($this->config);
     }
 }

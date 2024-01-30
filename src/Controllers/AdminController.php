@@ -37,6 +37,6 @@ class AdminController extends Controller
             //dd('Validation failed', $this->request()->errors());
         }
 
-        dd('Validation passed');
+        dd($_SERVER);
     }
 }
