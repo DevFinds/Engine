@@ -53,8 +53,9 @@ class Container
         $this->session = new Session();
         $this->request->setValidator($this->validator);
         $this->render = new Render($this->session);
-        $this->router = new Router($this->render, $this->request, $this->redirect, $this->session);
+
         $this->config = new Config();
         $this->database = new Database($this->config);
+        $this->router = new Router($this->render, $this->request, $this->redirect, $this->session, $this->database);
     }
 }

@@ -3,10 +3,10 @@
 return [
 
     'driver' => 'mysql',
-    'host' => 'localhost',
+    'host' => 'database',
     'port' => 3306,
-    'database' => 'shapesider',
-    'username' => 'root',
-    'password' => 'root',
+    'database' => 'lemp',
+    'username' => 'lemp',
+    'password' => 'lemp',
     'charset' => 'utf8'
 ];

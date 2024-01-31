@@ -17,10 +17,27 @@ class Database implements DatabaseInterface
         $this->connect();
     }
 
+    // Метод для добавления записей в таблицы БД
     public function insert(string $table, array $data): int|false
     {
-        return 1;
+        $fields = array_keys($data);
+        $columns = implode(', ', $fields);
+        $inserting_data = implode(', ', array_map(fn ($field) => ":$field", $fields));
+
+        $sql = "INSERT INTO $table ($columns) VALUES ($inserting_data)";
+        $statement = $this->pdo->prepare($sql);
+
+
+        try {
+            $statement->execute($data);
+        } catch (\PDOException $exception) {
+            exit("Ошибка вставки данных в таблицу: {$exception->getMessage()}");
+            return false;
+        }
+
+        return (int) $this->pdo->lastInsertId();
     }
+
 
     private function connect()
     {
@@ -33,6 +50,10 @@ class Database implements DatabaseInterface
         $password = $this->config->get('database.password');
         $charset = $this->config->get('database.charset');
 
-        $this->pdo = new PDO("$driver:host=$host;port=$port;db=$database;charset=$charset", $username, $password);
+        try {
+            $this->pdo = new PDO("$driver:host=$host;port=$port;dbname=$database;charset=$charset", $username, $password);
+        } catch (\PDOException $exception) {
+            exit("Ошибка подключения к БД: {$exception->getMessage()}");
+        }
     }
 }

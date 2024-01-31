@@ -2,6 +2,7 @@
 
 namespace Core\Controller;
 
+use Core\Database\DatabaseInterface;
 use Core\http\RedirectInterface;
 use Core\http\RequestInterface;
 use Core\RenderInterface;
@@ -13,12 +14,19 @@ abstract class Controller
     private RenderInterface $render;
     private RedirectInterface $redirect;
     private SessionInterface $session;
+    private DatabaseInterface $database;
 
 
     public function render(string $page_name): void
     {
         $this->render->page($page_name);
     }
+
+
+    // Гетеры и сетеры для внедрения сервисов в контроллеры фреймворка
+    // Данный блок посвящен внедрению сервисов, код другого назначения будет находиться выше
+
+
 
     public function setRender(RenderInterface $render): void
     {
@@ -53,5 +61,25 @@ abstract class Controller
     public function session(): SessionInterface
     {
         return $this->session;
+    }
+
+    /**
+     * Get the value of database
+     */
+    public function getDatabase()
+    {
+        return $this->database;
+    }
+
+    /**
+     * Set the value of database
+     *
+     * @return  self
+     */
+    public function setDatabase($database)
+    {
+        $this->database = $database;
+
+        return $this;
     }
 }
