@@ -2,6 +2,8 @@
 
 namespace Core\Controller;
 
+use Core\Auth\Auth;
+use Core\Auth\AuthInterface;
 use Core\Database\DatabaseInterface;
 use Core\http\RedirectInterface;
 use Core\http\RequestInterface;
@@ -15,6 +17,7 @@ abstract class Controller
     private RedirectInterface $redirect;
     private SessionInterface $session;
     private DatabaseInterface $database;
+    private AuthInterface $auth;
 
 
     public function render(string $page_name): void
@@ -26,7 +29,15 @@ abstract class Controller
     // Гетеры и сетеры для внедрения сервисов в контроллеры фреймворка
     // Данный блок посвящен внедрению сервисов, код другого назначения будет находиться выше
 
+    public function setAuth(Auth $auth)
+    {
+        $this->auth = $auth;
+    }
 
+    public function getAuth(): Auth
+    {
+        return $this->auth;
+    }
 
     public function setRender(RenderInterface $render): void
     {

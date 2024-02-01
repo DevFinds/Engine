@@ -2,6 +2,8 @@
 
 namespace Core\Container;
 
+use Core\Auth\Auth;
+use Core\Auth\AuthInterface;
 use Core\Config\ConfigInterface;
 use Core\Config\Config;
 use Core\Database\Database;
@@ -39,6 +41,8 @@ class Container
 
     public readonly DatabaseInterface $database;
 
+    public readonly AuthInterface $auth;
+
     public function __construct()
     {
         $this->registerServices();
@@ -53,9 +57,9 @@ class Container
         $this->session = new Session();
         $this->request->setValidator($this->validator);
         $this->render = new Render($this->session);
-
         $this->config = new Config();
         $this->database = new Database($this->config);
-        $this->router = new Router($this->render, $this->request, $this->redirect, $this->session, $this->database);
+        $this->auth = new Auth($this->database, $this->session);
+        $this->router = new Router($this->render, $this->request, $this->redirect, $this->session, $this->database, $this->auth);
     }
 }
