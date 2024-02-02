@@ -10,7 +10,7 @@
 
 <?php $render->component('header') ?>
 
-<div class="form-container container p-3 flex-column d-flex center my-5">
+<div class="login-form-container container p-3 flex-column d-flex text-center my-5">
     <h1>Авторизация</h1>
     <form action="/login" method="post" class="">
         <label for="user_password" class="m-1 form-label">Логин</label>
@@ -18,7 +18,7 @@
         <label for="user_password" class="m-1 form-label">Пароль</label>
         <input type="password" name="user_password" placeholder="Ваш пароль" class="form-control">
 
-        <button href="" type="submit" class="btn btn-primary my-4">Регистрация</button>
+        <button href="" type="submit" class="btn btn-primary my-4">Войти</button>
 
     </form>
     <div class="error-container">

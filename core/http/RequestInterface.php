@@ -3,6 +3,7 @@
 
 namespace Core\http;
 
+use Core\Upload\UploadedFileInterface;
 use Core\Validator\Validator;
 
 interface RequestInterface
@@ -15,4 +16,5 @@ interface RequestInterface
     public function setValidator(Validator $validator);
     public function validate(array $rules): bool;
     public function errors(): array;
+    public function file(string $key): ?UploadedFileInterface;
 }

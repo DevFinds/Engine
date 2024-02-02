@@ -9,11 +9,11 @@ use Core\http\Redirect;
 class AdminController extends Controller
 {
 
-    public function registerUser(): void
+    public function UserList(): void
     {
         // Получаем имя данноconditionго контроллера
         //$controller_name = substr(get_class($this), -14, -10);
-        $this->render('admin/users/register');
+        $this->render('admin/users');
     }
 
     public function registerUser_to_db()

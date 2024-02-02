@@ -10,7 +10,7 @@
 $user = $this->auth->getUser();
 ?>
 
-<header class="container">
+<header class="container-fluid">
     <nav class="navbar navbar-expand-lg bg-body-tertiary container container-fluid">
         <div class="container-fluid">
             <a class="navbar-brand" href="/">ShapeSider</a>
@@ -33,7 +33,7 @@ $user = $this->auth->getUser();
                     <div class="d-flex align-baseline row">
                         <p class=" col"><?php echo $user->email() ?></p>
                         <form action="/logout" method="post">
-                            <button type="submit" class="btn btn-outline-warning col">Выйти</button>
+                            <button type="submit" class="btn btn-warning col">Выйти</button>
                         </form>
 
                     </div>

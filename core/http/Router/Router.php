@@ -6,6 +6,7 @@ use Core\Auth\AuthInterface;
 use Core\Database\DatabaseInterface;
 use Core\http\RedirectInterface;
 use Core\http\RequestInterface;
+use Core\Middleware\AbstractMiddleware;
 use Core\RenderInterface;
 use Core\Session\SessionInterface;
 
@@ -34,6 +35,21 @@ class Router implements RouterInterface
         $route = $this->findRoute($uri, $method);
         if (!$route) {
             $this->notFound();
+        }
+
+
+        // Проверка на привязанных к маршруту посредников
+        if ($route->hasMiddlewares()) {
+            // Если посреднеки переданы в данный маршрут
+            foreach ($route->getMiddlewares() as $middleware) {
+                /** 
+                 * @var AbstractMiddleware $middleware 
+                 * */
+                // Создаем сущности этих классов
+                $middleware = new $middleware($this->request, $this->auth, $this->redirect);
+                // Вызываем обработчики данных классов
+                $middleware->handle();
+            }
         }
 
         if (is_array($route->getAction())) {

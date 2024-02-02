@@ -37,6 +37,6 @@ class RegisterController extends Controller
             'password' => password_hash($this->request()->input('user_password'), PASSWORD_DEFAULT),
         ]);
 
-        dd("Пользователь создан с ID: $userID");
+        $this->redirect('/');
     }
 }
