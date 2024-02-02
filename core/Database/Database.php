@@ -4,6 +4,7 @@
 namespace Core\Database;
 
 use Core\Config\ConfigInterface;
+use Exception;
 use PDO;
 
 class Database implements DatabaseInterface
@@ -36,6 +37,26 @@ class Database implements DatabaseInterface
         }
 
         return (int) $this->pdo->lastInsertId();
+    }
+
+    public function first_found_in_db(string $table, array $conditions = []): ?array
+    {
+
+        $where = '';
+
+        if (count($conditions) > 0) {
+            $where = 'WHERE ' . implode(' AND ', array_map(fn ($field) => "$field = :$field", array_keys($conditions)));
+        }
+
+        $sql = "SELECT * FROM $table $where LIMIT 1";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        $stmt->execute($conditions);
+
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        return $result ?: null;
     }
 
 

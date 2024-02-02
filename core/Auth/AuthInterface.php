@@ -5,8 +5,13 @@ namespace Core\Auth;
 
 interface AuthInterface
 {
-    public function login($login, $password);
+
     public function logout();
-    public function chek_authorization();
-    public function getUser(): ?array;
+    public function check();
+    public function getUser(): ?User;
+    public function table(): string;
+    public function login_field_type(): string;
+    public function password(): string;
+    public function session_field(): string;
+    public function attempt(string $username, string $password): bool;
 }

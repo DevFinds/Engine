@@ -15,7 +15,6 @@ class RegisterController extends Controller
     public function register()
     {
         $validation = $this->request()->validate([
-            'user_name' => ['required', 'min:3', 'max:25'],
             'user_email' => ['required'],
             'user_login' => ['required', 'min:3', 'max:25'],
             'user_password' => ['required', 'min:6', 'max:255']
@@ -33,7 +32,6 @@ class RegisterController extends Controller
         }
 
         $userID = $this->getDatabase()->insert('users', [
-            'username' => $this->request()->input('user_name'),
             'login' => $this->request()->input('user_login'),
             'email' => $this->request()->input('user_email'),
             'password' => password_hash($this->request()->input('user_password'), PASSWORD_DEFAULT),

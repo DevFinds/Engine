@@ -2,13 +2,15 @@
 
 namespace Core;
 
+use Core\Auth\AuthInterface;
 use Core\Session\SessionInterface;
 
 class Render implements RenderInterface
 {
 
     public function __construct(
-        private SessionInterface $session
+        private SessionInterface $session,
+        private AuthInterface $auth,
     ) {
     }
 
@@ -33,6 +35,8 @@ class Render implements RenderInterface
             return;
         }
 
+        extract($this->defaultData());
+
         include_once $componentPath;
     }
 
@@ -41,6 +45,7 @@ class Render implements RenderInterface
         return [
             'render' => $this,
             'session' => $this->session,
+            'auth' => $this->auth,
         ];
     }
 }

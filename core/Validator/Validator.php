@@ -46,17 +46,17 @@ class Validator implements ValidatorInterface
         switch ($ruleName) {
             case 'required':
                 if (empty($value)) {
-                    return "Field $key is required";
+                    return "Поле $key обязательное";
                 }
                 break;
             case 'min':
                 if (strlen($value) < $ruleValue) {
-                    return "Field $key must be at least $ruleValue characters long";
+                    return "Поле $key должно быть не короче $ruleValue символов";
                 }
                 break;
             case 'max':
                 if (strlen($value) > $ruleValue) {
-                    return "Field $key must be at most $ruleValue characters long";
+                    return "Поле $key должно быть не длиннее $ruleValue символов";
                 }
                 break;
             case 'email':

@@ -9,46 +9,110 @@
 
 <?php $render->component('header') ?>
 
-<div class="form-container container w-50 center my-5">
-    <h1>Регистрация</h1>
-    <form action="/register" method="post" class="">
-        <label for="user_name" class="m-1 form-label">Ваше имя</label>
-        <input type="text" name="user_name" placeholder="Ваше имя" class="form-control m-1">
-        <label for="user_email" class="m-1 form-label">Ваш Email</label>
-        <input type="email" name="user_email" placeholder="Ваш Email" class="form-control">
-        <label for="user_login" class="m-1 form-label">Ваш логин</label>
-        <input type="text" name="user_login" placeholder="Ваш логин" class="form-control">
-        <label for="user_password" class="m-1 form-label">Ваш пароль</label>
-        <input type="password" name="user_password" placeholder="Ваш пароль" class="form-control">
+<div class="body-container">
+    <div class="form-container">
+        <div class="left-side">
+            <img src="./assets/img/logo_ShapeSider.svg" alt="logo">
+            <p class="first-paragraph">Soft by DevFinds</p>
+        </div>
 
-        <button href="" type="submit" class="btn btn-primary my-4">Регистрация</button>
+        <div class="right-side">
+            <h1>Регистрация</h1>
+            <ul class="icon-list">
+                <li class="icon-item"><a href=""><img src="assets\img\logo_git.svg" alt=""></a></li>
+                <li class="icon-item"><a href=""><img src="assets\img\logo_google.svg" alt=""></a></li>
+                <li class="icon-item"><a href=""><img src="assets\img\logo_discord.svg" alt=""></a></li>
+                <li class="icon-item"><a href=""><img src="assets\img\logo_telegram.svg" alt=""></a></li>
+            </ul>
+            <div class="right-container">
+                <form action="/register" method="post">
+                    <label for="user_login">Логин</label>
+                    <input type="text" id="login" name="user_login">
+                    <div class="error-container">
 
-    </form>
-    <div class="error-container">
+                        <?php
+                        $data_to_check = [
+                            'user_login',
+                        ];
 
-        <?php
-        $data_to_check = [
-            'user_name',
-            'user_email',
-            'user_login',
-            'user_password'
-        ];
+                        foreach ($data_to_check as $data) {
+                            if ($session->has($data)) {
 
-        foreach ($data_to_check as $data) {
-            if ($session->has($data)) {
+                        ?>
+                                <ul class="error-list d-flex flex-column">
+                                    <?php foreach ($session->getFlash($data, 'nothing') as $error) {
+                                    ?>
+                                        <li class="error-item danger my-1"><?php echo $error; ?></li>
+                            <?php  }
+                                }
+                            } ?>
 
-        ?>
-                <ul class="error-list d-flex flex-column">
-                    <?php foreach ($session->getFlash($data, 'nothing') as $error) {
-                    ?>
-                        <li class="error-item btn btn-outline-danger my-1"><?php echo $error; ?></li>
-            <?php  }
-                }
-            } ?>
+                                </ul>
+                    </div>
 
-                </ul>
+                    <label for="user_email">Email</label>
+                    <input type="email" id="email" name="user_email">
+                    <div class="error-container">
+
+                        <?php
+                        $data_to_check = [
+                            'user_email',
+                        ];
+
+                        foreach ($data_to_check as $data) {
+                            if ($session->has($data)) {
+
+                        ?>
+                                <ul class="error-list d-flex flex-column">
+                                    <?php foreach ($session->getFlash($data, 'nothing') as $error) {
+                                    ?>
+                                        <li class="error-item danger my-1"><?php echo $error; ?></li>
+                            <?php  }
+                                }
+                            } ?>
+
+                                </ul>
+                    </div>
+
+                    <label for="user_password">Пароль</label>
+                    <input type="password" id="password" name="user_password">
+                    <div class="error-container">
+
+                        <?php
+                        $data_to_check = [
+                            'user_password'
+                        ];
+
+                        foreach ($data_to_check as $data) {
+                            if ($session->has($data)) {
+
+                        ?>
+                                <ul class="error-list d-flex flex-column">
+                                    <?php foreach ($session->getFlash($data, 'nothing') as $error) {
+                                    ?>
+                                        <li class="error-item danger my-1"><?php echo $error; ?></li>
+                            <?php  }
+                                }
+                            } ?>
+
+                                </ul>
+                    </div>
+
+                    <button type="submit" class="register-button">Зарегистрироваться</button>
+                </form>
+
+
+                <div class="auth-container">
+                    <p class="auth-paragraph">Уже есть аккаунт?</p>
+                    <a href="/login" class="auth-button">Войти</a>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
+
+
 
 
 <?php $render->component('footer') ?>

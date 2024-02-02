@@ -4,16 +4,18 @@
  * @var \Core\RenderInterface $render
  * @var \Core\Session\SessionInterface $session
  */
+
 ?>
 
 
 <?php $render->component('header') ?>
 
-<div class="form-container container w-50 center my-5">
+<div class="form-container container p-3 flex-column d-flex center my-5">
     <h1>Авторизация</h1>
     <form action="/login" method="post" class="">
+        <label for="user_password" class="m-1 form-label">Логин</label>
         <input type="text" name="user_login" placeholder="Ваш логин" class="form-control">
-        <label for="user_password" class="m-1 form-label">Ваш пароль</label>
+        <label for="user_password" class="m-1 form-label">Пароль</label>
         <input type="password" name="user_password" placeholder="Ваш пароль" class="form-control">
 
         <button href="" type="submit" class="btn btn-primary my-4">Регистрация</button>
