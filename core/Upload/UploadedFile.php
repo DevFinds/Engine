@@ -28,7 +28,7 @@ class UploadedFile implements UploadedFileInterface
         $filePath = "$storagePath/$FileName";
 
         if (move_uploaded_file($this->tmpName, $filePath)) {
-            return "storage/$path/$FileName";
+            return "$path/$FileName";
         }
 
         return false;
@@ -41,6 +41,6 @@ class UploadedFile implements UploadedFileInterface
 
     private function generated_file_name(): string
     {
-        return 'image_' . date("d/m/Y") . '.' . $this->getFileExtension();
+        return 'image_' . date('h-i-s') . '.' . $this->getFileExtension();
     }
 }

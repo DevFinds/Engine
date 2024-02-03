@@ -2,23 +2,25 @@
 
 namespace Core\Container;
 
-use Core\Auth\Auth;
-use Core\Auth\AuthInterface;
-use Core\Config\ConfigInterface;
-use Core\Config\Config;
-use Core\Database\Database;
-use Core\Database\DatabaseInterface;
-use Core\http\Redirect;
-use Core\http\RedirectInterface;
-use Core\http\Request;
-use Core\http\RequestInterface;
-use Core\http\Router\Router;
-use Core\http\Router\RouterInterface;
 use Core\Render;
+use Core\Auth\Auth;
+use Core\http\Request;
+use Core\Config\Config;
+use Core\http\Redirect;
+use Core\Upload\Storage;
 use Core\RenderInterface;
 use Core\Session\Session;
-use Core\Session\SessionInterface;
+use Core\Database\Database;
+use Core\Auth\AuthInterface;
+use Core\http\Router\Router;
 use Core\Validator\Validator;
+use Core\http\RequestInterface;
+use Core\Config\ConfigInterface;
+use Core\http\RedirectInterface;
+use Core\Upload\StorageInterface;
+use Core\Session\SessionInterface;
+use Core\Database\DatabaseInterface;
+use Core\http\Router\RouterInterface;
 use Core\Validator\ValidatorInterface;
 
 class Container
@@ -43,6 +45,8 @@ class Container
 
     public readonly AuthInterface $auth;
 
+    public readonly StorageInterface $storage;
+
     public function __construct()
     {
         $this->registerServices();
@@ -60,6 +64,15 @@ class Container
         $this->database = new Database($this->config);
         $this->auth = new Auth($this->database, $this->session, $this->config);
         $this->render = new Render($this->session, $this->auth);
-        $this->router = new Router($this->render, $this->request, $this->redirect, $this->session, $this->database, $this->auth);
+        $this->storage = new Storage($this->config);
+        $this->router = new Router(
+            $this->render,
+            $this->request,
+            $this->redirect,
+            $this->session,
+            $this->database,
+            $this->auth,
+            $this->storage,
+        );
     }
 }

@@ -3,12 +3,13 @@
 namespace Core\Controller;
 
 use Core\Auth\Auth;
-use Core\Auth\AuthInterface;
-use Core\Database\DatabaseInterface;
-use Core\http\RedirectInterface;
-use Core\http\RequestInterface;
+use Core\Upload\StorageInterface;
 use Core\RenderInterface;
+use Core\Auth\AuthInterface;
+use Core\http\RequestInterface;
+use Core\http\RedirectInterface;
 use Core\Session\SessionInterface;
+use Core\Database\DatabaseInterface;
 
 abstract class Controller
 {
@@ -18,6 +19,7 @@ abstract class Controller
     private SessionInterface $session;
     private DatabaseInterface $database;
     private AuthInterface $auth;
+    private StorageInterface $storage;
 
 
     public function render(string $page_name): void
@@ -92,5 +94,15 @@ abstract class Controller
         $this->database = $database;
 
         return $this;
+    }
+
+    public function setStorage(StorageInterface $storage)
+    {
+        $this->storage = $storage;
+    }
+
+    public function getStorage(): StorageInterface
+    {
+        return $this->storage;
     }
 }
