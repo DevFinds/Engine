@@ -1,17 +1,17 @@
 AOS.init();
 
-var myButton = document.getElementById("collapse-button");
+var myButton = document.getElementById("dashboard-collapse-button");
 myButton.addEventListener("click", function() {
   toggleCollapse();
   collapse_user_menu();
 });
 
 function toggleCollapse() {
-  myButton.classList.toggle("collapse-button-active");
+  myButton.classList.toggle("dashboard-collapse-button-active");
 }
   
 function collapse_user_menu() {
-  var targetElement = document.getElementById("collapse-menu");
+  var targetElement = document.getElementById("dashboard-collapse-menu");
 
   if (targetElement.style.display === "none" || targetElement.style.display === "") {
     targetElement.classList.add("animate__animated", "animate__fadeIn");
