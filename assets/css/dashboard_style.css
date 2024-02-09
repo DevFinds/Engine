@@ -14,19 +14,19 @@ body{
     flex-direction: row;
     min-height: 100vh;
     width: 100%;
-    height:100%;
+    height: fit-content;
     
 }
 .dashboard-navbar{
     display: flex;
     flex-direction: column;
     background-color: #FFFFFF;
-    width:fit-content;
+    width: fit-content;
     align-items: center;
     padding: 64px 42px 42px 24px;
     box-shadow: var(--shadow);
     border-radius: 0 12px 12px 0;
-    height: 100%;
+    height: 100vh;
 }
 
 p{
@@ -79,6 +79,8 @@ p{
     flex-direction: column;
     padding: 36px 96px 48px 64px;
     width: 100%;
+    height: 100vh;
+    overflow: scroll;
 }
 
 .dashboard-user-info{
@@ -225,6 +227,7 @@ p{
     grid-template-rows: repeat(2, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
+    margin-top: 1440px;
 }
     
 .dashboard-div-first { grid-area: 1 / 1 / 2 / 3; }
