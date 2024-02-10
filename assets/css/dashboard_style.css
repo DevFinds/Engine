@@ -192,6 +192,8 @@ p{
     margin-top: 72px;
     margin-left: 22px;
     transition: all 0.3s ease-in-out;
+    align-items: center;
+    flex-direction: column;
     
 
 }
@@ -200,6 +202,7 @@ p{
     display: flex;
     flex-direction: column;
     list-style: none;
+    width: 100%;
 }
 
 .dashboard-collapse-menu li{
