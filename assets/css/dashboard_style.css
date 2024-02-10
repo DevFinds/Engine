@@ -291,3 +291,11 @@ p{
 .creator-name{
     color:#276EFF;
 }
+
+.users-create-user-form {
+    display: none;
+}
+
+.users-role-editor {
+    display: none;
+}

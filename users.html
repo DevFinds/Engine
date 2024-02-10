@@ -57,12 +57,12 @@
             <div class="users-bottom-section">
                 <div class="users-selector" id="selector">
                     <div class="users-selector-buttons">
-                        <button onclick="showUserList()">Список пользователей</button>
-                        <button onclick="showCreateUserForm()">Создать пользователя</button>
-                        <button onclick="showRoleEditor()">Редактор ролей</button>
+                        <button id="users-user-list-tab"">Список пользователей</button>
+                        <button id="users-create-user-tab">Создать пользователя</button>
+                        <button id="users-role-editor-tab">Редактор ролей</button>
                     </div>
                 </div>
-                    <div class="users-table-container" id="usersTableContainer">
+                    <div class="users-table-container" id="users-table-container">
                         <h3 class="users-table-title">Список пользователей</h3>
                         <table class="users-table">
                             <thead class="users-table-header">
@@ -102,11 +102,11 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="users-createUserForm" id="createUserForm">
-
+                    <div class="users-create-user-form" id="users-create-user-form">
+                        Создание пользователя
                     </div>
-                    <div class="users-roleEditor" id="roleEditor">
-
+                    <div class="users-role-editor" id="users-role-editor">
+                        Редактор ролей
                     </div>
             </div>    
         </div>
