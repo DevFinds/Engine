@@ -1,0 +1,74 @@
+:root{
+    --blue-accent: #276EFF;
+    --Dark-text: #272D37;
+    --text-regular-size: font-size: 16px;
+    --text-regular-weight: font-size: 400px;
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.users-bottom-section{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    padding-top: 64px;
+    gap: 36px;
+}
+
+.users-selector{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 48px;
+    width: fit-content;
+    height: fit-content;
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+}
+
+.users-selector-buttons{
+    display: flex;
+    padding: 22px 48px 23px 48px;
+    gap: 48px;
+}
+
+button{
+    border: none;
+    background-color:transparent;
+    color: #A0AFC4;
+    font-weight: var(--text-regular-weight);
+    font-size: var(--text-regular-size);
+    font-family: Inter;
+}
+
+.users-content{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 48px 24px 0px 32px;
+    box-shadow:var(--shadow);
+    border-radius: 12px;
+}
+
+.users-userList-title{
+    color: var(--Dark-text);
+    font-weight: var(--text-regular-weight);
+    font-size: 18px;
+    font-family: Inter;
+    padding-bottom: 36px;
+    margin: 0px;
+}
+
+.users-userList-header{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 48px;
+}

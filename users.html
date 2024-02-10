@@ -7,6 +7,7 @@
     <link rel="stylesheet" type= "text/css" href="./assets/css/dashboard_style.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <link rel="stylesheet" href="./assets/css/users_style.css">
     <title>Dashboard</title>
 </head>
 <body>
@@ -53,10 +54,45 @@
                 </div>
             </div>
             
-            <div class="dashboard-bottom-section">
-                <div class="dashboard-div-first">block-small-first</div>
-                <div class="dashboard-div-second">block-small-second</div>
-                <div class="dashboard-div-third">block-large</div>
+            <div class="users-bottom-section">
+                <div class="users-selector" id="selector">
+                    <div class="users-selector-buttons">
+                        <button onclick="showUserList()">Список пользователей</button>
+                        <button onclick="showCreateUserForm()">Создать пользователя</button>
+                        <button onclick="showRoleEditor()">Редактор ролей</button>
+                    </div>
+                </div>
+                <div class="users-content">
+                    <div class="users-userList" id="userList">
+                        <h3 class="users-userList-title">Список пользователей</h3>
+                        <table>
+                            <thead>
+                                <tr class="users-userList-header">
+                                    <th>ID</th>
+                                    <th>Роль</th>
+                                    <th>Имя</th>
+                                    <th>Логин</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td> 1</td>
+                                    <td>Гей лорд</td>
+                                    <td>Данила</td>
+                                    <td>lublusosat</td>
+                                    <td>lublusosat@mail.chpok <div><button>Редактировать</button> <button>Удалить</button></div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="users-createUserForm" id="createUserForm">
+
+                    </div>
+                    <div class="users-roleEditor" id="roleEditor">
+
+                    </div>
+                </div>
             </div>    
         </div>
         </div>
