@@ -20,4 +20,9 @@ class AdminController extends Controller
     {
         $this->redirect('/admin/users/register');
     }
+
+    public function dashboard()
+    {
+        $this->render('admin/dashboard/general');
+    }
 }
