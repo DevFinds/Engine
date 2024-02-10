@@ -62,22 +62,21 @@
                         <button onclick="showRoleEditor()">Редактор ролей</button>
                     </div>
                 </div>
-                <div class="users-content">
-                    <div class="users-userList" id="userList">
-                        <h3 class="users-userList-title">Список пользователей</h3>
-                        <table>
-                            <thead>
-                                <tr class="users-userList-header">
-                                    <th>ID</th>
-                                    <th>Роль</th>
-                                    <th>Имя</th>
-                                    <th>Логин</th>
-                                    <th>Email</th>
+                    <div class="users-table-container" id="usersTableContainer">
+                        <h3 class="users-table-title">Список пользователей</h3>
+                        <table class="users-table">
+                            <thead class="users-table-header">
+                                <tr class="users-table-header-row">
+                                    <th class="users-table-header-column-id">ID</th>
+                                    <th class="users-table-header-column-role">Роль</th>
+                                    <th class="users-table-header-column-name">Имя</th>
+                                    <th class="users-table-header-column-login">Логин</th>
+                                    <th class="users-table-header-column-email">Email</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                <tr>
-                                    <td> 1</td>
+                            <tbody class="users-table-body">
+                                <tr class="users-table-row">
+                                    <td class="users-table-column"> 1</td>
                                     <td>Гей лорд</td>
                                     <td>Данила</td>
                                     <td>lublusosat</td>
@@ -92,7 +91,6 @@
                     <div class="users-roleEditor" id="roleEditor">
 
                     </div>
-                </div>
             </div>    
         </div>
         </div>

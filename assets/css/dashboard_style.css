@@ -9,6 +9,11 @@
 body{
     background-color:#FAFAFA;
 }
+
+ul {
+    margin-bottom: 0px;
+    padding: 0px;
+}
 .dashboard-page-container{
     display: flex;
     flex-direction: row;
@@ -152,14 +157,21 @@ p{
 .dashboard-collapse-button-active{
     padding: 12px;
     background-color: #FFFFFF;
-    transform: rotate(180deg);
+    rotate: x 180deg;
     border-radius: 4px;
     box-shadow: var(--shadow);
+    transition: all 0.5s ease-in-out;
+    cursor: pointer;
 }
 
 .dashboard-collapse-button{
     padding: 12px;
+    background-color: #FFFFFF;
+    padding: 12px;
+    transition: all 0.5s ease-in-out;
+    cursor: pointer;
 }
+
 
 .dashboard-collapse-button img{
     transform: rotate(180deg);
@@ -175,6 +187,12 @@ p{
     width: 100%;
     box-shadow: var(--shadow);
     display: none;
+    position: absolute;
+    max-width: 240px;
+    margin-top: 72px;
+    margin-left: 22px;
+    transition: all 0.3s ease-in-out;
+    
 
 }
 

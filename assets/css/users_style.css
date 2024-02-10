@@ -47,28 +47,23 @@ button{
     font-family: Inter;
 }
 
-.users-content{
+.users-table-container {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    padding: 48px 24px 0px 32px;
-    box-shadow:var(--shadow);
-    border-radius: 12px;
 }
 
-.users-userList-title{
-    color: var(--Dark-text);
-    font-weight: var(--text-regular-weight);
-    font-size: 18px;
-    font-family: Inter;
-    padding-bottom: 36px;
-    margin: 0px;
-}
 
-.users-userList-header{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 48px;
-}
+.parent {
+    display: grid;
+    grid-template-columns: 1fr 4fr repeat(2, 3fr) 8fr;
+    grid-template-rows: repeat(5, 1fr);
+    grid-column-gap: 36px;
+    grid-row-gap: 12px;
+    }
+    
+    .div1 { grid-area: 1 / 1 / 2 / 2; }
+    .div2 { grid-area: 1 / 2 / 2 / 3; }
+    .div3 { grid-area: 1 / 3 / 2 / 4; }
+    .div4 { grid-area: 1 / 4 / 2 / 5; }
+    .div5 { grid-area: 1 / 5 / 2 / 6; }
