@@ -1,6 +1,7 @@
 :root{
     --blue-accent: #276EFF;
     --Dark-text: #272D37;
+    --gray-inactive: #A0AFC4;
     --text-regular-size: font-size: 16px;
     --text-regular-weight: font-size: 400px;
     --shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
@@ -9,6 +10,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: Inter;
 }
 
 .users-bottom-section{
@@ -51,19 +53,71 @@ button{
     width: 100%;
     display: flex;
     flex-direction: column;
+    
 }
 
 
-.parent {
-    display: grid;
-    grid-template-columns: 1fr 4fr repeat(2, 3fr) 8fr;
-    grid-template-rows: repeat(5, 1fr);
-    grid-column-gap: 36px;
-    grid-row-gap: 12px;
+
+/* Макет таблицы пользователей */
+    .users-table-header-row, .users-table-row {
+        display: grid;
+        grid-template-columns: 1fr repeat(2, 4fr) 5fr 8fr;
+        grid-template-rows: repeat(1, 1fr);
+        grid-column-gap: 36px;
+        grid-row-gap: 0px;
+        }
+        
+        .users-table-header-column-id { grid-area: 1 / 1 / 2 / 2; }
+        .users-table-header-column-role { grid-area: 1 / 2 / 2 / 3; }
+        .users-table-header-column-name { grid-area: 1 / 3 / 2 / 4; }
+        .users-table-header-column-login { grid-area: 1 / 4 / 2 / 5; }
+        .users-table-header-column-email { grid-area: 1 / 5 / 2 / 6; }
+
+        .users-table-column-email div{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 12px;
+
+        }
+
+.users-table-column-email{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
     }
-    
-    .div1 { grid-area: 1 / 1 / 2 / 2; }
-    .div2 { grid-area: 1 / 2 / 2 / 3; }
-    .div3 { grid-area: 1 / 3 / 2 / 4; }
-    .div4 { grid-area: 1 / 4 / 2 / 5; }
-    .div5 { grid-area: 1 / 5 / 2 / 6; }
+
+.users-table-header tr {
+    border-radius: 8px;
+    padding: 0px 16px;
+}
+
+.users-table-body tr {
+    border-radius: 8px;
+    padding: 0px 16px;
+    transition: all 0.5s ease-in-out;
+}
+
+.users-table-body tr:hover {
+    background-color: rgba(160, 191, 255, 0.25);
+    transition: all 0.5s ease-in-out;
+}
+
+.users-table-header-row th {
+    font-size: var(--text-regular-size);
+    font-weight: var(--text-regular-weight);
+    color: var(--gray-inactive);
+    padding: 8px;
+}
+
+.users-table-row td {
+    font-size: var(--text-regular-size);
+    font-weight: var(--text-regular-weight);
+    color: var(--Dark-text);
+    padding: 8px;
+}
+

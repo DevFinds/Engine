@@ -234,7 +234,7 @@ p{
 }
 .dashboard-search-input{
     border: none;
-    font-size: 12.8px;
+    font-size: var(--text-regular-size);
     font-weight: 400;
     width: 100%;
     height:auto;

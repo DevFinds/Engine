@@ -76,11 +76,28 @@
                             </thead>
                             <tbody class="users-table-body">
                                 <tr class="users-table-row">
-                                    <td class="users-table-column"> 1</td>
-                                    <td>Гей лорд</td>
-                                    <td>Данила</td>
-                                    <td>lublusosat</td>
-                                    <td>lublusosat@mail.chpok <div><button>Редактировать</button> <button>Удалить</button></div></td>
+                                    <td class="users-table-column-id" id="copy-to-clipboard"> 1</td>
+                                    <td class="users-table-column-role">Гей лорд</td>
+                                    <td class="users-table-column-name">Данила</td>
+                                    <td class="users-table-column-login">lublusosat</td>
+                                    <td class="users-table-column-email">lublusosat@mail.chpok 
+                                        <div>
+                                            <button class="users-table-edit-user" type="submit"><img src="./assets/img/edit-icon.svg" alt=""></button> 
+                                            <button class="users-table-delete-user" type="submit"><img src="./assets/img/delete-icon.svg" alt=""></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr class="users-table-row">
+                                    <td class="users-table-column-id"> 1</td>
+                                    <td class="users-table-column-role">Гей лорд</td>
+                                    <td class="users-table-column-name">Данила</td>
+                                    <td class="users-table-column-login">lublusosat</td>
+                                    <td class="users-table-column-email">lublusosat@mail.chpok 
+                                        <div>
+                                            <button class="users-table-edit-user" type="submit"><img src="./assets/img/edit-icon.svg" alt=""></button> 
+                                            <button class="users-table-delete-user" type="submit"><img src="./assets/img/delete-icon.svg" alt=""></button>
+                                        </div>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -97,7 +114,7 @@
     </main>
     <footer>
         <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-        <script src="./assets/js/script.js"></script>
+        <script src="./assets/js/dashboard.js"></script>
         
     </footer>
 </body>

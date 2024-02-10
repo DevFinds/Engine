@@ -21,3 +21,14 @@ function collapse_user_menu() {
   }
 }
 
+// Функция click to copy to clipboard
+
+let text = document.getElementById('copy-to-clipboard').innerHTML;
+  const copyContent = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      console.log('Content copied to clipboard');
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  }
