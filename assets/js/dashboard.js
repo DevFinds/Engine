@@ -60,3 +60,5 @@ let text = document.getElementById('copy-to-clipboard').innerHTML;
       console.error('Failed to copy: ', err);
     }
   }
+
+
