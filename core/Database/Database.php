@@ -6,6 +6,7 @@ namespace Core\Database;
 use Core\Config\ConfigInterface;
 use Exception;
 use PDO;
+use PDOException;
 
 class Database implements DatabaseInterface
 {
@@ -76,5 +77,54 @@ class Database implements DatabaseInterface
         } catch (\PDOException $exception) {
             exit("Ошибка подключения к БД: {$exception->getMessage()}");
         }
+
+        if ($this->isTableExists('users') == false) {
+            $this->createTable();
+        }
+    }
+
+    private function isTableExists(string $table): bool
+    {
+    try {
+        $sql = "SELECT 1 FROM $table LIMIT 1";
+        $stmt = $this->pdo->query($sql);
+        return $stmt !== false;
+    } catch (PDOException $e) {
+        // Handle the exception, e.g. log it or return false
+        return false;
+    }
+    }
+    private function isColumnExists(string $table, string $column):bool
+    {
+        $sql = "SELECT $column FROM information_schema.columns WHERE table_name = '$table' AND column_name = '$column'";
+        if (!$this->pdo->query($sql)) {
+            return false;
+        }
+        return true;
+    }
+
+    private function createTable()
+    {
+    try {
+        $sql = "CREATE TABLE `users` (
+            `id` int(255) NOT NULL AUTO_INCREMENT,
+            `username` varchar(32) DEFAULT NULL,
+            `login` varchar(32) DEFAULT NULL,
+            `email` varchar(100) DEFAULT NULL,
+            `password` varchar(100) DEFAULT NULL)
+            ENGINE=InnoDB DEFAULT CHARSET=utf8;
+            ALTER TABLE `users`
+            ADD PRIMARY KEY (`id`);";
+        $this->pdo->exec($sql);
+    } catch (PDOException $e) {
+        echo "Error creating table: " . $e->getMessage();
+    }
+    }
+
+    private function createColumn()
+    {
+        $sql = "ALTER TABLE `users`
+          ADD PRIMARY KEY (`id`);";
+        $this->pdo->exec($sql);
     }
 }
