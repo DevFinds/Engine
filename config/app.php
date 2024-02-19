@@ -3,5 +3,6 @@
 return [
     'name' => 'Shapesider',
     'url' => 'https://shapesider.lndo.site',
+    'theme' => 'Basic',
 
 ];

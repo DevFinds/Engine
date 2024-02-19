@@ -63,7 +63,7 @@ class Container
         $this->config = new Config();
         $this->database = new Database($this->config);
         $this->auth = new Auth($this->database, $this->session, $this->config);
-        $this->render = new Render($this->session, $this->auth);
+        $this->render = new Render($this->session, $this->auth, $this->config);
         $this->storage = new Storage($this->config);
         $this->router = new Router(
             $this->render,

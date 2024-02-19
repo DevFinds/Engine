@@ -3,7 +3,9 @@
 namespace Core;
 
 use Core\Auth\AuthInterface;
+use Core\Config\ConfigInterface;
 use Core\Session\SessionInterface;
+
 
 class Render implements RenderInterface
 {
@@ -11,13 +13,16 @@ class Render implements RenderInterface
     public function __construct(
         private SessionInterface $session,
         private AuthInterface $auth,
+        private ConfigInterface $config,
     ) {
     }
 
+
     public function page($controller)
     {
-
-        $pagePath = APP_PATH . "/themes/Basic/pages/$controller.php";
+        // Передадим активную тему для системы в данную переменную
+        $activeTheme = $this->config->get('app.theme', 'Basic');
+        $pagePath = APP_PATH . "/themes/$activeTheme/pages/$controller.php";
         if (!file_exists($pagePath)) {
             throw new \Exception("Шаблон $controller не найден");
         }
@@ -38,6 +43,38 @@ class Render implements RenderInterface
         extract($this->defaultData());
 
         include_once $componentPath;
+    }
+
+    public function enqueue_scripts()
+    {
+        // Передадим активную тему для системы в данную переменную
+        $activeTheme = $this->config->get('app.theme', 'Basic');
+        $themeName = $activeTheme . 'Theme';
+        $scripts = array_diff(scandir(APP_PATH . "/public/assets/themes/$themeName/js"), array('..', '.'));
+        foreach ($scripts as $script) {
+            echo "<script src='$script'></script>";
+        }
+    }
+
+    public function enqueue_styles()
+    {
+        // Передадим активную тему для системы в данную переменную
+        $activeTheme = $this->config->get('app.theme', 'Basic');
+        $themeName = $activeTheme . 'Theme';
+        $styles = array_diff(scandir(APP_PATH . "/public/assets/themes/$themeName/css"), array('..', '.'));
+        foreach ($styles as $style) {
+            echo "<link rel='stylesheet' href='$style'>";
+        }
+    }
+
+    public function system_head()
+    {
+        $this->enqueue_styles();
+    }
+
+    public function system_footer()
+    {
+        $this->enqueue_scripts();
     }
 
     private function defaultData(): array
