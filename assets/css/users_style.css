@@ -253,7 +253,7 @@ button{
     flex-direction: row;
     align-items: flex-start;
     justify-content: flex-start;
-    paddinf-top: 36px;
+    padding-top: 36px;
     padding-left: 64px;
     gap: 36px;
 
@@ -270,6 +270,9 @@ button{
     background-color:var(--white);
     box-shadow:var(--shadow);
     padding: 48px 25px 58px 48px;
+}
+
+.users-role-table-body{
 }
 
 .users-add-role{
