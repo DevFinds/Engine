@@ -281,7 +281,6 @@ p{
     grid-template-rows: repeat(2, 1fr);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
-    margin-top: 1440px;
 }
     
 .dashboard-div-first { grid-area: 1 / 1 / 2 / 3; }

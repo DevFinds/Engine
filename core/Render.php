@@ -17,7 +17,6 @@ class Render implements RenderInterface
     ) {
     }
 
-
     public function page($controller)
     {
         // Передадим активную тему для системы в данную переменную
@@ -49,10 +48,9 @@ class Render implements RenderInterface
     {
         // Передадим активную тему для системы в данную переменную
         $activeTheme = $this->config->get('app.theme', 'Basic');
-        $themeName = $activeTheme . 'Theme';
-        $scripts = array_diff(scandir(APP_PATH . "/public/assets/themes/$themeName/js"), array('..', '.'));
+        $scripts = array_diff(scandir(APP_PATH . "/public/assets/themes/$activeTheme/js"), array('..', '.'));
         foreach ($scripts as $script) {
-            echo "<script src='$script'></script>";
+            echo "<script src='/assets/themes/$activeTheme/js/$script'></script>";
         }
     }
 
@@ -60,8 +58,7 @@ class Render implements RenderInterface
     {
         // Передадим активную тему для системы в данную переменную
         $activeTheme = $this->config->get('app.theme', 'Basic');
-        $themeName = $activeTheme . 'Theme';
-        $styles = array_diff(scandir(APP_PATH . "/public/assets/themes/$themeName/css"), array('..', '.'));
+        $styles = array_diff(scandir(APP_PATH . "/public/assets/themes/$activeTheme/css"), array('..', '.'));
         foreach ($styles_list as $style) {
             if (in_array($style, $styles)) {
                 echo "<link rel='stylesheet' href='$style'>";
@@ -72,11 +69,10 @@ class Render implements RenderInterface
     public function enqueue_selected_scripts(array $scripts_list = [])
     {
         $activeTheme = $this->config->get('app.theme', 'Basic');
-        $themeName = $activeTheme . 'Theme';
-        $scripts = array_diff(scandir(APP_PATH . "/public/assets/themes/$themeName/js"), array('..', '.'));
+        $scripts = array_diff(scandir(APP_PATH . "/public/assets/themes/$activeTheme/js"), array('..', '.'));
         foreach ($scripts_list as $script) {
             if (in_array($script, $scripts)) {
-                echo "<script src='$script'></script>";
+                echo "<script src='/assets/themes/$activeTheme/js/$script'></script>";
             }
         }
     }
@@ -85,10 +81,9 @@ class Render implements RenderInterface
     {
         // Передадим активную тему для системы в данную переменную
         $activeTheme = $this->config->get('app.theme', 'Basic');
-        $themeName = $activeTheme . 'Theme';
-        $styles = array_diff(scandir(APP_PATH . "/public/assets/themes/$themeName/css"), array('..', '.'));
+        $styles = array_diff(scandir(APP_PATH . "/public/assets/themes/$activeTheme/css"), array('..', '.'));
         foreach ($styles as $style) {
-            echo "<link rel='stylesheet' href='$style'>";
+            echo "<link rel='stylesheet' href='/assets/themes/$activeTheme/css/$style'>";
         }
     }
 

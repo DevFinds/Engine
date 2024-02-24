@@ -21,8 +21,13 @@ class AdminController extends Controller
         $this->redirect('/admin/users/register');
     }
 
-    public function dashboard()
+    public function dashboardGeneral()
     {
         $this->render('admin/dashboard/general');
+    }
+
+    public function dashboardUsers()
+    {
+        $this->render('admin/dashboard/users');
     }
 }
