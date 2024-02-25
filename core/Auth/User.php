@@ -8,6 +8,8 @@ class User
     public function __construct(
         private int $id,
         private string $login,
+        private string $username,
+        private string $lastname,
         private string $email,
         private string $password,
     ) {
@@ -42,5 +44,15 @@ class User
     public function password()
     {
         return $this->password;
+    }
+
+    public function username()
+    {
+        return $this->username;
+    }
+
+    public function lastname()
+    {
+        return $this->lastname;
     }
 }

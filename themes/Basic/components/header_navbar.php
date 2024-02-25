@@ -28,6 +28,9 @@ $user = $this->auth->getUser();
                     <li class="nav-item">
                         <a class="nav-link" href="/login">Авторизация</a>
                     </li>
+                    <li>
+                        <a class="nav-link info" href="/admin/dashboard/general">админка</a>
+                    </li>
                 </ul>
                 <?php if ($auth->check()) { ?>
                     <div class="d-flex align-baseline row">

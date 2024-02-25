@@ -11,8 +11,8 @@
 <div class="users-bottom-section">
     <div class="users-selector" id="selector">
         <div class="users-selector-buttons">
-            <button id="users-user-list-tab"">Список пользователей</button>
-                        <button id=" users-create-user-tab">Создать пользователя</button>
+            <button id="users-user-list-tab">Список пользователей</button>
+            <button id="users-create-user-tab">Создать пользователя</button>
             <button id="users-role-editor-tab">Редактор ролей</button>
         </div>
     </div>
@@ -36,8 +36,8 @@
                     <td class="users-table-column-login">lublusosat</td>
                     <td class="users-table-column-email">lublusosat@mail.chpok
                         <div>
-                            <button class="users-table-edit-user" type="submit"><img src="./assets/img/edit-icon.svg" alt=""></button>
-                            <button class="users-table-delete-user" type="submit"><img src="./assets/img/delete-icon.svg" alt=""></button>
+                            <button class="users-table-edit-user" type="submit"><img src="/assets/themes/Basic/img/edit-icon.svg" alt=""></button>
+                            <button class="users-table-delete-user" type="submit"><img src="/assets/themes/Basic/img/delete-icon.svg" alt=""></button>
                         </div>
                     </td>
                 </tr>
@@ -48,8 +48,8 @@
                     <td class="users-table-column-login">lublusosat</td>
                     <td class="users-table-column-email">lublusosat@mail.chpok
                         <div>
-                            <button class="users-table-edit-user" type="submit"><img src="./assets/img/edit-icon.svg" alt=""></button>
-                            <button class="users-table-delete-user" type="submit"><img src="./assets/img/delete-icon.svg" alt=""></button>
+                            <button class="users-table-edit-user" type="submit"><img src="/assets/themes/Basic/img/edit-icon.svg" alt=""></button>
+                            <button class="users-table-delete-user" type="submit"><img src="/assets/themes/Basic/img/delete-icon.svg" alt=""></button>
                         </div>
                     </td>
                 </tr>

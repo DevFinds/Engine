@@ -3,7 +3,10 @@
 /**
  * @var \Core\RenderInterface $render
  * @var \Core\Session\SessionInterface $session
+ * @var \Core\Auth\AuthInterface $auth
  */
+
+$user = $this->auth->getUser();
 ?>
 
 <html lang="en">
@@ -22,7 +25,7 @@
     <main>
         <div class="dashboard-page-container">
             <div class="dashboard-navbar">
-                <img src="/assets/themes/Basic/img/dashborad_logo.svg" alt="" class="dashboard-logo">
+                <a href="/"><img src="/assets/themes/Basic/img/dashborad_logo.svg" alt="" class="dashboard-logo"></a>
                 <ul class="dashboard-menu">
                     <li class="dashboard-menu-item"><img src="/assets/themes/Basic/img/general-icon.svg" alt="" class="dashboard-link-icon"><a href="/admin/dashboard/general" class="dashboard-menu-link">Основное</a></li>
                     <li class="dashboard-menu-item"><img src="/assets/themes/Basic/img/user-icon.svg" alt="" class="dashboard-link-icon"><a href="/admin/dashboard/users" class="dashboard-menu-link">Пользователи</a></li>
@@ -45,7 +48,7 @@
                         <div class="dashboard-user-info">
                             <div class="dashboard-user-button">
                                 <img class="dashboard-header-avatar" src="/assets/themes/Basic/img/avatar.svg" alt="">
-                                <span class="dashboard-username">Имя пользователя
+                                <span class="dashboard-username"><?php echo $user->username() ?> <?php echo $user->lastname(); ?>
                                     <img id="dashboard-collapse-button" class="dashboard-collapse-button" src="/assets/themes/Basic/img/collapse.svg" alt="">
                                 </span>
                             </div>
