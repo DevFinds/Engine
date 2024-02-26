@@ -180,13 +180,15 @@ button{
     height: auto;
     border-radius: 12px;
     background-color:var(--gray-background);
-    width: 350px;
-    height: 48px;
     outline: none;
+    padding: 14px 12px;
     text-indent: 20px;
     font-family: var(--font-family-Inter);
     font-size: var(--text-14px-size);
     font-weight: var(--text-regular-weight);
+}
+.users-create-left-input-container input{
+    width: 350px;
 }
 .users-create-first-title{
     font-family: var(--font-family-Inter);
@@ -249,12 +251,10 @@ button{
 
 
 .users-role-editor {
-    display: flex;
+    display: none;
     flex-direction: row;
     align-items: flex-start;
     justify-content: flex-start;
-    padding-top: 36px;
-    padding-left: 64px;
     gap: 36px;
 
 }
@@ -264,26 +264,159 @@ button{
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    width: 598px;
-    height: 365px;
+    width: 100%;
     border-radius: 12px;
     background-color:var(--white);
     box-shadow:var(--shadow);
-    padding: 48px 25px 58px 48px;
+    padding: 48px;
 }
 
-.users-role-table-body{
-}
 
 .users-add-role{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-start;
-    width: 396px;
-    height:428px;
     border-radius: 12px;
     background-color:var(--white);
     box-shadow:var(--shadow);
     padding: 48px;
 }
+
+.users-add-role-title{
+    font-family: var(--font-family-Inter);
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 36px;
+    color: var(--Dark-text);
+}
+
+.users-name-role-input{
+    border:none;
+    display: flex;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    padding: 14px 12px;
+    background-color:var(--gray-background);
+    outline: none;
+    text-indent: 20px;
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-14px-size);
+    font-weight: var(--text-regular-weight);
+    margin-bottom: 24px;
+}
+
+.users-add-role input{
+    width: 350px;
+}
+
+.users-add-role label{
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-14px-size);
+    font-weight: var(--text-regular-weight);
+    margin: 0px 0px 12px 16px;
+    color:var(--gray-inactive);
+}
+
+.users-add-role select{
+    appearance: none;
+    border: none;
+    display: flex;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    background-color: var(--gray-background);
+    width: 350px;
+    height: 48px;
+    outline: none;
+    text-indent: 20px;
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-14px-size);
+    font-weight: var(--text-regular-weight);
+    cursor: pointer;
+}
+
+.users-role-table-title{
+    font-family: var(--font-family-Inter);
+    font-size: 18px;
+    font-weight: 400px;
+    margin-left: 16px;
+}
+
+/* Общие стили таблицы */
+.users-role-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.users-role-table th,
+.users-role-table td {
+    padding: 12px;
+    text-align: left;
+    font-weight: 400;
+}
+
+
+
+/* Стили заголовков */
+.users-role-table-header-row {
+    margin:36px 0px 26px 0px;
+    padding: 0px 16px;
+    
+}
+.users-role-table-header th{
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-14px-size);
+    font-weight: var(--text-regular-weight);
+    color:var(--gray-inactive);
+}
+
+.users-role-table-header-column-name {
+    display: flex;
+    justify-content: center;
+}
+
+.users-role-table-body {
+    font-family: var(--font-family-Inter);
+    font-size: 16px;
+    font-weight: var(--text-regular-weight);
+    color:var(--Dark-text);
+
+}
+
+.users-role-table-row{
+    padding: 10px 16px ;
+}
+
+.users-role-table-column-permissions{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content:center;
+}
+.users-role-table-edit-user img,
+.users-role-table-delete-user img {
+    width: 28px;
+    height: 28px;
+}
+.users-role-table-column-buttons-wrapper{
+    display: flex;
+    flex-direction: row;
+    gap:12px;
+}
+
+.users-role-table-header-row,
+.users-role-table-row 
+{
+    display: grid;
+    grid-template-columns: 1fr 9fr 8fr 3fr;
+    grid-template-rows: repeat(1, 1fr);
+    grid-column-gap: 36px;
+    grid-row-gap: 0px;
+}
+    
+.users-role-table-row:hover{
+    background-color:#F5F9FF;
+    border-radius: 12px;
+}    
