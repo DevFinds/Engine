@@ -35,6 +35,7 @@ class RegisterController extends Controller
             'login' => $this->request()->input('user_login'),
             'email' => $this->request()->input('user_email'),
             'password' => password_hash($this->request()->input('user_password'), PASSWORD_DEFAULT),
+            'role' => '1',
         ]);
 
         $this->redirect('/');

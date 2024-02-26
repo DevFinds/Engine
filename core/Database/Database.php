@@ -60,6 +60,24 @@ class Database implements DatabaseInterface
         return $result ?: null;
     }
 
+    public function get(string $table, array $conditions = []): ?array
+    {
+        $where = '';
+
+        if (count($conditions) > 0) {
+            $where = 'WHERE ' . implode(' AND ', array_map(fn ($field) => "$field = :$field", array_keys($conditions)));
+        }
+
+        $sql = "SELECT * FROM $table $where";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        $stmt->execute($conditions);
+
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+        return $result ?: null;
+    }
 
     private function connect()
     {
@@ -85,16 +103,16 @@ class Database implements DatabaseInterface
 
     private function isTableExists(string $table): bool
     {
-    try {
-        $sql = "SELECT 1 FROM $table LIMIT 1";
-        $stmt = $this->pdo->query($sql);
-        return $stmt !== false;
-    } catch (PDOException $e) {
-        // Handle the exception, e.g. log it or return false
-        return false;
+        try {
+            $sql = "SELECT 1 FROM $table LIMIT 1";
+            $stmt = $this->pdo->query($sql);
+            return $stmt !== false;
+        } catch (PDOException $e) {
+            // Handle the exception, e.g. log it or return false
+            return false;
+        }
     }
-    }
-    private function isColumnExists(string $table, string $column):bool
+    private function isColumnExists(string $table, string $column): bool
     {
         $sql = "SELECT $column FROM information_schema.columns WHERE table_name = '$table' AND column_name = '$column'";
         if (!$this->pdo->query($sql)) {
@@ -105,8 +123,8 @@ class Database implements DatabaseInterface
 
     private function createTable()
     {
-    try {
-        $sql = "CREATE TABLE `users` (
+        try {
+            $sql = "CREATE TABLE `users` (
             `id` int(255) NOT NULL AUTO_INCREMENT,
             `username` varchar(32) DEFAULT NULL,
             `login` varchar(32) DEFAULT NULL,
@@ -115,10 +133,10 @@ class Database implements DatabaseInterface
             ENGINE=InnoDB DEFAULT CHARSET=utf8;
             ALTER TABLE `users`
             ADD PRIMARY KEY (`id`);";
-        $this->pdo->exec($sql);
-    } catch (PDOException $e) {
-        echo "Error creating table: " . $e->getMessage();
-    }
+            $this->pdo->exec($sql);
+        } catch (PDOException $e) {
+            echo "Error creating table: " . $e->getMessage();
+        }
     }
 
     private function createColumn()

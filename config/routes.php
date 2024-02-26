@@ -24,5 +24,6 @@ return [
     Route::post('/admin/post/create', [PostController::class, 'create_new_post'], [AuthMiddleware::class]),
     Route::get('/admin/dashboard/general', [AdminController::class, 'dashboardGeneral'], [AuthMiddleware::class]),
     Route::get('/admin/dashboard/users', [AdminController::class, 'dashboardUsers'], [AuthMiddleware::class]),
+    Route::post('/admin/dashboard/deleleteuser', [AdminController::class, 'deleteuser'], [AuthMiddleware::class]),
 
 ];

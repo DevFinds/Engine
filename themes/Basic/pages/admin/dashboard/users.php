@@ -2,9 +2,9 @@
 
 /**
  * @var \Core\Render $render
+ * @var array<\Source\Models\User> $users
+ * @var array<\Source\Models\Role> $roles
  */
-
-
 ?>
 <?php $render->component('dashboard_header'); ?>
 
@@ -29,30 +29,22 @@
                 </tr>
             </thead>
             <tbody class="users-table-body">
-                <tr class="users-table-row">
-                    <td class="users-table-column-id" id="copy-to-clipboard"> 1</td>
-                    <td class="users-table-column-role">Гей лорд</td>
-                    <td class="users-table-column-name">Данила</td>
-                    <td class="users-table-column-login">lublusosat</td>
-                    <td class="users-table-column-email">lublusosat@mail.chpok
-                        <div>
-                            <button class="users-table-edit-user" type="submit"><img src="/assets/themes/Basic/img/edit-icon.svg" alt=""></button>
-                            <button class="users-table-delete-user" type="submit"><img src="/assets/themes/Basic/img/delete-icon.svg" alt=""></button>
-                        </div>
-                    </td>
-                </tr>
-                <tr class="users-table-row">
-                    <td class="users-table-column-id"> 1</td>
-                    <td class="users-table-column-role">Гей лорд</td>
-                    <td class="users-table-column-name">Данила</td>
-                    <td class="users-table-column-login">lublusosat</td>
-                    <td class="users-table-column-email">lublusosat@mail.chpok
-                        <div>
-                            <button class="users-table-edit-user" type="submit"><img src="/assets/themes/Basic/img/edit-icon.svg" alt=""></button>
-                            <button class="users-table-delete-user" type="submit"><img src="/assets/themes/Basic/img/delete-icon.svg" alt=""></button>
-                        </div>
-                    </td>
-                </tr>
+                <?php
+                foreach ($users as $user) { ?>
+                    <tr class="users-table-row">
+                        <td class="users-table-column-id"> <?= $user->id() ?></td>
+                        <td class="users-table-column-role"><?= $user->role() ?></td>
+                        <td class="users-table-column-name"><?= $user->username() ?></td>
+                        <td class="users-table-column-login"><?= $user->login() ?></td>
+                        <td class="users-table-column-email"><?= $user->email() ?>
+                            <div>
+                                <button class="users-table-edit-user" type="submit"><img src="/assets/themes/Basic/img/edit-icon.svg" alt=""></button>
+                                <button class="users-table-delete-user" type="submit"><img src="/assets/themes/Basic/img/delete-icon.svg" alt=""></button>
+                            </div>
+                        </td>
+                    </tr>
+                <?php } ?>
+
             </tbody>
         </table>
     </div>
@@ -97,55 +89,31 @@
                         <th class="users-role-table-header-column-id">ID</th>
                         <th class="users-role-table-header-column-role">Название</th>
                         <th class="users-role-table-header-column-name">Уровень привелегий</th>
+                        <th class="users-role-table-header-column-buttons"></th>
                     </tr>
                 </thead>
                 <tbody class="users-role-table-body">
-                    <tr class="users-role-table-row">
-                        <td class="users-role-table-column-id" id="copy-to-clipboard"> 1</td>
-                        <td class="users-role-table-column-role">Администратор</td>
-                        <td class="users-role-table-column-permissions">1
-                            <div>
-                                <button class="users-role-table-edit-user" type="submit"><img src="./assets/img/settings.svg" alt=""></button>
-                                <button class="users-role-table-delete-user" type="submit"><img src="./assets/img/delete-icon.svg" alt=""></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="users-role-table-row">
-                        <td class="users-role-table-column-id" id="copy-to-clipboard"> 2</td>
-                        <td class="users-role-table-column-role">Модератор</td>
-                        <td class="users-role-table-column-permissions">2
-                            <div>
-                                <button class="users-role-table-edit-user" type="submit"><img src="./assets/img/settings.svg" alt=""></button>
-                                <button class="users-role-table-delete-user" type="submit"><img src="./assets/img/delete-icon.svg" alt=""></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="users-role-table-row">
-                        <td class="users-role-table-column-id" id="copy-to-clipboard"> 3</td>
-                        <td class="users-role-table-column-role">Пользователь</td>
-                        <td class="users-role-table-column-permissions">3
-                            <div>
-                                <button class="users-role-table-edit-user" type="submit"><img src="./assets/img/settings.svg" alt=""></button>
-                                <button class="users-role-table-delete-user" type="submit"><img src="./assets/img/delete-icon.svg" alt=""></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr class="users-role-table-row">
-                        <td class="users-role-table-column-id" id="copy-to-clipboard"> 4</td>
-                        <td class="users-role-table-column-role">Гость</td>
-                        <td class="users-role-table-column-permissions">4
-                            <div>
-                                <button class="users-role-table-edit-user" type="submit"><img src="./assets/img/settings.svg" alt=""></button>
-                                <button class="users-role-table-delete-user" type="submit"><img src="./assets/img/delete-icon.svg" alt=""></button>
-                            </div>
-                        </td>
-                    </tr>
+                    <?php foreach ($roles as $role) { ?>
+                        <tr class="users-role-table-row">
+                            <td class="users-role-table-column-id" id="copy-to-clipboard"><?php echo $role->role_id() ?></td>
+                            <td class="users-role-table-column-role"><?php echo $role->role_name() ?></td>
+                            <td class="users-role-table-column-permissions"><?php echo $role->role_perm_level() ?></td>
+                            <td class="users-role-table-column-buttons">
+                                <div class="users-role-table-column-buttons-wrapper">
+                                    <button class="users-role-table-edit-user" type="submit"><img src="/assets/themes/Basic/img/settings.svg" alt=""></button>
+                                    <button class="users-role-table-delete-user" type="submit"><img src="/assets/themes/Basic/img/delete-icon.svg" alt=""></button>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php } ?>
                 </tbody>
             </table>
         </div>
         <div class="users-add-role">
             <h3 class="users-add-role-title">Добавить роль</h3>
-            <input type="text" class="users-information">
+            <label>Название</label>
+            <input type="text" class="users-name-role-input">
+            <label>Уровень привелегий</label>
             <select name="role" id="">
                 <option href="#" onclick="selectRole('Администратор')">Администратор</option>
                 <option href="#" onclick="selectRole('Модератор')">Модератор</option>

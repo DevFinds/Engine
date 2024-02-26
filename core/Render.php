@@ -17,7 +17,7 @@ class Render implements RenderInterface
     ) {
     }
 
-    public function page($controller)
+    public function page($controller, array $data = [])
     {
         // Передадим активную тему для системы в данную переменную
         $activeTheme = $this->config->get('app.theme', 'Basic');
@@ -26,7 +26,7 @@ class Render implements RenderInterface
             throw new \Exception("Шаблон $controller не найден");
         }
 
-        extract($this->defaultData());
+        extract(array_merge($this->defaultData(), $data));
 
         include_once $pagePath;
     }
@@ -41,7 +41,7 @@ class Render implements RenderInterface
 
         extract($this->defaultData());
 
-        include_once $componentPath;
+        include $componentPath;
     }
 
     public function enqueue_all_scripts()

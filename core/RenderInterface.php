@@ -5,7 +5,7 @@ namespace Core;
 
 interface RenderInterface
 {
-    public function page($controller);
+    public function page(string $controller, array $data = []);
     public function component($component_name);
     public function enqueue_all_scripts();
     public function enqueue_all_styles();

@@ -22,9 +22,9 @@ abstract class Controller
     private StorageInterface $storage;
 
 
-    public function render(string $page_name): void
+    public function render(string $page_name, array $data = []): void
     {
-        $this->render->page($page_name);
+        $this->render->page($page_name, $data);
     }
 
 

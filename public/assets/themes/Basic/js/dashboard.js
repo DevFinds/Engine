@@ -91,21 +91,3 @@ if (roleEditorTab) {
         switchTab('users-role-editor');
     });
 }
-
-// Функция click to copy to clipboard
-var copyButton = document.getElementById('copy-to-clipboard');
-if (copyButton) {
-    copyButton.addEventListener('click', function() {
-        let text = document.getElementById('copy-to-clipboard').innerText;
-        copyContent(text);
-    });
-}
-
-async function copyContent(text) {
-    try {
-        await navigator.clipboard.writeText(text);
-        console.log('Content copied to clipboard');
-    } catch (err) {
-        console.error('Failed to copy: ', err);
-    }
-}

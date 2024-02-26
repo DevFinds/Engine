@@ -56,7 +56,9 @@ $user = $this->auth->getUser();
                             <div class="dashboard-collapse-menu aos-init aos-animate" id="dashboard-collapse-menu" data-aos="flip-down">
                                 <ul>
                                     <li><a href=""></a>Аккаунт</li>
-                                    <li><a href=""></a>Выйти</li>
+                                    <li>
+                                        <form action="/logout" method="post"> <button>Выйти</button></form>
+                                    </li>
                                 </ul>
                             </div>
                         </div>

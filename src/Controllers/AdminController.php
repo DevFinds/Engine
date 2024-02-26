@@ -3,8 +3,10 @@
 namespace Source\Controllers;
 
 
-use Core\Controller\Controller;
 use Core\http\Redirect;
+use Core\Controller\Controller;
+use Source\Services\RoleService;
+use Source\Services\UserService;
 
 class AdminController extends Controller
 {
@@ -28,6 +30,15 @@ class AdminController extends Controller
 
     public function dashboardUsers()
     {
-        $this->render('admin/dashboard/users');
+        $users = new UserService($this->getDatabase());
+        $roles = new RoleService($this->getDatabase());
+        $this->render('admin/dashboard/users', [
+            'users' => $users->getAllFromDB(),
+            'roles' => $roles->getAllFromDB()
+        ]);
+    }
+
+    public function deleteuser()
+    {
     }
 }
