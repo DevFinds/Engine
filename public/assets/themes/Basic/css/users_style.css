@@ -320,7 +320,6 @@ button{
 }
 
 .users-add-role select{
-    appearance: none;
     border: none;
     display: flex;
     width: 100%;
@@ -335,6 +334,23 @@ button{
     font-size: var(--text-14px-size);
     font-weight: var(--text-regular-weight);
     cursor: pointer;
+}
+
+.users-add-role select option{
+    
+}
+
+.users-select-container::after{
+    content: url(public\assets\themes\Basic\img\dropdown.svg);
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    
+}
+.users-dropdown-icon-container{
+    
 }
 
 .users-role-table-title{
@@ -420,3 +436,19 @@ button{
     background-color:#F5F9FF;
     border-radius: 12px;
 }    
+
+.users-add-role-button
+{
+    display: flex;
+    padding: 15px 70px;
+    background-color: var(--blue-accent);
+    border-radius: 12px;
+    font-family: var(--font-family-Inter);
+    font-size: var(--text-14px-size);
+    font-weight: 300;
+    color: var(--white);
+    border: none;
+    cursor: pointer;
+    margin-top: 48px;
+}
+

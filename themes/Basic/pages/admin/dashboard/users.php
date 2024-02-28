@@ -114,12 +114,18 @@
             <label>Название</label>
             <input type="text" class="users-name-role-input">
             <label>Уровень привелегий</label>
-            <select name="role" id="">
-                <option href="#" onclick="selectRole('Администратор')">Администратор</option>
-                <option href="#" onclick="selectRole('Модератор')">Модератор</option>
-                <option href="#" onclick="selectRole('Пользователь')">Пользователь</option>
-                <option href="#" onclick="selectRole('Гость')">Гость</option>
-            </select>
+            <div class="users-select-container">
+                <select name="role" id="">
+                    <option href="#" onclick="selectRole('Администратор')">Администратор</option>
+                    <option href="#" onclick="selectRole('Модератор')">Модератор</option>
+                    <option href="#" onclick="selectRole('Пользователь')">Пользователь</option>
+                    <option href="#" onclick="selectRole('Гость')">Гость</option>
+                </select>
+            </div>
+            <div class="users-dropdown-icon-container">
+                <img src="/assets/themes/Basic/img/dropdown.svg" alt="">
+            </div>
+            <button type="submit" class="users-add-role-button">Добавить</button>
         </div>
     </div>
 </div>
