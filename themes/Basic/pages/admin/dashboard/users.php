@@ -73,9 +73,9 @@
             <p class="users-create-next-title">Роль</p>
             <div class="users-select-wrapper">
                 <select name="role" class="users-role-selector">
-                    <option href="#" onclick="selectRole('Администратор')">Администратор</option>
-                    <option href="#" onclick="selectRole('Модератор')">Модератор</option>
-                    <option href="#" onclick="selectRole('Пользователь')">Пользователь</option>
+                    <?php foreach ($roles as $role) { ?>
+                        <option href="#" onclick="selectRole('Пользователь')"><?= $role->role_name() ?></option>
+                    <?php } ?>
                 </select>
             </div>
         </div>
@@ -116,14 +116,10 @@
             <label>Уровень привелегий</label>
             <div class="users-select-container">
                 <select name="role" id="">
-                    <option href="#" onclick="selectRole('Администратор')">Администратор</option>
-                    <option href="#" onclick="selectRole('Модератор')">Модератор</option>
-                    <option href="#" onclick="selectRole('Пользователь')">Пользователь</option>
-                    <option href="#" onclick="selectRole('Гость')">Гость</option>
+                    <?php foreach ($roles as $role) { ?>
+                        <option href="#" onclick="selectRole('Пользователь')"><?= $role->role_name() ?></option>
+                    <?php } ?>
                 </select>
-            </div>
-            <div class="users-dropdown-icon-container">
-                <img src="/assets/themes/Basic/img/dropdown.svg" alt="">
             </div>
             <button type="submit" class="users-add-role-button">Добавить</button>
         </div>

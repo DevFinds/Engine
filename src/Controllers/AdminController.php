@@ -41,4 +41,9 @@ class AdminController extends Controller
     public function deleteuser()
     {
     }
+
+    public function posts()
+    {
+        $this->render('admin/dashboard/posts');
+    }
 }
