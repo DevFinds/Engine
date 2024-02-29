@@ -30,7 +30,8 @@ class UserService
                 $user['password'],
                 $user['role'],
                 $user['created_at'],
-                $user['updated_at']
+                $user['updated_at'],
+                $user['phone_number']
             );
         }, $users);
         return $users;

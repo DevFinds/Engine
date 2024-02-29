@@ -1,0 +1,53 @@
+:root{
+    --blue-accent: #276EFF;
+    --Dark-text: #272D37;
+    --gray-inactive: #A0AFC4;
+    --text-regular-size: 16px;
+    --text-14px-size: 14px;
+    --text-regular-weight: 300;
+    --shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+    --gray-background: #F3F3F3;
+    --font-family-Inter: Inter;
+    --white: #FFFFFF;
+}
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Inter;
+}
+
+
+.account-page-container{
+    display: flex;
+    flex-direction: column;
+    padding: 64px 251px 84px 0px;
+}
+
+.account-cart{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 875px;
+    box-shadow: var(--shadow);
+    border-radius: 8px;
+    background-color: var(--white);
+}
+
+.account-cart-info{
+    display: flex;
+    flex-direction: column;
+}
+
+.account-hr{
+    width: 100%;
+    margin: 0;
+}
+
+.account-cart-top-section{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 24px 24px;
+}

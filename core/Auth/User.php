@@ -7,11 +7,15 @@ class User
 {
     public function __construct(
         private int $id,
-        private string $login,
         private string $username,
         private string $lastname,
+        private string $login,
         private string $email,
         private string $password,
+        private string $role,
+        private string $created_at,
+        private string $updated_at,
+        private string $phone_number
     ) {
     }
 
@@ -54,5 +58,15 @@ class User
     public function lastname()
     {
         return $this->lastname;
+    }
+
+    public function role()
+    {
+        return $this->role;
+    }
+
+    public function phone_number()
+    {
+        return $this->phone_number;
     }
 }

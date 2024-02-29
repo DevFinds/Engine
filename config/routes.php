@@ -1,13 +1,14 @@
 <?php
 
 use Core\http\Router\Route;
+use Source\Middleware\AuthMiddleware;
 use Source\Controllers\HomeController;
+use Source\Controllers\PostController;
+use Source\Controllers\UserController;
+use Source\Middleware\GuestMiddleware;
 use Source\Controllers\AdminController;
 use Source\Controllers\LoginController;
-use Source\Controllers\PostController;
 use Source\Controllers\RegisterController;
-use Source\Middleware\AuthMiddleware;
-use Source\Middleware\GuestMiddleware;
 
 return [
 
@@ -26,4 +27,5 @@ return [
     Route::get('/admin/dashboard/users', [AdminController::class, 'dashboardUsers'], [AuthMiddleware::class]),
     Route::post('/admin/dashboard/deleleteuser', [AdminController::class, 'deleteuser'], [AuthMiddleware::class]),
     Route::get('/admin/dashboard/posts', [AdminController::class, 'posts'], [AuthMiddleware::class]),
+    Route::get('/admin/user/account', [UserController::class, 'account'], [AuthMiddleware::class]),
 ];

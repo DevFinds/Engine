@@ -14,7 +14,8 @@ class User
         private string $password,
         private string $role,
         private string $created_at,
-        private string $updated_at
+        private string $updated_at,
+        private string $phone_number
     ) {
     }
 
@@ -61,5 +62,10 @@ class User
     public function updated_at()
     {
         return $this->updated_at;
+    }
+
+    public function phone_number()
+    {
+        return $this->phone_number;
     }
 }

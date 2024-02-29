@@ -39,11 +39,15 @@ class Auth implements AuthInterface
         if ($user) {
             return new User(
                 $user['id'],
-                $user[$this->login_field_type()],
                 $user['username'],
                 $user['lastname'],
+                $user[$this->login_field_type()],
                 $user['email'],
-                $user[$this->password()]
+                $user[$this->password()],
+                $user['role'],
+                $user['created_at'],
+                $user['updated_at'],
+                $user['phone_number']
             );
         }
 
