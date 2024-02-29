@@ -17,13 +17,13 @@ class Render implements RenderInterface
     ) {
     }
 
-    public function page($controller, array $data = [])
+    public function page($path, array $data = [])
     {
         // Передадим активную тему для системы в данную переменную
         $activeTheme = $this->config->get('app.theme', 'Basic');
-        $pagePath = APP_PATH . "/themes/$activeTheme/pages/$controller.php";
+        $pagePath = APP_PATH . "/themes/$activeTheme/pages/$path.php";
         if (!file_exists($pagePath)) {
-            throw new \Exception("Шаблон $controller не найден");
+            throw new \Exception("Шаблон $path не найден");
         }
 
         extract(array_merge($this->defaultData(), $data));
