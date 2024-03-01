@@ -18,7 +18,7 @@ $user = $this->auth->getUser();
                 <span class="account-username"><?php echo $user->username() ?> <?php echo $user->lastname(); ?></span>
                 <form action="/user/account-edit" method="post"><button type="submit" ><img src="/assets/themes/Basic/img/edit.svg" alt=""></button></form>
             </div>
-            <span class="account-role"><?php echo $user->role() ?></span>
+            <span class="account-role"><?php echo $role->role_name() ?></span>
             <hr class="account-hr">
             <div class="account-info">
                 <ul class="account-info-list">
