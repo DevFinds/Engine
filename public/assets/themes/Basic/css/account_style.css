@@ -21,33 +21,80 @@
 .account-page-container{
     display: flex;
     flex-direction: column;
-    padding: 64px 251px 84px 0px;
+    margin-top: 64px;
 }
 
-.account-cart{
+.account-card{
     display: flex;
     flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    max-width: 875px;
+    max-width:100%;
+    width: 100%;
     box-shadow: var(--shadow);
     border-radius: 8px;
     background-color: var(--white);
 }
 
-.account-cart-info{
+.account-card-info{
     display: flex;
     flex-direction: column;
+    width: 100%;
 }
 
 .account-hr{
     width: 100%;
     margin: 0;
+    stroke-width: 1px;
+    stroke: #E8E8E8;
 }
 
-.account-cart-top-section{
+.account-card-top-section{
     display: flex;
     flex-direction: row;
-    align-items: center;
-    padding: 24px 24px;
+    padding: 36px 36px 4px 48px;
+    width: 100%;
+}
+.account-card-top-section form{
+    margin: auto;
+}
+
+.account-username{
+    font-weight: 500;
+    font-size: 30px;
+    color: var(--Dark-text);
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.account-role{
+    color: var(--blue-accent);
+    font-size: 20px;
+    font-weight: 300;
+    padding: 0px 0px 24px 48px;
+}
+
+.account-info{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 24px 48px;
+}
+
+.account-info-list{
+    display: flex;
+    list-style: none;
+    flex-direction: column;
+    gap:36px;
+}
+
+.account-info-list li{
+    display: flex;
+    gap:16px;
+    color:var(--Dark-text);
+    font-weight: var(--text-regular-weight);
+    font-size: 22px;
+    color: #000000;
+    font-family: var(--font-family-Inter);
 }

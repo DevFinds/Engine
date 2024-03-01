@@ -19,6 +19,7 @@ class Role
 
     public function role_name()
     {
+
         return $this->role_name;
     }
 
