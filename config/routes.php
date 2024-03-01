@@ -15,7 +15,7 @@ return [
     Route::get('/home', [HomeController::class, 'index']),
     Route::get('/', [HomeController::class, 'index']),
     Route::get('/admin/users', [AdminController::class, 'UserList'], [AuthMiddleware::class]),
-    Route::post('/admin/users/register', [AdminController::class, 'registerUser_to_db']),
+    Route::post('/admin/users/register', [AdminController::class, 'registerUser_to_db'], [RegisterMiddleware::class]),
     Route::get('/register', [RegisterController::class, 'index'], [GuestMiddleware::class]),
     Route::post('/register', [RegisterController::class, 'register']),
     Route::get('/login', [LoginController::class, 'index'], [GuestMiddleware::class]),
