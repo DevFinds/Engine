@@ -56,15 +56,15 @@ class Container
     {
 
         $this->request = Request::createFromGlobals();
-        $this->redirect = new Redirect();
-        $this->validator = new Validator();
-        $this->session = new Session();
-        $this->request->setValidator($this->validator);
         $this->config = new Config();
         $this->database = new Database($this->config);
+        $this->redirect = new Redirect();
+        $this->session = new Session();
         $this->auth = new Auth($this->database, $this->session, $this->config);
         $this->render = new Render($this->session, $this->auth, $this->config);
         $this->storage = new Storage($this->config);
+        $this->validator = new Validator($this->auth);
+        $this->request->setValidator($this->validator);
         $this->router = new Router(
             $this->render,
             $this->request,

@@ -6,6 +6,7 @@ use Source\Controllers\HomeController;
 use Source\Controllers\PostController;
 use Source\Controllers\UserController;
 use Source\Middleware\GuestMiddleware;
+use Source\Middleware\RegisterMiddleware;
 use Source\Controllers\AdminController;
 use Source\Controllers\LoginController;
 use Source\Controllers\RegisterController;
@@ -15,9 +16,8 @@ return [
     Route::get('/home', [HomeController::class, 'index']),
     Route::get('/', [HomeController::class, 'index']),
     Route::get('/admin/users', [AdminController::class, 'UserList'], [AuthMiddleware::class]),
-    Route::post('/admin/users/register', [AdminController::class, 'registerUser_to_db'], [RegisterMiddleware::class]),
     Route::get('/register', [RegisterController::class, 'index'], [GuestMiddleware::class]),
-    Route::post('/register', [RegisterController::class, 'register']),
+    Route::post('/register', [RegisterController::class, 'register'], [RegisterMiddleware::class]),
     Route::get('/login', [LoginController::class, 'index'], [GuestMiddleware::class]),
     Route::post('/login', [LoginController::class, 'login']),
     Route::post('/logout', [LoginController::class, 'logout']),

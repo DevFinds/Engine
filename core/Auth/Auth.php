@@ -54,6 +54,18 @@ class Auth implements AuthInterface
 
         return null;
     }
+
+    public function is_user_exist_with_value(string $table, string $value, string $field): bool
+    {
+        $user = $this->database->first_found_in_db($table, [
+            $field => $value
+        ]);
+        if ($user) {
+            return true;
+        }
+        return false;
+    }
+
     public function attempt(string $username, string $password): bool
     {
         $user = $this->database->first_found_in_db($this->table(), [

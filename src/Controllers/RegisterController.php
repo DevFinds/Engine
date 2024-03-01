@@ -12,11 +12,16 @@ class RegisterController extends Controller
         $this->render('register');
     }
 
+    public function registerUser_to_db()
+    {
+        $this->redirect('/admin/users/register');
+    }
+
     public function register()
     {
         $validation = $this->request()->validate([
-            'user_email' => ['required'],
-            'user_login' => ['required', 'min:3', 'max:25'],
+            'user_email' => ['required', 'already_exists', 'email'],
+            'user_login' => ['required', 'min:3', 'max:25', 'already_exists'],
             'user_password' => ['required', 'min:6', 'max:255']
         ]);
 

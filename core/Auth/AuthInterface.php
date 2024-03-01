@@ -14,4 +14,5 @@ interface AuthInterface
     public function password(): string;
     public function session_field(): string;
     public function attempt(string $username, string $password): bool;
+    public function is_user_exist_with_value(string $table, string $value, string $field): bool;
 }

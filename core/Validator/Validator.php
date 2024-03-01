@@ -2,12 +2,19 @@
 
 namespace Core\Validator;
 
+use Core\Auth\AuthInterface;
+
 class Validator implements ValidatorInterface
 {
 
     private array $errors = [];
 
     private array $data;
+
+    public function __construct(
+        private AuthInterface $auth
+    ) {
+    }
 
     public function validate(array $data, array $rules): bool
     {
@@ -67,6 +74,11 @@ class Validator implements ValidatorInterface
             case 'confirmed':
                 if ($value !== $this->data["{$key}_confirmation"]) {
                     return "Field $key must be confirmed";
+                }
+                break;
+            case 'already_exist':
+                if ($this->auth->is_user_exist_with_value('users', $value, $key)) {
+                    return "Пользователь с таким $key уже существует";
                 }
                 break;
         }

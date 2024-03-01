@@ -18,11 +18,6 @@ class AdminController extends Controller
         $this->render('admin/users');
     }
 
-    public function registerUser_to_db()
-    {
-        $this->redirect('/admin/users/register');
-    }
-
     public function dashboardGeneral()
     {
         $this->render('admin/dashboard/general');
@@ -46,6 +41,4 @@ class AdminController extends Controller
     {
         $this->render('admin/dashboard/posts');
     }
-
-
 }
