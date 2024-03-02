@@ -66,10 +66,10 @@ class Auth implements AuthInterface
         return false;
     }
 
-    public function attempt(string $username, string $password): bool
+    public function attempt(string $login, string $password): bool
     {
         $user = $this->database->first_found_in_db($this->table(), [
-            $this->login_field_type() => $username,
+            $this->login_field_type() => $login
 
         ]);
 
