@@ -17,7 +17,7 @@ return [
     Route::get('/', [HomeController::class, 'index']),
     Route::get('/admin/users', [AdminController::class, 'UserList'], [AuthMiddleware::class]),
     Route::get('/register', [RegisterController::class, 'index'], [GuestMiddleware::class]),
-    Route::post('/register', [RegisterController::class, 'register'], [RegisterMiddleware::class]),
+    Route::post('/register', [RegisterController::class, 'register']),
     Route::get('/login', [LoginController::class, 'index'], [GuestMiddleware::class]),
     Route::post('/login', [LoginController::class, 'login']),
     Route::post('/logout', [LoginController::class, 'logout']),
@@ -28,4 +28,6 @@ return [
     Route::post('/admin/dashboard/deleleteuser', [AdminController::class, 'deleteuser'], [AuthMiddleware::class]),
     Route::get('/admin/dashboard/posts', [AdminController::class, 'posts'], [AuthMiddleware::class]),
     Route::get('/admin/user/account', [UserController::class, 'account'], [AuthMiddleware::class]),
+    Route::post('/user/change-avatar', [UserController::class, 'changeAvatar'], [AuthMiddleware::class]),
+    
 ];

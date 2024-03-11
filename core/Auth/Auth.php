@@ -45,6 +45,7 @@ class Auth implements AuthInterface
                 $user['email'],
                 $user[$this->password()],
                 $user['role'],
+                $user['avatar'],
                 $user['created_at'],
                 $user['updated_at'],
                 $user['phone_number']

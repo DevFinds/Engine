@@ -17,4 +17,18 @@ class UserController extends Controller
             'roles' => $roles->getAllFromDB()
         ]);
     }
+
+    public function changeAvatar()
+    {
+        $avatar_file = $this->request()->file('Avatar');
+        $avatar_path = "/storage/" . $avatar_file->move('avatars');
+        $db = $this->getDatabase();
+    
+        // Проверка, что есть данные для обновления
+        if (!empty($avatar_path)) {
+            $db->update('users', ['avatar' => $avatar_path], ['id' => $this->session()->get('user_id')]);
+        }
+        $this->redirect('/admin/user/account');
+    }
+
 }

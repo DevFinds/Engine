@@ -80,6 +80,8 @@
 
                         <?php
                         $data_to_check = [
+                            'user_email',
+                            'user_login',
                             'user_password'
                         ];
 

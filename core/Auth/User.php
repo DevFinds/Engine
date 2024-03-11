@@ -13,6 +13,7 @@ class User
         private string $email,
         private string $password,
         private string $role,
+        private string $avatar,
         private string $created_at,
         private string $updated_at,
         private string $phone_number
@@ -63,6 +64,11 @@ class User
     public function role()
     {
         return $this->role;
+    }
+
+    public function avatar()
+    {
+        return $this->avatar;
     }
 
     public function phone_number()

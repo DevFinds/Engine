@@ -14,8 +14,9 @@ class PostController extends Controller
 
     public function create_new_post()
     {
-
-
         $file = $this->request()->file('PostThumb');
+        $file = $file->move('uploads');
     }
+
+
 }

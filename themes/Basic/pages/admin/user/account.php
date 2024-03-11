@@ -13,6 +13,10 @@ $user = $this->auth->getUser();
 <div class="account-page-container">
     <div class="account-card">
         <img class="account-avatar" src="/assets/themes/Basic/img/avatar.png" alt="">
+        <form action="/user/change-avatar" method="post" enctype="multipart/form-data">
+        <input class="form-control" name="Avatar" type="file" id="UserAvatar"> 
+        <button type="submit">Изменить аватар</button>
+        </form>
         <div class="account-card-info">
             <div class ="account-card-top-section">
                 <span class="account-username"><?php echo $user->username() ?> <?php echo $user->lastname(); ?></span>

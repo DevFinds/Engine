@@ -29,6 +29,7 @@ class UserService
                 $user['email'],
                 $user['password'],
                 $user['role'],
+                $user['avatar'],
                 $user['created_at'],
                 $user['updated_at'],
                 $user['phone_number']

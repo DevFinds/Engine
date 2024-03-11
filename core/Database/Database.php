@@ -40,6 +40,40 @@ class Database implements DatabaseInterface
         return (int) $this->pdo->lastInsertId();
     }
 
+    public function update($table, $data, $conditions = []) : bool
+    {
+        // Генерация SQL-запроса для обновления данных
+        $updateQuery = "UPDATE $table SET ";
+
+        foreach ($data as $key => $value) {
+            $updateQuery .= "$key = :$key, ";
+        }
+        
+        $updateQuery = rtrim($updateQuery, ', ');
+
+        // Добавление условий, если они переданы
+        if (!empty($conditions)) {
+            $updateQuery .= " WHERE ";
+
+            foreach ($conditions as $key => $value) {
+                $updateQuery .= "$key = :$key AND ";
+            }
+
+            $updateQuery = rtrim($updateQuery, ' AND ');
+        }
+        // Подготовка запроса
+        $stmt = $this->pdo->prepare($updateQuery);
+        
+        // Выполнение запроса с передачей параметров
+        try {
+            $stmt->execute(array_merge($data, $conditions));
+        } catch (\PDOException $exception) {
+            exit("Ошибка обновления данных в таблице: {$exception->getMessage()}");
+            return false;
+        }
+        return true;
+    }
+
     public function first_found_in_db(string $table, array $conditions = []): ?array
     {
 
@@ -145,4 +179,6 @@ class Database implements DatabaseInterface
           ADD PRIMARY KEY (`id`);";
         $this->pdo->exec($sql);
     }
+
+    
 }

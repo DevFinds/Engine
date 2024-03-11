@@ -47,7 +47,7 @@ $user = $this->auth->getUser();
                         </div>
                         <div class="dashboard-user-info">
                             <div class="dashboard-user-button">
-                                <img class="dashboard-header-avatar" src="/assets/themes/Basic/img/avatar.svg" alt="">
+                                <img class="dashboard-header-avatar" src="<?php echo $user->avatar()?>" alt="">
                                 <span class="dashboard-username"><?php echo $user->username() ?> <?php echo $user->lastname(); ?>
                                     <img id="dashboard-collapse-button" class="dashboard-collapse-button" src="/assets/themes/Basic/img/collapse.svg" alt="">
                                 </span>
