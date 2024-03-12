@@ -5,5 +5,5 @@
 _(терминал VS Code)_
 
 ```shell
-ln -s $PWD/storage $PWD/public/storge
+ln -s $PWD/storage $PWD/public/storage
 ```
