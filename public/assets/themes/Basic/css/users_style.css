@@ -122,10 +122,12 @@ button{
 }
 
 .users-table-row td {
+    display: flex;
     font-size: var(--text-regular-size);
     font-weight: var(--text-regular-weight);
     color: var(--Dark-text);
     padding: 8px;
+    align-items: center;
 }
 
 .users-create-user-form {
