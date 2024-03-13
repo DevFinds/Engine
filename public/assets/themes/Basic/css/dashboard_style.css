@@ -143,6 +143,8 @@ p{
 .dashboard-header-avatar{
     border-radius: 100px;
     min-width: 55px;
+    min-width: 55px;
+    max-width: 55px;
     max-width: 55px;  
 }
 .dashboard-username{
@@ -209,15 +211,17 @@ p{
     padding: 16px 0px;
     display: flex;
     justify-content: center;
-}
-
-
-.dashboard-collapse-menu li:first-child{
-    color: #276EFF;
     border-bottom: 1px solid #D8D8D8;
 }
 
-.dashboard-collapse-menu li:last-child{
+
+.dashboard-collapse-menu li a{
+    color: #276EFF;
+    text-decoration: none;
+    
+}
+
+.dashboard-collapse-menu li form button{
     color: #E75959;
 }
 
@@ -267,6 +271,7 @@ p{
 
 .dashboard-top-section{
     display: flex;
+    position: sticky;
     flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;
