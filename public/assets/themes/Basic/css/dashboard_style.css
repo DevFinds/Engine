@@ -211,7 +211,13 @@ p{
     padding: 16px 0px;
     display: flex;
     justify-content: center;
+    
+}
+
+.dashboard-collapse-menu li:first-child {
+
     border-bottom: 1px solid #D8D8D8;
+
 }
 
 
