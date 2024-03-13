@@ -117,7 +117,7 @@
             <div class="users-select-container">
                 <select name="role" id="">
                     <?php foreach ($roles as $role) { ?>
-                        <option href="#" onclick="selectRole('Пользователь')"><?= $role->role_name() ?></option>
+                        <option href="#" onclick="selectRole('Пользователь')"> <span><?php echo $role->role_id(); ?> - </span> <?php echo $role->role_name() ?></option>
                     <?php } ?>
                 </select>
             </div>
