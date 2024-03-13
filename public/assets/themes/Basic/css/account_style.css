@@ -102,5 +102,7 @@
 .account-avatar {
     max-width: 350px;
     max-height: 400px;
+    min-width: 350px;
+    min-height: 400px;
     object-fit: cover;
 }
