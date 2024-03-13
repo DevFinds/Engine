@@ -141,12 +141,11 @@ input {
 
 .auth-button {
     border-radius: 8px;
-    background-color: var(--blue-accent, #276EFF);
-    background-color: #276eff26;
     border: none;
     font-size: 14px;
     text-decoration: none;
     padding: 8px 24px;
+    color: var(--blue-accent, #276EFF);
 
 }
 .center-container{
@@ -159,21 +158,26 @@ input {
 
 .register-button {
     gap: 10px;
-    padding: 16px 64px;
-    background-color: #276eff26;
+    padding: 16px 32px;
+    background-color: var(--blue-accent, #276EFF);
     border-radius: 12px;
     border: none;
     font-family: "Inter";
     font-weight: 500;
-    color: var(--blue-accent, #276EFF);
+    color: #ffffff;
     font-size: 18px;
     letter-spacing: 0;
     line-height: normal;
     align-self: center;
     margin-top: 36px;
+    width: 100%;
 }
 
-
+.register_double_btn_block {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
 
 
 h1 {
