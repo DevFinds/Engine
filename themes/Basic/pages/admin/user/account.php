@@ -12,17 +12,17 @@ $user = $this->auth->getUser();
 
 <div class="account-page-container">
     <div class="account-card">
-        <img class="account-avatar" src="/assets/themes/Basic/img/avatar.png" alt="">
+        <img class="account-avatar" src="<?php echo $user->avatar() ?>" alt="">
         <form action="/user/change-avatar" method="post" enctype="multipart/form-data">
-        <input class="form-control" name="Avatar" type="file" id="UserAvatar"> 
-        <button type="submit">Изменить аватар</button>
+            <input class="form-control" name="Avatar" type="file" id="UserAvatar">
+            <button type="submit">Изменить аватар</button>
         </form>
         <div class="account-card-info">
-            <div class ="account-card-top-section">
+            <div class="account-card-top-section">
                 <span class="account-username"><?php echo $user->username() ?> <?php echo $user->lastname(); ?></span>
-                <form action="/user/account-edit" method="post"><button type="submit" ><img src="/assets/themes/Basic/img/edit.svg" alt=""></button></form>
+                <form action="/user/account-edit" method="post"><button type="submit"><img src="/assets/themes/Basic/img/edit.svg" alt=""></button></form>
             </div>
-            <span class="account-role"><?php echo $role->role_name() ?></span>
+            <span class="account-role"><?php echo $user->role() ?></span>
             <hr class="account-hr">
             <div class="account-info">
                 <ul class="account-info-list">
@@ -38,3 +38,5 @@ $user = $this->auth->getUser();
     </div>
 
 </div>
+
+<?php $render->component('dashboard_footer'); ?>

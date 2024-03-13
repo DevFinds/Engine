@@ -98,3 +98,9 @@
     color: #000000;
     font-family: var(--font-family-Inter);
 }
+
+.account-avatar {
+    max-width: 350px;
+    max-height: 400px;
+    object-fit: cover;
+}

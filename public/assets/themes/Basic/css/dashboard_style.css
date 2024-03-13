@@ -140,7 +140,7 @@ p{
     font-weight: 400;
 }
 
-.dashboard-header-avatar-min{
+.dashboard-header-avatar{
     border-radius: 100px;
     min-width: 55px;
     max-width: 55px;  

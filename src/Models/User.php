@@ -75,4 +75,8 @@ class User
     {
         return $this->phone_number;
     }
+
+    public function role_name()
+    {
+    }
 }
