@@ -3,16 +3,19 @@
 namespace Core\Validator;
 
 use Core\Auth\AuthInterface;
+use Core\Database\DatabaseInterface;
 
 class Validator implements ValidatorInterface
 {
+    
 
     private array $errors = [];
 
     private array $data;
 
     public function __construct(
-        private AuthInterface $auth
+        private AuthInterface $auth,
+        private DatabaseInterface $database
     ) {
     }
 
@@ -20,10 +23,9 @@ class Validator implements ValidatorInterface
     {
         $this->errors = [];
         $this->data = $data;
-
         foreach ($rules as $key => $rule) {
             $rules = $rule;
-
+            
             foreach ($rules as $rule) {
                 $rule = explode(':', $rule);
 
@@ -40,10 +42,12 @@ class Validator implements ValidatorInterface
 
         return empty($this->errors);
     }
+    
 
     public function errors(): array
     {
         return $this->errors;
+
     }
 
     private function validateRule(string $key, string $ruleName, string $ruleValue = null): string|false
@@ -81,6 +85,7 @@ class Validator implements ValidatorInterface
                     return "Пользователь с таким $key уже существует";
                 }
                 break;
+                
         }
         
         return false;

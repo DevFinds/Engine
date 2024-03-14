@@ -61,7 +61,7 @@ class Auth implements AuthInterface
         $user = $this->database->first_found_in_db($table, [
             $field => $value
         ]);
-        if ($user) {
+        if ($user !== null) {
             return true;
         }
         return false;

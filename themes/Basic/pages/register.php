@@ -27,13 +27,13 @@
             <div class="right-container">
                 <form action="/register" method="post">
                     <div class="register-step-1">
-                        <label for="user_login">Логин</label>
-                        <input type="text" id="login" name="user_login">
+                        <label for="login">Логин</label>
+                        <input type="text" id="login" name="login">
                         <div class="error-container">
 
                             <?php
                             $data_to_check = [
-                                'user_login',
+                                'login',
                             ];
 
                             foreach ($data_to_check as $data) {
@@ -51,13 +51,13 @@
                                     </ul>
                         </div>
 
-                        <label for="user_email">Email</label>
-                        <input type="email" id="email" name="user_email">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email">
                         <div class="error-container">
 
                             <?php
                             $data_to_check = [
-                                'user_email',
+                                'email',
                             ];
 
                             foreach ($data_to_check as $data) {
@@ -75,15 +75,15 @@
                                     </ul>
                         </div>
 
-                        <label for="user_password">Пароль</label>
-                        <input type="password" id="password" name="user_password">
+                        <label for="password">Пароль</label>
+                        <input type="password" id="password" name="password">
                         <div class="error-container">
 
                             <?php
                             $data_to_check = [
-                                'user_email',
-                                'user_login',
-                                'user_password'
+                                'email',
+                                'login',
+                                'password'
                             ];
 
                             foreach ($data_to_check as $data) {
