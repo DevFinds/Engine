@@ -100,9 +100,10 @@
 
                                     </ul>
                         </div>
+                        <button type="button" class="register-button nextBtn" id="nextBtn">Далее</button>
                     </div>
                     <div class="register-step-2">
-                        <button type="button" class="register-button">Далее</button>
+
                         <label for="user_name">Имя</label>
                         <input type="text" id="user_name" name="user_name">
                         <label for="user_lastname">Фамилия</label>
@@ -110,8 +111,8 @@
                         <label for="user_phone">Номер телефона</label>
                         <input type="text" id="user_phone" name="user_phone">
                         <div class="register_double_btn_block">
-                            <button class="register-button back_btn">Назад</button>
-                            <button type="submit" class="register-button register_btn">Далее</button>
+                            <button class="register-button backBtn" id="backBtn">Назад</button>
+                            <button type="submit" class="register-button register_btn" id="submitBtn">Далее</button>
                         </div>
                     </div>
                     <div class="auth-container">
