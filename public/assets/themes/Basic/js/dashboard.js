@@ -91,3 +91,39 @@ if (roleEditorTab) {
         switchTab('users-role-editor');
     });
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    var menuItems = document.querySelectorAll(".dashboard-menu-item");
+
+    // Добавляем обработчики событий для каждого элемента меню
+    menuItems.forEach(function(item) {
+        var link = item.querySelector(".dashboard-menu-link");
+        var icon = item.querySelector(".dashboard-link-icon");
+
+        item.addEventListener("click", function(event) {
+            // Удаляем классы активных элементов у всех пунктов меню
+            menuItems.forEach(function(menuItem) {
+                menuItem.classList.remove("dashboard-menu-item-active");
+            });
+
+            // Удаляем класс активной ссылки у всех ссылок
+            document.querySelectorAll(".dashboard-menu-link").forEach(function(menuLink) {
+                menuLink.classList.remove("dashboard-menu-link-active");
+            });
+
+            // Удаляем класс активной иконки у всех иконок
+            document.querySelectorAll(".dashboard-link-icon").forEach(function(menuIcon) {
+                menuIcon.classList.remove("dashboard-link-icon-active");
+            });
+
+            // Добавляем класс активного элемента к выбранному пункту меню
+            item.classList.add("dashboard-menu-item-active");
+
+            // Добавляем класс активной ссылки к выбранной ссылке
+            link.classList.add("dashboard-menu-link-active");
+
+            // Добавляем класс активной иконки к выбранной иконке
+            icon.classList.add("dashboard-link-icon-active");
+        });
+    });
+});

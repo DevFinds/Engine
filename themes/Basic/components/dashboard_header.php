@@ -27,11 +27,11 @@ $user = $this->auth->getUser();
             <div class="dashboard-navbar">
                 <a href="/"><img src="/assets/themes/Basic/img/dashborad_logo.svg" alt="" class="dashboard-logo"></a>
                 <ul class="dashboard-menu">
-                    <li class="dashboard-menu-item"><img src="/assets/themes/Basic/img/general-icon.svg" alt="" class="dashboard-link-icon"><a href="/admin/dashboard/general" class="dashboard-menu-link">Основное</a></li>
-                    <li class="dashboard-menu-item"><img src="/assets/themes/Basic/img/user-icon.svg" alt="" class="dashboard-link-icon"><a href="/admin/dashboard/users" class="dashboard-menu-link">Пользователи</a></li>
-                    <li class="dashboard-menu-item"><img src="/assets/themes/Basic/img/post-icon.svg" alt="" class="dashboard-link-icon"><a href="/admin/dashboard/posts" class="dashboard-menu-link">Записи</a></li>
-                    <li class="dashboard-menu-item"><img src="/assets/themes/Basic/img/request-icon.svg" alt="" class="dashboard-link-icon"><a href="/admin/dashboard/requests" class="dashboard-menu-link">Заявки</a></li>
-                    <li class="dashboard-menu-item"><img src="/assets/themes/Basic/img/setting-icon.svg" alt="" class="dashboard-link-icon"><a href="/admin/dashboard/settings" class="dashboard-menu-link">Настройки</a></li>
+                    <li class="dashboard-menu-item"><img src="/assets/themes/Basic/img/general-icon.svg" alt="" class="dashboard-link-icon" id="dashboard-link-icon-active"><a href="/admin/dashboard/general" class="dashboard-menu-link" id="dashboard-menu-link-active">Основное</a></li>
+                    <li class="dashboard-menu-item"><img src="/assets/themes/Basic/img/user-icon.svg" alt="" class="dashboard-link-icon" id="dashboard-link-icon-active"><a href="/admin/dashboard/users" class="dashboard-menu-link" id="dashboard-menu-link-active">Пользователи</a></li>
+                    <li class="dashboard-menu-item"><img src="/assets/themes/Basic/img/post-icon.svg" alt="" class="dashboard-link-icon" id="dashboard-link-icon-active"><a href="/admin/dashboard/posts" class="dashboard-menu-link" id="dashboard-menu-link-active">Записи</a></li>
+                    <li class="dashboard-menu-item"><img src="/assets/themes/Basic/img/request-icon.svg" alt="" class="dashboard-link-icon" id="dashboard-link-icon-active"><a href="/admin/dashboard/requests" class="dashboard-menu-link" id="dashboard-menu-link-active">Заявки</a></li>
+                    <li class="dashboard-menu-item"><img src="/assets/themes/Basic/img/setting-icon.svg" alt="" class="dashboard-link-icon" id="dashboard-link-icon-active"><a href="/admin/dashboard/settings" class="dashboard-menu-link" id="dashboard-menu-link-active">Настройки</a></li>
                 </ul>
                 <div class="dashboard-creator-info">
                     <p>Soft by <span class="creator-name">DevFinds</span></p>

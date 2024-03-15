@@ -33,6 +33,14 @@ ul {
     height: 100vh;
 }
 
+.dashboard-menu-item:hover .dashboard-link-icon {
+    filter: brightness(0) saturate(100%) invert(32%) sepia(93%) saturate(2999%) hue-rotate(214deg) brightness(101%) contrast(102%);
+}
+.dashboard-menu-link- {
+    color: #ff0000; /* Цвет текста для активной кнопки */
+    font-weight: bold; /* Жирный текст для активной кнопки, если нужно */
+    /* Другие стили по вашему усмотрению */
+}
 p{
     margin-bottom: 0px;
 }
@@ -61,6 +69,14 @@ p{
 .dashboard-link-icon{
     width: 20px;
     height: 20px;
+}
+
+.dashboard-menu-link-active {
+    color: var(--blue-accent);
+}
+
+.dashboard-link-icon-active {
+    filter: brightness(0) saturate(100%) invert(32%) sepia(93%) saturate(2999%) hue-rotate(214deg) brightness(101%) contrast(102%);
 }
 
 .dashboard-menu-item {
