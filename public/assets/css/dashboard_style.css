@@ -140,10 +140,13 @@ p{
     font-weight: 400;
 }
 
-.dashboard-header-avatar-min{
-    border-radius: 100px;
+.dashboard-header-avatar{
+    border-radius: 1000px;
+    object-fit: cover;
     min-width: 55px;
-    max-width: 55px;  
+    max-width: 55px;
+    max-height: 55px;
+    min-height: 55px;
 }
 .dashboard-username{
     display: flex;

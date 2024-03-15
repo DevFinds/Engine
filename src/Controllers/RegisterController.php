@@ -21,10 +21,13 @@ class RegisterController extends Controller
     {
         $validation = $this->request()->validate([
             'email' => ['required', 'email', 'already_exist'],
-            'login' => ['required', 'min:3', 'max:25','already_exist'],
-            'password' => ['required', 'min:6', 'max:255']
+            'login' => ['required', 'min:3', 'max:25', 'already_exist'],
+            'password' => ['required', 'min:6', 'max:255'],
+            'user_name' => ['required'],
+            'user_lastname' => ['required'],
+            'user_phone' => ['required'],
         ]);
-        
+
         if (!$validation) {
 
 

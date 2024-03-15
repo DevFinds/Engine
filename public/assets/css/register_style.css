@@ -108,7 +108,25 @@ input {
     max-width: 350px;
     border: #606060;
     padding-left: 12px;
-    font-size: 18px;
+    font-size: 20px;
+    outline-width: 0px;
+}
+
+.register-label_and_error {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.register-error-message {
+    color: #E23E3E;
+    font-size: 14px;
+}
+
+.error-input {
+    outline-width: 1px;
+    border: 1px solid #E23E3E;
 }
 
 .first-paragraph {

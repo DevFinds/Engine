@@ -57,7 +57,6 @@ class User
 
     public function avatar()
     {
-
         return $this->avatar;
     }
 
