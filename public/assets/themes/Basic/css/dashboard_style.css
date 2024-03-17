@@ -72,7 +72,10 @@ p{
 }
 
 .dashboard-menu-link-active {
-    color: var(--blue-accent);
+    color: var(--Dark-text);
+    font-weight: 400;
+    font-size: 18px;
+
 }
 
 .dashboard-link-icon-active {
