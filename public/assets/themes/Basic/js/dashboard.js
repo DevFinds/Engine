@@ -105,3 +105,33 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+// Получаем все кнопки
+var userListTab = document.getElementById('users-user-list-tab');
+var createUserTab = document.getElementById('users-create-user-tab');
+var roleEditorTab = document.getElementById('users-role-editor-tab');
+
+// Добавляем обработчики событий для каждой кнопки
+userListTab.addEventListener('click', function() {
+    setActiveTab(userListTab);
+});
+createUserTab.addEventListener('click', function() {
+    setActiveTab(createUserTab);
+});
+roleEditorTab.addEventListener('click', function() {
+    setActiveTab(roleEditorTab);
+});
+
+// Функция для изменения стилей активной кнопки
+function setActiveTab(activeTab) {
+    // Удаляем класс active у всех кнопок
+    var buttons = document.querySelectorAll('.users-selector-buttons button');
+    buttons.forEach(function(button) {
+        button.classList.remove('active');
+    });
+    // Добавляем класс active только к активной кнопке
+    activeTab.classList.add('active');
+}
+
+
+
