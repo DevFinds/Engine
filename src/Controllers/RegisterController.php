@@ -40,6 +40,8 @@ class RegisterController extends Controller
         }
 
         $userID = $this->getDatabase()->insert('users', [
+            'username' => $this->request()->input('user_name'),
+            'lastname' => $this->request()->input('user_lastname'),
             'login' => $this->request()->input('login'),
             'email' => $this->request()->input('email'),
             'password' => password_hash($this->request()->input('password'), PASSWORD_DEFAULT),

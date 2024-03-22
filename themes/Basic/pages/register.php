@@ -47,7 +47,7 @@
                                 } ?>
 
                         </div>
-                        <input class="error-input" type="text" id="login" name="login">
+                        <input class="" type="text" id="login" name="login">
                         <div class="register-label_and_error">
                             <label for="email">Email</label>
                             <?php
@@ -70,7 +70,7 @@
                         </div>
                         <input class="" type="email" id="email" name="email">
                         <div class="register-label_and_error">
-                            <label for="password">Логин</label>
+                            <label for="password">Пароль</label>
                             <?php
                             $data_to_check = [
                                 'password',
@@ -157,9 +157,13 @@
                         </div>
                         <input class="" type="text" id="user_phone" name="user_phone">
                         <div class="register_double_btn_block">
-                            <button class="register-button" id="backBtn">Назад</button>
-                            <button type="submit" class="register-button" id="submitBtn">Далее</button>
+                            <button class="register-button" id="backBtn"><img src="assets\img\arrow.svg" alt=""></button>
+                            <button type="submit" class="register-button" id="submitBtn">Зарегистрироваться</button>
                         </div>
+                    </div>
+                    <div class="privacy-container">
+                        <input type="checkbox" id="privacy-policy" class="privacy-checkbox" name="scales" />
+                        <label for="privacy-policy" class="privacy-label">Я соглашаюсь с политикой конфиденциальности и даю согласие на обработку персональных данных</label>
                     </div>
                     <div class="auth-container">
                         <p class="auth-paragraph">Уже есть аккаунт?</p>
