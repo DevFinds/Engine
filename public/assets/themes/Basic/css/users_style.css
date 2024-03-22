@@ -44,7 +44,9 @@
     gap: 48px;
 }
 
-
+.users-selector-buttons button{
+    position: relative;
+}
 
 button{
     border: none;
@@ -54,6 +56,30 @@ button{
     font-size: var(--text-regular-size);
     font-family: Inter;
 }
+.users-selector-buttons button.active {
+    
+    color: var(--Dark-text); 
+    
+}
+.users-selector-buttons button::after {
+    content: ""; 
+    position: absolute; 
+    bottom: -20px; 
+    left: 50%; 
+    transform: translateX(-50%); 
+    width: 0; 
+    height: 3px; 
+    background-color: var(--blue-accent); 
+    transition: width 0.3s ease; 
+}
+.users-selector-buttons button:hover::after {
+    width: 100%; 
+}
+button:hover{
+    color: var(--Dark-text);
+}
+
+
 
 .users-table-container {
     width: 100%;
@@ -96,8 +122,16 @@ button{
     justify-content: space-between;
     width: 100%;
     gap: 8px;
-    }
+}
 
+.users-table-title{
+    display: flex;
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 18px;
+    text-align: start;
+    color: var(--dark-text);
+}
 .users-table-header tr {
     border-radius: 8px;
     padding: 0px 16px;

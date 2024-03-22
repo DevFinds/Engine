@@ -93,37 +93,45 @@ if (roleEditorTab) {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-    var menuItems = document.querySelectorAll(".dashboard-menu-item");
+    var currentPage = window.location.pathname;
 
-    // Добавляем обработчики событий для каждого элемента меню
-    menuItems.forEach(function(item) {
-        var link = item.querySelector(".dashboard-menu-link");
-        var icon = item.querySelector(".dashboard-link-icon");
+    // Находим текущую страницу среди пунктов меню и изменяем их стили
+    document.querySelectorAll(".dashboard-menu-link").forEach(function(link) {
+        var page = link.getAttribute("href");
 
-        item.addEventListener("click", function(event) {
-            // Удаляем классы активных элементов у всех пунктов меню
-            menuItems.forEach(function(menuItem) {
-                menuItem.classList.remove("dashboard-menu-item-active");
-            });
-
-            // Удаляем класс активной ссылки у всех ссылок
-            document.querySelectorAll(".dashboard-menu-link").forEach(function(menuLink) {
-                menuLink.classList.remove("dashboard-menu-link-active");
-            });
-
-            // Удаляем класс активной иконки у всех иконок
-            document.querySelectorAll(".dashboard-link-icon").forEach(function(menuIcon) {
-                menuIcon.classList.remove("dashboard-link-icon-active");
-            });
-
-            // Добавляем класс активного элемента к выбранному пункту меню
-            item.classList.add("dashboard-menu-item-active");
-
-            // Добавляем класс активной ссылки к выбранной ссылке
+        if (currentPage === page) {
             link.classList.add("dashboard-menu-link-active");
-
-            // Добавляем класс активной иконки к выбранной иконке
-            icon.classList.add("dashboard-link-icon-active");
-        });
+            link.previousElementSibling.classList.add("dashboard-link-icon-active");
+        }
     });
 });
+
+// Получаем все кнопки
+var userListTab = document.getElementById('users-user-list-tab');
+var createUserTab = document.getElementById('users-create-user-tab');
+var roleEditorTab = document.getElementById('users-role-editor-tab');
+
+// Добавляем обработчики событий для каждой кнопки
+userListTab.addEventListener('click', function() {
+    setActiveTab(userListTab);
+});
+createUserTab.addEventListener('click', function() {
+    setActiveTab(createUserTab);
+});
+roleEditorTab.addEventListener('click', function() {
+    setActiveTab(roleEditorTab);
+});
+
+// Функция для изменения стилей активной кнопки
+function setActiveTab(activeTab) {
+    // Удаляем класс active у всех кнопок
+    var buttons = document.querySelectorAll('.users-selector-buttons button');
+    buttons.forEach(function(button) {
+        button.classList.remove('active');
+    });
+    // Добавляем класс active только к активной кнопке
+    activeTab.classList.add('active');
+}
+
+
+
