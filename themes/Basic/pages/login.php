@@ -28,140 +28,50 @@
             </ul>
             <div class="right-container">
                 <form action="/register" method="post">
-                    <div class="register-step-1">
-                        <div class="register-label_and_error">
-                            <label for="login">Логин</label>
-                            <?php
-                            $data_to_check = [
-                                'login',
-                            ];
+                    <div class="login-label_and_error">
+                        <label for="login">Логин</label>
+                        <?php
+                        $data_to_check = [
+                            'login',
+                        ];
 
-                            foreach ($data_to_check as $data) {
-                                if ($session->has($data)) {
+                        foreach ($data_to_check as $data) {
+                            if ($session->has($data)) {
 
-                            ?>
-                                    <ul class="error-list d-flex flex-column">
-                                        <?php foreach ($session->getFlash($data, 'nothing') as $error) {
-                                        ?>
-                                            <span class="register-error-message"><?php echo $error; ?></span>
-                                <?php  }
-                                    }
-                                } ?>
+                        ?>
+                                <ul class="error-list d-flex flex-column">
+                                    <?php foreach ($session->getFlash($data, 'nothing') as $error) {
+                                    ?>
+                                        <span class="login-error-message"><?php echo $error; ?></span>
+                            <?php  }
+                                }
+                            } ?>
 
-                        </div>
-                        <input class="" type="text" id="login" name="login">
-                        <div class="register-label_and_error">
-                            <label for="email">Email</label>
-                            <?php
-                            $data_to_check = [
-                                'email',
-                            ];
-
-                            foreach ($data_to_check as $data) {
-                                if ($session->has($data)) {
-
-                            ?>
-                                    <ul class="error-list d-flex flex-column">
-                                        <?php foreach ($session->getFlash($data, 'nothing') as $error) {
-                                        ?>
-                                            <span class="register-error-message"><?php echo $error; ?></span>
-                                <?php  }
-                                    }
-                                } ?>
-
-                        </div>
-                        <input class="" type="email" id="email" name="email">
-                        <div class="register-label_and_error">
-                            <label for="password">Пароль</label>
-                            <?php
-                            $data_to_check = [
-                                'password',
-                            ];
-
-                            foreach ($data_to_check as $data) {
-                                if ($session->has($data)) {
-
-                            ?>
-                                    <ul class="error-list d-flex flex-column">
-                                        <?php foreach ($session->getFlash($data, 'nothing') as $error) {
-                                        ?>
-                                            <span class="register-error-message"><?php echo $error; ?></span>
-                                <?php  }
-                                    }
-                                } ?>
-
-                        </div>
-                        <input class="" type="password" id="password" name="password">
-                        <button type="button" class="register-button" id="nextBtn">Далее</button>
                     </div>
-                    <div class="register-step-2">
-                        <div class="register-label_and_error">
-                            <label for="user_name">Имя</label>
-                            <?php
-                            $data_to_check = [
-                                'user_name',
-                            ];
+                    <input class="" type="text" id="login" name="login">
+                    <div class="login-label_and_error">
+                        <label for="password">Пароль</label>
+                        <?php
+                        $data_to_check = [
+                            'password',
+                        ];
 
-                            foreach ($data_to_check as $data) {
-                                if ($session->has($data)) {
+                        foreach ($data_to_check as $data) {
+                            if ($session->has($data)) {
 
-                            ?>
-                                    <ul class="error-list d-flex flex-column">
-                                        <?php foreach ($session->getFlash($data, 'nothing') as $error) {
-                                        ?>
-                                            <span class="register-error-message"><?php echo $error; ?></span>
-                                <?php  }
-                                    }
-                                } ?>
+                        ?>
+                                <ul class="error-list d-flex flex-column">
+                                    <?php foreach ($session->getFlash($data, 'nothing') as $error) {
+                                    ?>
+                                        <span class="login-error-message"><?php echo $error; ?></span>
+                            <?php  }
+                                }
+                            } ?>
 
-                        </div>
-                        <input class="" type="text" id="user_name" name="user_name">
-                        <div class="register-label_and_error">
-                            <label for="user_lastname">Фамилия</label>
-                            <?php
-                            $data_to_check = [
-                                'user_lastname',
-                            ];
-
-                            foreach ($data_to_check as $data) {
-                                if ($session->has($data)) {
-
-                            ?>
-                                    <ul class="error-list d-flex flex-column">
-                                        <?php foreach ($session->getFlash($data, 'nothing') as $error) {
-                                        ?>
-                                            <span class="register-error-message"><?php echo $error; ?></span>
-                                <?php  }
-                                    }
-                                } ?>
-
-                        </div>
-                        <input class="" type="text" id="user_lastname" name="user_lastname">
-                        <div class="register-label_and_error">
-                            <label for="user_phone">Номер телефона</label>
-                            <?php
-                            $data_to_check = [
-                                'user_phone',
-                            ];
-
-                            foreach ($data_to_check as $data) {
-                                if ($session->has($data)) {
-
-                            ?>
-                                    <ul class="error-list d-flex flex-column">
-                                        <?php foreach ($session->getFlash($data, 'nothing') as $error) {
-                                        ?>
-                                            <span class="register-error-message"><?php echo $error; ?></span>
-                                <?php  }
-                                    }
-                                } ?>
-
-                        </div>
-                        <input class="" type="text" id="user_phone" name="user_phone">
-                        <div class="register_double_btn_block">
-                            <button class="register-button" id="backBtn">Назад</button>
-                            <button type="submit" class="register-button" id="submitBtn">Далее</button>
-                        </div>
+                    </div>
+                    <input class="" type="password" id="password" name="password">
+                    <div class="register_double_btn_block">
+                        <button type="submit" class="register-button" id="submitBtn">Войти</button>
                     </div>
                     <div class="auth-container">
                         <p class="auth-paragraph">Уже есть аккаунт?</p>

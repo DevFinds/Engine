@@ -30,7 +30,7 @@ ul{
 }
 
 .form-container{
-    gap: 96px;
+    gap: 64px;
     margin: 0;
     display: flex;
     -webkit-box-shadow: 0px 0px 80px 8px rgba(20, 18, 18, 0.2);
@@ -42,6 +42,7 @@ ul{
 .form-container form{
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 .left-side {
@@ -74,8 +75,7 @@ ul{
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 64px 0px;
-    padding-right: 96px;
+    padding: 64px 64px 24px 0px;
     border-radius: 0px 12px 12px 0px;
 }
 
@@ -101,12 +101,12 @@ label {
     margin-top: 12px;
 }
 input { 
-    width: 350px;
+    width: 400px;
     height: 48px;
     flex-shrink: 0;
     border-radius: 12px;
     background: #F3F3F3;
-    max-width: 350px;
+    max-width: 400px;
     border: #606060;
     padding-left: 12px;
     font-size: 20px;
@@ -143,6 +143,7 @@ input {
 
 .privacy-label {
     margin: 0px;
+    font-size: 12px;
 }
 
 .privacy-container {
@@ -185,6 +186,7 @@ input {
     justify-content: center;
     align-content: center;
     gap: 8px;
+    margin-top: 32px;
 
 }
 
@@ -231,14 +233,14 @@ input {
 .register-step-1 {
     display: flex;
     flex-direction: column;
-    max-width: 350px;
+    max-width: 400px;
 }
 
 .register-step-2 {
     
     display: none;
     flex-direction: column;
-    max-width: 350px;
+    max-width: 400px;
 }
 
 h1 {

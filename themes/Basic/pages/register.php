@@ -157,7 +157,7 @@
                         </div>
                         <input class="" type="text" id="user_phone" name="user_phone">
                         <div class="register_double_btn_block">
-                            <button class="register-button" id="backBtn"><img src="assets\img\arrow.svg" alt=""></button>
+                            <button type="button" class="register-button" id="backBtn"><img src="assets\img\arrow.svg" alt=""></button>
                             <button type="submit" class="register-button" id="submitBtn">Зарегистрироваться</button>
                         </div>
                     </div>
