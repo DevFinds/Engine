@@ -1,0 +1,251 @@
+*{
+    margin: 0;
+    padding: 0;
+    
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+ul{
+    list-style: none;
+}
+
+.body-container {
+    display: flex;
+    flex-direction: column;
+    padding: 0px;
+    flex-wrap: wrap;
+    height: 100vh;
+    justify-content: center;
+}
+
+.form-container{
+    gap: 64px;
+    margin: 0;
+    display: flex;
+    -webkit-box-shadow: 0px 0px 80px 8px rgba(20, 18, 18, 0.2);
+    -moz-box-shadow: 0px 0px 80px 8px rgba(20, 18, 18, 0.2);
+    box-shadow: 0px 0px 80px 8px rgba(20, 18, 18, 0.2);
+    border-radius: 12px;
+}
+
+.form-container form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.left-side {
+    display: flex;    
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 223px;
+    background: var(--Blue-accent, #276EFF);
+    box-sizing:unset;
+    padding: 275px 75px 36px 75px ;
+    border-radius: 12px 0px 0px 12px;
+}
+.icon-list{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    list-style: none;
+    gap: 24px;
+    padding: 0px;
+}
+.icon-item a img{
+    max-width: 36px;
+
+}
+.right-side {
+    flex: 1;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 64px 24px 0px;
+    border-radius: 0px 12px 12px 0px;
+}
+
+.right-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 0px 16px 0px;
+    gap: 16px;
+    max-width: 400px;
+    
+}
+
+label {
+    color: var(--dark-grey, #606060);
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-left: 16px;
+    margin-bottom: 12px;
+    margin-top: 12px;
+}
+input { 
+    width: 400px;
+    height: 48px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: #F3F3F3;
+    max-width: 400px;
+    border: #606060;
+    padding-left: 12px;
+    font-size: 20px;
+    outline-width: 0px;
+}
+
+.login-label_and_error {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.login-error-message {
+    color: #E23E3E;
+    font-size: 14px;
+}
+
+.error-input {
+    outline-width: 1px;
+    border: 1px solid #E23E3E;
+}
+
+.warning-input {
+    outline-width: 1px;
+    border: 1px solid #e29e3e;
+}
+
+.privacy-checkbox {
+    max-height: 16px;
+    max-width: 16px;
+    border: 1px solid var(--dark-grey, #606060);
+}
+
+.privacy-label {
+    margin: 0px;
+    font-size: 12px;
+}
+
+.privacy-container {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+#backBtn {
+    max-width: 54px;
+    display: flex;
+    justify-content: center;
+    padding: 20px 18px;
+}
+
+.first-paragraph {
+    color: var(--White, #F9F9F9);
+    text-align: center;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+.auth-paragraph{
+    color: #A0AFC4;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;    
+    margin: 0px;
+}
+.auth-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    gap: 8px;
+    margin-top: 32px;
+
+}
+
+.auth-button {
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 8px 24px;
+    color: var(--blue-accent, #276EFF);
+
+}
+.center-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.register-button {
+    gap: 10px;
+    padding: 16px 32px;
+    background-color: var(--blue-accent, #276EFF);
+    border-radius: 12px;
+    border: none;
+    font-family: "Inter";
+    font-weight: 400;
+    color: #ffffff;
+    font-size: 18px;
+    letter-spacing: 0;
+    line-height: normal;
+    align-self: center;
+    margin-top: 36px;
+    width: 100%;
+}
+
+.register_double_btn_block {
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+.register-step-1 {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+}
+
+.register-step-2 {
+    
+    display: none;
+    flex-direction: column;
+    max-width: 400px;
+}
+
+h1 {
+    font-size: 26px;
+    color: #333;
+    margin-bottom: 36px;
+    font-weight: 500; 
+}

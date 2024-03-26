@@ -7,9 +7,13 @@ document.addEventListener("DOMContentLoaded", function() {
   
     nextBtn.addEventListener("click", function() {
       // Проверка на заполненность полей перед переходом
-      if (validateStep(step1)) {
+      if (validateStep(step1) && document.getElementById("privacy-policy").checked) {
         step1.style.display = "none";
         step2.style.display = "flex";
+      }
+      
+      if(!document.getElementById("privacy-policy").checked){
+        highlight_warning("privacy-policy");
       }
     });
   
@@ -32,7 +36,28 @@ document.addEventListener("DOMContentLoaded", function() {
         if (inputs[i].value.trim() === "") {
           return false;
         }
+        else if (inputs[i].id === "privacy-policy" && !inputs[i].checked) {
+          highlight_warning("privacy-policy");
+          return false;
+        }
       }
       return true;
     }
   });
+
+  //Hightlight warning
+
+  function highlight_warning(field_id) {
+    const field = document.getElementById(field_id);
+    field.classList.add("warning-input");
+  }
+
+  // Highlight error
+  function highlight_error(field_id) {
+    const field = document.getElementById(field_id);
+    field.classList.add("error-input");
+    // sleep 2 seconds
+    setTimeout(function() {
+      field.classList.remove("warning-input");
+    } , 2);
+  }
