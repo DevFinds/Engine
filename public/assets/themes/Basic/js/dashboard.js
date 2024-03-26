@@ -102,6 +102,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (currentPage === page) {
             link.classList.add("dashboard-menu-link-active");
             link.previousElementSibling.classList.add("dashboard-link-icon-active");
+            link.classList.add("dashboard-menu-item-active::before");
         }
     });
 });
@@ -131,7 +132,11 @@ function setActiveTab(activeTab) {
     });
     // Добавляем класс active только к активной кнопке
     activeTab.classList.add('active');
+
+    document.querySelector('.users-selector-buttons button.active').classList.remove('active');
+    activeTab.classList.add('active');
 }
+
 
 
 
