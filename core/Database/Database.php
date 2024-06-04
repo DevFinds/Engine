@@ -11,7 +11,7 @@ use PDOException;
 class Database implements DatabaseInterface
 {
 
-    private PDO $pdo;
+    public PDO $pdo;
 
     public function __construct(
         private ConfigInterface $config,
@@ -40,7 +40,7 @@ class Database implements DatabaseInterface
         return (int) $this->pdo->lastInsertId();
     }
 
-    public function update($table, $data, $conditions = []) : bool
+    public function update($table, $data, $conditions = []): bool
     {
         // Генерация SQL-запроса для обновления данных
         $updateQuery = "UPDATE $table SET ";
@@ -48,7 +48,7 @@ class Database implements DatabaseInterface
         foreach ($data as $key => $value) {
             $updateQuery .= "$key = :$key, ";
         }
-        
+
         $updateQuery = rtrim($updateQuery, ', ');
 
         // Добавление условий, если они переданы
@@ -63,7 +63,7 @@ class Database implements DatabaseInterface
         }
         // Подготовка запроса
         $stmt = $this->pdo->prepare($updateQuery);
-        
+
         // Выполнение запроса с передачей параметров
         try {
             $stmt->execute(array_merge($data, $conditions));
@@ -129,13 +129,9 @@ class Database implements DatabaseInterface
         } catch (\PDOException $exception) {
             exit("Ошибка подключения к БД: {$exception->getMessage()}");
         }
-
-        if ($this->isTableExists('users') == false) {
-            $this->createTable();
-        }
     }
 
-    private function isTableExists(string $table): bool
+    public function isTableExists(string $table): bool
     {
         try {
             $sql = "SELECT 1 FROM $table LIMIT 1";
@@ -154,31 +150,4 @@ class Database implements DatabaseInterface
         }
         return true;
     }
-
-    private function createTable()
-    {
-        try {
-            $sql = "CREATE TABLE `users` (
-            `id` int(255) NOT NULL AUTO_INCREMENT,
-            `username` varchar(32) DEFAULT NULL,
-            `login` varchar(32) DEFAULT NULL,
-            `email` varchar(100) DEFAULT NULL,
-            `password` varchar(100) DEFAULT NULL)
-            ENGINE=InnoDB DEFAULT CHARSET=utf8;
-            ALTER TABLE `users`
-            ADD PRIMARY KEY (`id`);";
-            $this->pdo->exec($sql);
-        } catch (PDOException $e) {
-            echo "Error creating table: " . $e->getMessage();
-        }
-    }
-
-    private function createColumn()
-    {
-        $sql = "ALTER TABLE `users`
-          ADD PRIMARY KEY (`id`);";
-        $this->pdo->exec($sql);
-    }
-
-    
 }

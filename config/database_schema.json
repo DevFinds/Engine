@@ -1,0 +1,55 @@
+{
+    "users": {
+        "columns": {
+            "id": "INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY",
+            "username": "VARCHAR(32) DEFAULT 'unknown'",
+            "lastname": "VARCHAR(32) DEFAULT 'unknown'",
+            "login": "VARCHAR(32) DEFAULT NULL",
+            "email": "VARCHAR(100) DEFAULT NULL",
+            "phone_number": "VARCHAR(20) NOT NULL DEFAULT '+79999999999'",
+            "password": "VARCHAR(100) DEFAULT NULL",
+            "role": "INT(12) NOT NULL",
+            "avatar": "VARCHAR(255) DEFAULT NULL",
+            "created_at": "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP",
+            "updated_at": "TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
+        },
+        "indexes": [
+            "PRIMARY KEY (id)"
+        ]
+    },
+    "roles": {
+        "columns": {
+            "role_id": "INT(12) NOT NULL AUTO_INCREMENT PRIMARY KEY",
+            "role_name": "VARCHAR(32) NOT NULL",
+            "role_perm_level": "INT(3) NOT NULL"
+        },
+        "indexes": [
+            "PRIMARY KEY (role_id)"
+        ]
+    },
+    "posts": {
+        "columns": {
+            "post_id": "INT(255) NOT NULL AUTO_INCREMENT PRIMARY KEY",
+            "post_title": "VARCHAR(100) NOT NULL",
+            "post_description": "VARCHAR(255) NOT NULL",
+            "post_content": "LONGTEXT NOT NULL",
+            "post_date": "DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP",
+            "post_author": "INT(255) NOT NULL"
+        },
+        "indexes": [
+            "PRIMARY KEY (post_id)"
+        ],
+        "relationships": [
+            {
+                "type": "FOREIGN KEY",
+                "columns": ["post_author"],
+                "references": {
+                    "table": "users",
+                    "columns": ["id"]
+                },
+                "on_delete": "CASCADE",
+                "on_update": "CASCADE"
+            }
+        ]
+    }
+}

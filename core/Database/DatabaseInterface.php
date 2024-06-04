@@ -9,4 +9,5 @@ interface DatabaseInterface
     public function first_found_in_db(string $table, array $conditions = []): ?array;
     public function get(string $table, array $conditions = []): ?array;
     public function update(string $table, array $data, array $conditions = []): bool;
+    public function isTableExists(string $table): bool;
 }
