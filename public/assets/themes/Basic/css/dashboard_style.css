@@ -55,7 +55,7 @@ p{
     list-style: none;
     gap: 36px;
     padding: 0px;
-    margin-top: 96px;
+    margin-top: 68px;
     align-self: center;
     font-size: 18px;
     font-weight: 400;
@@ -93,14 +93,27 @@ p{
 .dashboard-menu-item:hover::before {
     content: "";
     display: inline-block;
-    width: 3px;
-    height: 36px;
+    width: 4px;
+    height: 48px;
     border-radius: 50px;
-    transition: 2s ease-in-out;
+    transition: 0s ease-in-out;
     background-color: rgba(39, 110, 255, 1);
     position: absolute;
     margin-left: -3px;
 }
+
+.dashboard-menu-item::before {
+    content: "";
+    display: inline-block;
+    width: 4px;
+    height: 48px;
+    border-radius: 50px;
+    transition: 0s ease-in-out;
+    background-color: rgba(39, 110, 255, 0);
+    position: absolute;
+    margin-left: -3px;
+}
+
 .dashboard-link-icon{
     margin-left:44px;
 }
@@ -114,8 +127,8 @@ p{
 }
 
 .dashboard-logo{
-    min-width: 167px;
-    min-height: 52px;
+    min-width: 100px;
+    min-height: 95px;
     padding-top: 64px;
 }
 

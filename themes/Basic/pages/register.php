@@ -7,12 +7,12 @@
 ?>
 
 
-<?php $render->component('header') ?>
+<?php $render->component('header_without_navbar') ?>
 
 <div class="body-container">
     <div class="form-container">
         <div class="left-side">
-            <img src="./assets/img/logo_ShapeSider.svg" alt="logo">
+            <img src="./assets/img/logo_ShapeSider.svg" href="/" alt="logo">
             <p class="first-paragraph">Soft by DevFinds</p>
         </div>
 
