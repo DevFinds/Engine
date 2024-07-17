@@ -73,6 +73,7 @@ class Container
             $this->database,
             $this->auth,
             $this->storage,
+            $this->config
         );
     }
 }

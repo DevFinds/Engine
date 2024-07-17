@@ -5,7 +5,7 @@ namespace Core\Middleware;
 
 class Middleware
 {
-    public function chek(array $middlewares = [])
+    public function check(array $middlewares = [])
     {
     }
 }

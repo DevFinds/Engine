@@ -6,6 +6,8 @@ use Core\Auth\Auth;
 use Core\Upload\StorageInterface;
 use Core\RenderInterface;
 use Core\Auth\AuthInterface;
+use Core\Config\Config;
+use Core\Config\ConfigInterface;
 use Core\http\RequestInterface;
 use Core\http\RedirectInterface;
 use Core\Session\SessionInterface;
@@ -20,6 +22,7 @@ abstract class Controller
     private DatabaseInterface $database;
     private AuthInterface $auth;
     private StorageInterface $storage;
+    private ConfigInterface $config;
 
 
     public function render(string $page_name, array $data = []): void
@@ -30,6 +33,17 @@ abstract class Controller
 
     // Гетеры и сетеры для внедрения сервисов в контроллеры фреймворка
     // Данный блок посвящен внедрению сервисов, код другого назначения будет находиться выше
+
+
+    public function setConfig(ConfigInterface $config)
+    {
+        $this->config = $config;
+    }
+
+    public function getConfig(): ConfigInterface
+    {
+        return $this->config;
+    }
 
     public function setAuth(Auth $auth)
     {

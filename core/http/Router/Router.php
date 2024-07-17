@@ -4,6 +4,7 @@ namespace Core\http\Router;
 
 use Core\RenderInterface;
 use Core\Auth\AuthInterface;
+use Core\Config\ConfigInterface;
 use Core\http\RequestInterface;
 use Core\http\RedirectInterface;
 use Core\Session\SessionInterface;
@@ -27,7 +28,8 @@ class Router implements RouterInterface
         private SessionInterface $session,
         private DatabaseInterface $database,
         private AuthInterface $auth,
-        private StorageInterface $storage
+        private StorageInterface $storage,
+        private ConfigInterface $config
     ) {
         $this->initRoutes();
     }
@@ -73,6 +75,7 @@ class Router implements RouterInterface
             call_user_func([$controller, 'setDatabase'], $this->database);
             call_user_func([$controller, 'setAuth'], $this->auth);
             call_user_func([$controller, 'setStorage'], $this->storage);
+            call_user_func([$controller, 'setConfig'], $this->config);
             call_user_func([$controller, $action]);
         } else {
             // Или выполняем анонимную функцию, переданную в routes.php

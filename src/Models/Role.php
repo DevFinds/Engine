@@ -27,4 +27,9 @@ class Role
     {
         return $this->role_perm_level;
     }
+
+    public function addNewRole()
+    {
+        var_dump($_SESSION);
+    }
 }

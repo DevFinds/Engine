@@ -41,4 +41,8 @@ class AdminController extends Controller
     {
         $this->render('admin/dashboard/posts');
     }
+
+    public function addNewRole()
+    {
+    }
 }

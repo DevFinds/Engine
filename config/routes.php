@@ -6,10 +6,11 @@ use Source\Controllers\HomeController;
 use Source\Controllers\PostController;
 use Source\Controllers\UserController;
 use Source\Middleware\GuestMiddleware;
-use Source\Middleware\RegisterMiddleware;
 use Source\Controllers\AdminController;
 use Source\Controllers\LoginController;
+use Source\Middleware\RegisterMiddleware;
 use Source\Controllers\RegisterController;
+use Source\Controllers\AdminSettingsController;
 
 return [
 
@@ -29,5 +30,6 @@ return [
     Route::get('/admin/dashboard/posts', [AdminController::class, 'posts'], [AuthMiddleware::class]),
     Route::get('/admin/user/account', [UserController::class, 'account'], [AuthMiddleware::class]),
     Route::post('/user/change-avatar', [UserController::class, 'changeAvatar'], [AuthMiddleware::class]),
-    
+    Route::get('/admin/dashboard/settings', [AdminSettingsController::class, 'settings'], [AuthMiddleware::class]),
+
 ];
