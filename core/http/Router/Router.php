@@ -42,7 +42,7 @@ class Router implements RouterInterface
         }
 
 
-        // Проверка на привязанных к маршруту посредников
+        // Проверка на наличие привязанных к маршруту посредников
         if ($route->hasMiddlewares()) {
             // Если посреднеки переданы в данный маршрут
             foreach ($route->getMiddlewares() as $middleware) {
@@ -76,7 +76,7 @@ class Router implements RouterInterface
             call_user_func([$controller, 'setAuth'], $this->auth);
             call_user_func([$controller, 'setStorage'], $this->storage);
             call_user_func([$controller, 'setConfig'], $this->config);
-            call_user_func([$controller, $action]);
+            call_user_func_array([$controller, $action], $this->extractParams($uri, $route));
         } else {
             // Или выполняем анонимную функцию, переданную в routes.php
             call_user_func($route->getAction());
@@ -93,11 +93,12 @@ class Router implements RouterInterface
 
     private function findRoute(string $uri, string $method): Route|false
     {
-        if (!isset($this->routes[$method][$uri])) {
-            return false;
+        foreach ($this->routes[$method] as $routeUri => $route) {
+            if (preg_match($this->convertUriToRegex($routeUri), $uri)) {
+                return $route;
+            }
         }
-
-        return $this->routes[$method][$uri];
+        return false;
     }
 
     private function notFound(): void
@@ -115,5 +116,21 @@ class Router implements RouterInterface
     private function getRoutes(): array
     {
         return require_once APP_PATH . '/config/routes.php';
+    }
+
+
+    // В данном блоке происходит обработка регулярных выражений в маршрутах
+
+    private function convertUriToRegex(string $uri): string
+    {
+        return '#^' . preg_replace('/\{[a-zA-Z0-9_]+\}/', '([a-zA-Z0-9_]+)', $uri) . '$#';
+    }
+
+    private function extractParams(string $uri, Route $route): array
+    {
+        $pattern = $this->convertUriToRegex($route->getUri());
+        preg_match($pattern, $uri, $matches);
+        array_shift($matches);
+        return $matches;
     }
 }

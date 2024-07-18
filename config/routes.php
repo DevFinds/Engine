@@ -11,6 +11,7 @@ use Source\Controllers\LoginController;
 use Source\Middleware\RegisterMiddleware;
 use Source\Controllers\RegisterController;
 use Source\Controllers\AdminSettingsController;
+use Source\Controllers\UserProfileController;
 
 return [
 
@@ -31,5 +32,6 @@ return [
     Route::get('/admin/user/account', [UserController::class, 'account'], [AuthMiddleware::class]),
     Route::post('/user/change-avatar', [UserController::class, 'changeAvatar'], [AuthMiddleware::class]),
     Route::get('/admin/dashboard/settings', [AdminSettingsController::class, 'settings'], [AuthMiddleware::class]),
+    Route::get('/admin/profile/{id}', [UserProfileController::class, 'index'], [AuthMiddleware::class])->where(['id' => '[0-9]+']),
 
 ];
