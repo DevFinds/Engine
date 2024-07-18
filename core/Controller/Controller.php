@@ -60,7 +60,7 @@ abstract class Controller
         $this->render = $render;
     }
 
-    public function getRequest(): RequestInterface
+    public function request(): RequestInterface
     {
         return $this->request;
     }
