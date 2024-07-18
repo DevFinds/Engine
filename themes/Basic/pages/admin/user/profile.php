@@ -5,7 +5,9 @@
  * @var \Source\Models\User $user
  * @var \Source\Models\Role $role
  */
-$user = $this->auth->getUser();
+
+$user = $data['profile_user'];
+$profile_user_role_name = $data['profile_user_role_name'];
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -20,9 +22,8 @@ $user = $this->auth->getUser();
         <div class="account-card-info">
             <div class="account-card-top-section">
                 <span class="account-username"><?php echo $user->username() ?> <?php echo $user->lastname(); ?></span>
-                <form action="/user/account-edit" method="post"><button type="submit"><img src="/assets/themes/Basic/img/edit.svg" alt=""></button></form>
             </div>
-            <span class="account-role"><?php echo $user->role() ?></span>
+            <span class="account-role"><?php echo $profile_user_role_name ?></span>
             <hr class="account-hr">
             <div class="account-info">
                 <ul class="account-info-list">

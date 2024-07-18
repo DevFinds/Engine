@@ -38,8 +38,8 @@
                         <td class="users-table-column-login"><?= $user->login() ?></td>
                         <td class="users-table-column-email"><?= $user->email() ?>
                             <div>
-                                <button class="users-table-edit-user" type="submit"><img src="/assets/themes/Basic/img/edit-icon.svg" alt=""></button>
-                                <button class="users-table-delete-user" type="submit"><img src="/assets/themes/Basic/img/delete-icon.svg" alt=""></button>
+                                <a class="users-table-edit-user" target="_blank" href="/admin/profile/<?php echo $user->id(); ?>" type="submit"><img src="/assets/themes/Basic/img/edit-icon.svg" alt=""></a>
+                                <a class="users-table-delete-user" type="submit"><img src="/assets/themes/Basic/img/delete-icon.svg" alt=""></a>
                             </div>
                         </td>
                     </tr>

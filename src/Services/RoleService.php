@@ -26,7 +26,7 @@ class RoleService
         return $roles;
     }
 
-    public function getRoleById(int $id): ?array
+    public function getRoleById(int $id): ?Role
     {
         $role = $this->db->first_found_in_db('roles', ['id' => $id]);
         return $role;
