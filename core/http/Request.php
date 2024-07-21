@@ -48,6 +48,11 @@ class Request implements RequestInterface
         return $this->post[$key] ?? $this->get[$key] ?? $default;
     }
 
+    public function AllInputs(): array
+    {
+        return $this->post;
+    }
+
     public function file(string $key): ?UploadedFileInterface
     {
         if (!isset($this->files[$key])) {
@@ -76,7 +81,7 @@ class Request implements RequestInterface
         foreach ($rules as $field => $rule) {
             $data[$field] = $this->input($field);
         }
-        
+
         return $this->validator->validate($data, $rules);
     }
 

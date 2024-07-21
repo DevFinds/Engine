@@ -23,7 +23,7 @@ class UserController extends Controller
         $avatar_file = $this->request()->file('Avatar');
         $avatar_path = "/storage/" . $avatar_file->move('avatars');
         $db = $this->getDatabase();
-    
+
         // Проверка, что есть данные для обновления
         if (!empty($avatar_path)) {
             $db->update('users', ['avatar' => $avatar_path], ['id' => $this->session()->get('user_id')]);
@@ -31,4 +31,36 @@ class UserController extends Controller
         $this->redirect('/admin/user/account');
     }
 
+    public function addNewUser()
+    {
+        $validation = $this->request()->validate([
+            'email' => ['required', 'email', 'already_exist'],
+            'login' => ['required', 'min:3', 'max:25', 'already_exist'],
+            'password' => ['required', 'min:6', 'max:255'],
+            'name' => ['required'],
+            'lastname' => ['required']
+        ]);
+        if (!$validation) {
+
+
+            foreach ($this->request()->errors() as $field => $errors) {
+                $this->session()->set($field, $errors);
+            }
+
+            $this->redirect('/admin/dashboard/users');
+            echo "<script>switchTab('users-create-user-form');</script>";
+            dd('Validation failed', $this->request()->errors());
+        }
+
+        $userID = $this->getDatabase()->insert('users', [
+            'username' => $this->request()->input('name'),
+            'lastname' => $this->request()->input('lastname'),
+            'login' => $this->request()->input('login'),
+            'email' => $this->request()->input('email'),
+            'password' => password_hash($this->request()->input('password'), PASSWORD_DEFAULT),
+            'role' => $this->request()->input('role')
+        ]);
+        // dd($userID);
+        $this->redirect('/admin/dashboard/users');
+    }
 }

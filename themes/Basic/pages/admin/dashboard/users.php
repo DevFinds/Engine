@@ -48,38 +48,45 @@
             </tbody>
         </table>
     </div>
-    <div class="users-create-user-form" id="users-create-user-form">
-        <div class="users-create-left-user-form">
-            <div class="users-create-avatar-container">
-                <div class="users-create-avatar" onclick="insertImage()">
-                    <img src="./assets/img/create_avatar.svg" alt="">
+    <!-- Блок создания пользователя -->
+    <a href="#adduser" hidden></a>
+    <form action="/admin/user/add" method="post" enctype="multipart/form-data">
+        <div class="users-create-user-form" id="users-create-user-form">
+            <div class="users-create-left-user-form">
+                <div class="users-create-avatar-container">
+                    <div class="users-create-avatar" onclick="insertImage()">
+                        <img src="./assets/img/create_avatar.svg" alt="">
+                    </div>
+                </div>
+                <div class="users-create-left-input-container">
+                    <p class="users-create-first-title">Имя</p>
+                    <input type="text" name="name" class="users-information">
+                    <p class="users-create-next-title">Фамилия</p>
+                    <input type="text" name="lastname" class="users-information">
+                </div>
+                <button type="submit" class="users-create-button">Создать</button>
+            </div>
+            <div class="users-create-right-user-form">
+                <p class="users-create-first-title">Логин</p>
+                <input type="text" name="login" class="users-information">
+                <p class="users-create-next-title">Email</p>
+                <input type="email" name="email" class="users-information">
+                <p class="users-create-next-title">Пароль</p>
+                <input type="password" name="password" class="users-information">
+                <p class="users-create-next-title">Роль</p>
+                <div class="users-select-wrapper">
+                    <select name="role" class="users-role-selector">
+                        <?php foreach ($roles as $role) { ?>
+                            <option href="#" name="role" value="<?php echo $role->role_id(); ?>" onclick="selectRole('Пользователь')"><?= $role->role_name() ?></option>
+                        <?php } ?>
+                    </select>
                 </div>
             </div>
-            <div class="users-create-left-input-container">
-                <p class="users-create-first-title">Имя</p>
-                <input type="text" class="users-information">
-                <p class="users-create-next-title">Фамилия</p>
-                <input type="text" class="users-information">
-            </div>
-            <button type="submit" class="users-create-button">Создать</button>
         </div>
-        <div class="users-create-right-user-form">
-            <p class="users-create-first-title">Логин</p>
-            <input type="text" class="users-information">
-            <p class="users-create-next-title">Email</p>
-            <input type="text" class="users-information">
-            <p class="users-create-next-title">Пароль</p>
-            <input type="text" class="users-information">
-            <p class="users-create-next-title">Роль</p>
-            <div class="users-select-wrapper">
-                <select name="role" class="users-role-selector">
-                    <?php foreach ($roles as $role) { ?>
-                        <option href="#" onclick="selectRole('Пользователь')"><?= $role->role_name() ?></option>
-                    <?php } ?>
-                </select>
-            </div>
-        </div>
-    </div>
+
+    </form>
+
+    <!-- Создание ролей -->
     <div class="users-role-editor" id="users-role-editor">
         <div class="users-list-of-roles">
             <table>
@@ -117,7 +124,7 @@
             <div class="users-select-container">
                 <select name="role" id="">
                     <?php foreach ($roles as $role) { ?>
-                        <option href="#" onclick="selectRole('Пользователь')"> <span><?php echo $role->role_id(); ?> - </span> <?php echo $role->role_name() ?></option>
+                        <option href="#" onclick="selectRole('Пользователь')" value="<?php echo $role->role_id(); ?>"> <span><?php echo $role->role_id(); ?> - </span> <?php echo $role->role_name() ?></option>
                     <?php } ?>
                 </select>
             </div>

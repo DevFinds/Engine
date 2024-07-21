@@ -30,6 +30,7 @@ return [
     Route::post('/admin/dashboard/deleleteuser', [AdminController::class, 'deleteuser'], [AuthMiddleware::class]),
     Route::get('/admin/dashboard/posts', [AdminController::class, 'posts'], [AuthMiddleware::class]),
     Route::get('/admin/user/account', [UserController::class, 'account'], [AuthMiddleware::class]),
+    Route::post('/admin/user/add', [UserController::class, 'addNewUser'], [AuthMiddleware::class]),
     Route::post('/user/change-avatar', [UserController::class, 'changeAvatar'], [AuthMiddleware::class]),
     Route::get('/admin/dashboard/settings', [AdminSettingsController::class, 'settings'], [AuthMiddleware::class]),
     Route::get('/admin/profile/{id}', [UserProfileController::class, 'index'], [AuthMiddleware::class])->where(['id' => '[0-9]+']),
