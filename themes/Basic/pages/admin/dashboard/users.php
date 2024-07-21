@@ -2,9 +2,11 @@
 
 /**
  * @var \Core\Render $render
- * @var array<\Source\Models\User> $users
- * @var array<\Source\Models\Role> $roles
+ * @var array<\Source\Models\UserService> $users
+ * @var array<\Source\Models\RoleService> $roles
  */
+
+// dd($roles)
 ?>
 <?php $render->component('dashboard_header'); ?>
 
@@ -17,7 +19,6 @@
         </div>
     </div>
     <div class="users-table-container" id="users-table-container">
-        <h3 class="users-table-title">Список пользователей</h3>
         <table class="users-table">
             <thead class="users-table-header">
                 <tr class="users-table-header-row">
@@ -33,7 +34,7 @@
                 foreach ($users as $user) { ?>
                     <tr class="users-table-row">
                         <td class="users-table-column-id"> <?= $user->id() ?></td>
-                        <td class="users-table-column-role"><?= $user->role() ?></td>
+                        <td class="users-table-column-role"><?= $roles[$user->role() - 1]->role_name() ?></td>
                         <td class="users-table-column-name"><?= $user->username() ?></td>
                         <td class="users-table-column-login"><?= $user->login() ?></td>
                         <td class="users-table-column-email"><?= $user->email() ?>
