@@ -3,14 +3,15 @@
 namespace Core\http\Router;
 
 use Core\RenderInterface;
+use Core\http\Router\Route;
 use Core\Auth\AuthInterface;
-use Core\Config\ConfigInterface;
 use Core\http\RequestInterface;
+use Core\Config\ConfigInterface;
 use Core\http\RedirectInterface;
+use Core\Upload\StorageInterface;
 use Core\Session\SessionInterface;
 use Core\Database\DatabaseInterface;
 use Core\Middleware\AbstractMiddleware;
-use Core\Upload\StorageInterface;
 
 class Router implements RouterInterface
 {
@@ -113,11 +114,39 @@ class Router implements RouterInterface
      */
 
 
+    // Новый метод для получения маршрутов из config/routes.json
+
     private function getRoutes(): array
     {
-        return require_once APP_PATH . '/config/routes.php';
+        $jsonPath = APP_PATH . '/config/routes.json';
+        if (!file_exists($jsonPath)) {
+            return [];
+        }
+
+        $jsonContent = file_get_contents($jsonPath);
+        $routes = json_decode($jsonContent, true);
+
+        return array_map(fn ($route) => new Route(
+            $route['uri'],
+            $route['method'],
+            [$route['action']['controller'], $route['action']['method']],
+            $route['middlewares'] ?? []
+        ), $routes);
     }
 
+    // 
+    // 
+    // 
+    // Старый метод для получения маршрутов из config/routes.php
+
+    // private function getRoutes(): array
+    // {
+    //     return require_once APP_PATH . '/config/routes.php';
+    // }
+
+    // 
+    // 
+    // 
 
     // В данном блоке происходит обработка регулярных выражений в маршрутах
 

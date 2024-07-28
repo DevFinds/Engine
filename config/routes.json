@@ -1,0 +1,199 @@
+[
+        {
+            "method": "GET",
+            "uri": "/home",
+            "action": {
+                "controller": "Source\\Controllers\\HomeController",
+                "method": "index"
+            }
+        },
+        {
+            "method": "GET",
+            "uri": "/",
+            "action": {
+                "controller": "Source\\Controllers\\HomeController",
+                "method": "index"
+            }
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/users",
+            "action": {
+                "controller": "Source\\Controllers\\AdminController",
+                "method": "UserList"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "GET",
+            "uri": "/register",
+            "action": {
+                "controller": "Source\\Controllers\\RegisterController",
+                "method": "index"
+            },
+            "middlewares": [
+                "Source\\Middleware\\GuestMiddleware"
+            ]
+        },
+        {
+            "method": "POST",
+            "uri": "/register",
+            "action": {
+                "controller": "Source\\Controllers\\RegisterController",
+                "method": "register"
+            }
+        },
+        {
+            "method": "GET",
+            "uri": "/login",
+            "action": {
+                "controller": "Source\\Controllers\\LoginController",
+                "method": "index"
+            },
+            "middlewares": [
+                "Source\\Middleware\\GuestMiddleware"
+            ]
+        },
+        {
+            "method": "POST",
+            "uri": "/login",
+            "action": {
+                "controller": "Source\\Controllers\\LoginController",
+                "method": "login"
+            }
+        },
+        {
+            "method": "POST",
+            "uri": "/logout",
+            "action": {
+                "controller": "Source\\Controllers\\LoginController",
+                "method": "logout"
+            }
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/post/create",
+            "action": {
+                "controller": "Source\\Controllers\\PostController",
+                "method": "post_creation"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/post/create",
+            "action": {
+                "controller": "Source\\Controllers\\PostController",
+                "method": "create_new_post"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/general",
+            "action": {
+                "controller": "Source\\Controllers\\AdminController",
+                "method": "dashboardGeneral"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/users",
+            "action": {
+                "controller": "Source\\Controllers\\AdminController",
+                "method": "dashboardUsers"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/deleleteuser",
+            "action": {
+                "controller": "Source\\Controllers\\AdminController",
+                "method": "deleteuser"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/posts",
+            "action": {
+                "controller": "Source\\Controllers\\AdminController",
+                "method": "posts"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/user/account",
+            "action": {
+                "controller": "Source\\Controllers\\UserController",
+                "method": "account"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/user/add",
+            "action": {
+                "controller": "Source\\Controllers\\UserController",
+                "method": "addNewUser"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "POST",
+            "uri": "/user/change-avatar",
+            "action": {
+                "controller": "Source\\Controllers\\UserController",
+                "method": "changeAvatar"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/settings",
+            "action": {
+                "controller": "Source\\Controllers\\AdminSettingsController",
+                "method": "settings"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/profile/{id}",
+            "action": {
+                "controller": "Source\\Controllers\\UserProfileController",
+                "method": "index"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "parameters": {
+                "id": "[0-9]+"
+            }
+        }
+]
