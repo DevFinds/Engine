@@ -87,21 +87,21 @@ class Auth implements AuthInterface
 
     public function table(): string
     {
-        return $this->config->get('auth.table', 'users');
+        return $this->config->getJson('auth.table', 'users');
     }
 
     public function login_field_type(): string
     {
-        return $this->config->get('auth.login_field_type', 'login');
+        return $this->config->getJson('auth.login_field_type', 'login');
     }
 
     public function password(): string
     {
-        return $this->config->get('auth.password', 'password');
+        return $this->config->getJson('auth.password', 'password');
     }
 
     public function session_field(): string
     {
-        return $this->config->get('auth.session_field', 'user_id');
+        return $this->config->getJson('auth.session_field', 'user_id');
     }
 }
