@@ -2,7 +2,8 @@
     "autoload":{
         "psr-4": {
             "Source\\": "src/",
-            "Core\\": "core/"
+            "Core\\": "core/",
+            "Events\\": "src/Events/"
         }
     },
 
