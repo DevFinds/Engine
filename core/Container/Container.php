@@ -20,6 +20,7 @@ use Core\http\RedirectInterface;
 use Core\Upload\StorageInterface;
 use Core\Session\SessionInterface;
 use Core\Database\DatabaseInterface;
+use Core\Event\EventManager;
 use Core\http\Router\RouterInterface;
 use Core\Validator\ValidatorInterface;
 
@@ -47,8 +48,11 @@ class Container
 
     public readonly StorageInterface $storage;
 
+    public readonly EventManager $eventManager;
+
     public function __construct()
     {
+        $this->eventManager = new EventManager();
         $this->registerServices();
     }
 
@@ -73,7 +77,8 @@ class Container
             $this->database,
             $this->auth,
             $this->storage,
-            $this->config
+            $this->config,
+            $this->eventManager
         );
     }
 }

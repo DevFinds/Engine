@@ -5,6 +5,7 @@ namespace Core\http\Router;
 use Core\RenderInterface;
 use Core\http\Router\Route;
 use Core\Auth\AuthInterface;
+use Core\Event\EventManager;
 use Core\http\RequestInterface;
 use Core\Config\ConfigInterface;
 use Core\http\RedirectInterface;
@@ -12,6 +13,8 @@ use Core\Upload\StorageInterface;
 use Core\Session\SessionInterface;
 use Core\Database\DatabaseInterface;
 use Core\Middleware\AbstractMiddleware;
+use Source\Events\LinkNavigationEvent;
+use Source\Listeners\LinkNavigationListener;
 
 class Router implements RouterInterface
 {
@@ -30,18 +33,26 @@ class Router implements RouterInterface
         private DatabaseInterface $database,
         private AuthInterface $auth,
         private StorageInterface $storage,
-        private ConfigInterface $config
+        private ConfigInterface $config,
+        private EventManager $eventManager
     ) {
         $this->initRoutes();
     }
+    
 
     public function dispatch(string $uri, string $method): void
     {
+        // Подписка на события
+        $this->eventManager->addListener('link.navigation', new LinkNavigationListener());
+
+
         $route = $this->findRoute($uri, $method);
         if (!$route) {
             $this->notFound();
         }
 
+        $event = new LinkNavigationEvent();
+        $this->eventManager->dispatch($event);
 
         // Проверка на наличие привязанных к маршруту посредников
         if ($route->hasMiddlewares()) {
