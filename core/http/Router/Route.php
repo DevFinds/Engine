@@ -48,6 +48,8 @@ class Route
         return $this->middlewares;
     }
 
+
+    // Получение регулярного выражения
     public function getRegular(): array
     {
         return $this->regular;
@@ -63,4 +65,6 @@ class Route
         $this->regular = $regular;
         return $this;
     }
+
+    
 }

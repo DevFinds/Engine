@@ -12,8 +12,8 @@ use Core\http\RedirectInterface;
 use Core\Upload\StorageInterface;
 use Core\Session\SessionInterface;
 use Core\Database\DatabaseInterface;
-use Core\Middleware\AbstractMiddleware;
 use Source\Events\LinkNavigationEvent;
+use Core\Middleware\AbstractMiddleware;
 use Source\Listeners\LinkNavigationListener;
 
 class Router implements RouterInterface
@@ -44,7 +44,6 @@ class Router implements RouterInterface
     {
         // Подписка на события
         $this->eventManager->addListener('link.navigation', new LinkNavigationListener());
-
 
         $route = $this->findRoute($uri, $method);
         if (!$route) {
