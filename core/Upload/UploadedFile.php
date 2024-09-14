@@ -5,6 +5,7 @@ namespace Core\Upload;
 
 class UploadedFile implements UploadedFileInterface
 {
+    private const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif'];
 
     public function __construct(
         private readonly string $name,
@@ -12,22 +13,26 @@ class UploadedFile implements UploadedFileInterface
         private readonly string $tmpName,
         private readonly string $error,
         public readonly int $size
-    ) {}
+    ) {
+    }
 
-    public function move(string $path, string $FileName = null): string | false
+    public function move(string $path, string $fileName = null): string|false
     {
+        if (!$this->isValidType()) {
+            return false; // Неверный тип файла
+        }
+
         $storagePath = APP_PATH . "/storage/$path";
 
         if (!is_dir($storagePath)) {
             mkdir($storagePath, 0777, true);
         }
 
-        $FileName = $FileName ?? $this->generated_file_name();
-
-        $filePath = "$storagePath/$FileName";
+        $fileName = $fileName ?? $this->generateFileName();
+        $filePath = "$storagePath/$fileName";
 
         if (move_uploaded_file($this->tmpName, $filePath)) {
-            return "$path/$FileName";
+            return "$path/$fileName";
         }
 
         return false;
@@ -38,23 +43,13 @@ class UploadedFile implements UploadedFileInterface
         return pathinfo($this->name, PATHINFO_EXTENSION);
     }
 
-    private function generated_file_name(): string
+    private function generateFileName(): string
     {
-        return 'image_' . md5(date('h-i-s')) . '.' . $this->getFileExtension();
+        return 'file_' . uniqid() . '.' . $this->getFileExtension();
     }
 
-    public function getName(): string
+    private function isValidType(): bool
     {
-        return $this->name;
-    }
-
-    public function getType(): string
-    {
-        return $this->type;
-    }
-
-    public function getError(): int | null
-    {
-        return $this->error;
+        return in_array($this->type, self::ALLOWED_FILE_TYPES);
     }
 }
