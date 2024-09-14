@@ -10,24 +10,34 @@
 
 <?php $render->component('header') ?>
 <h1>Добавление новой записи</h1>
-<div class="create_post-form-container container my-5">
-    <form action="/admin/post/create" method="post" enctype="multipart/form-data">
-        <label for="PostName" class="form-label">Название записи</label>
-        <input type="text" name="PostName" id="PostName" class="form-control" aria-describedby="passwordHelpBlock">
-        <div id="passwordHelpBlock" class="form-text">
-            Ведите здесь название записи, которое будет отображаться на странице блога
-        </div>
-        <div class="mb-3">
-            <label for="PostThumb" class="form-label">Обложка записи</label>
-            <input class="form-control" name="PostThumb" type="file" id="PostThumb">
-        </div>
-        <div class="mb-3">
-            <label for="PostContent" class="form-label">Текст записи</label>
-            <textarea class="form-control" id="PostContent" rows="3"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Опубликовать</button>
-
-    </form>
+<div class="posts-toolbar">
+    <button onclick="execCmd('bold')">Bold</button>
+    <button onclick="execCmd('italic')">Italic</button>
+    <button onclick="execCmd('underline')">Underline</button>
+    <button onclick="execCmd('insertOrderedList')">Ordered List</button>
+    <button onclick="execCmd('insertUnorderedList')">Unordered List</button>
+    <button onclick="execCmd('createLink', prompt('Enter URL:'))">Insert Link</button>
+    <button onclick="execCmd('unlink')">Unlink</button>
+    <button onclick="execCmd('justifyLeft')">Align Left</button>
+    <button onclick="execCmd('justifyCenter')">Align Center</button>
+    <button onclick="execCmd('justifyRight')">Align Right</button>
+    <button onclick="execCmd('justifyFull')">Justify</button>
 </div>
+<div class="posts-editor" contenteditable="true"></div>
+<form method="POST" action="/admin/post/create" enctype="multipart/form-data">
+    <input type="hidden" name="content" id="hiddenContent">
+    <input type="file" name="PostThumb"> <!-- Поле для выбора файла -->
+    <button type="submit" onclick="saveContent()">Сохранить</button>
+</form>
+
+<script>
+    function execCmd(command, value = null) {
+        document.execCommand(command, false, value);
+    }
+
+    function saveContent() {
+        document.getElementById('hiddenContent').value = document.getElementById('editor').innerHTML;
+    }
+</script>
 
 <?php $render->component('footer') ?>

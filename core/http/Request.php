@@ -89,4 +89,9 @@ class Request implements RequestInterface
     {
         return $this->validator->errors();
     }
+
+    public function getFileTempName(): string
+    {
+        return $this->files['tmp_name'];
+    }
 }
