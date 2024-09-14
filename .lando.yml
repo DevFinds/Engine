@@ -11,3 +11,7 @@ config:
       type: mariadb:11.3
     phpmyadmin:
       type: phpmyadmin
+    appserver:
+      overrides:
+        volumes:
+          - ./storage:/app/public/storage

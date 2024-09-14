@@ -10,8 +10,7 @@ class Storage implements StorageInterface
 
     public function __construct(
         private ConfigInterface $config,
-    ) {
-    }
+    ) {}
 
     public function get(string $path): string
     {

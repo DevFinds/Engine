@@ -12,8 +12,7 @@ class UploadedFile implements UploadedFileInterface
         private readonly string $tmpName,
         private readonly string $error,
         public readonly int $size
-    ) {
-    }
+    ) {}
 
     public function move(string $path, string $FileName = null): string | false
     {
@@ -41,6 +40,6 @@ class UploadedFile implements UploadedFileInterface
 
     private function generated_file_name(): string
     {
-        return 'image_' . date('h-i-s') . '.' . $this->getFileExtension();
+        return 'image_' . md5(date('h-i-s')) . '.' . $this->getFileExtension();
     }
 }
