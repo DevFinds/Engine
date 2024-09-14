@@ -8,7 +8,7 @@ config:
   webroot: public
   services:
     mariadb:
-      type: mariadb:11.3
+      type: mariadb:10.5
     phpmyadmin:
       type: phpmyadmin
     appserver:

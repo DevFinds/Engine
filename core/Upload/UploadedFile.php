@@ -42,4 +42,19 @@ class UploadedFile implements UploadedFileInterface
     {
         return 'image_' . md5(date('h-i-s')) . '.' . $this->getFileExtension();
     }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
+    }
+
+    public function getError(): int | null
+    {
+        return $this->error;
+    }
 }

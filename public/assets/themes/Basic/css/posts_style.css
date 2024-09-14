@@ -152,3 +152,17 @@
     flex-direction: row;
     align-items: center;
 }
+
+.Posts-toolbar{
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin-bottom: 10px;
+}
+
+
+.posts-editor {
+    border: 1px solid #ccc;
+    min-height: 300px;
+    padding: 10px;
+    overflow: auto;
+}

@@ -21,7 +21,7 @@
     <div class="posts-post-grid">
         <div class="posts-add-new-post-block">
             <p class="posts-count">Всего записей: <span class="posts-counter">8</span></p>
-            <a href="/admin/dashboard/posts/add" class="posts-create-new-post-button">
+            <a href="\admin\post\create" class="posts-create-new-post-button">
                 <img src="/assets/themes/Basic/img/create-new-post.svg" alt="" id="posts-create-new-post-icon"> Создать новую запись
             </a>
         </div>
