@@ -6,6 +6,7 @@ use Core\RenderInterface;
 use Core\http\Router\Route;
 use Core\Auth\AuthInterface;
 use Core\Event\EventManager;
+use Core\Upload\FileManager;
 use Core\http\RequestInterface;
 use Core\Config\ConfigInterface;
 use Core\http\RedirectInterface;
@@ -33,12 +34,13 @@ class Router implements RouterInterface
         private DatabaseInterface $database,
         private AuthInterface $auth,
         private StorageInterface $storage,
+        private FileManager $fileManager,
         private ConfigInterface $config,
         private EventManager $eventManager
     ) {
         $this->initRoutes();
     }
-    
+
 
     public function dispatch(string $uri, string $method): void
     {
@@ -76,7 +78,6 @@ class Router implements RouterInterface
             /** 
              * @var Controller $controller 
              */
-
 
             // Вызываем action из указанного контроллера.
             call_user_func([$controller, 'setRender'], $this->render);
@@ -128,7 +129,7 @@ class Router implements RouterInterface
 
     private function getRoutes(): array
     {
-        $jsonPath = APP_PATH . '/config/routes.json';
+        $jsonPath = CONFIG_PATH . '/routes.json';
         if (!file_exists($jsonPath)) {
             return [];
         }
@@ -136,7 +137,7 @@ class Router implements RouterInterface
         $jsonContent = file_get_contents($jsonPath);
         $routes = json_decode($jsonContent, true);
 
-        return array_map(fn ($route) => new Route(
+        return array_map(fn($route) => new Route(
             $route['uri'],
             $route['method'],
             [$route['action']['controller'], $route['action']['method']],

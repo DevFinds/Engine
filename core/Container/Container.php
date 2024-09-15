@@ -22,6 +22,7 @@ use Core\Session\SessionInterface;
 use Core\Database\DatabaseInterface;
 use Core\Event\EventManager;
 use Core\http\Router\RouterInterface;
+use Core\Upload\FileManager;
 use Core\Validator\ValidatorInterface;
 
 class Container
@@ -48,6 +49,8 @@ class Container
 
     public readonly StorageInterface $storage;
 
+    public readonly FileManager $fileManager;
+
     public readonly EventManager $eventManager;
 
     public function __construct()
@@ -67,6 +70,7 @@ class Container
         $this->auth = new Auth($this->database, $this->session, $this->config);
         $this->render = new Render($this->session, $this->auth, $this->config);
         $this->storage = new Storage($this->config);
+        $this->fileManager = new FileManager($this->storage);
         $this->validator = new Validator($this->auth, $this->database);
         $this->request->setValidator($this->validator);
         $this->router = new Router(
@@ -77,6 +81,7 @@ class Container
             $this->database,
             $this->auth,
             $this->storage,
+            $this->fileManager,
             $this->config,
             $this->eventManager
         );

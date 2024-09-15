@@ -7,7 +7,11 @@
 
 
 ?>
-<?php $render->component('dashboard_header'); ?>
+<?php $render->component('dashboard_header'); 
+
+
+
+?>
 <div class="dashboard-bottom-section">
     <div class="dashboard-settings-left-column">
         <ul class="dashboard-setting-left-list-">
