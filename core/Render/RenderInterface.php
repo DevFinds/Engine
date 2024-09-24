@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Core;
+namespace Core\Render;
 
 interface RenderInterface
 {

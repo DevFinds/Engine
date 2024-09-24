@@ -2,7 +2,7 @@
 
 namespace Core\http\Router;
 
-use Core\RenderInterface;
+use Core\Render\RenderInterface;
 use Core\http\Router\Route;
 use Core\Auth\AuthInterface;
 use Core\Event\EventManager;

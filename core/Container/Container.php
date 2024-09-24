@@ -2,27 +2,27 @@
 
 namespace Core\Container;
 
-use Core\Render;
 use Core\Auth\Auth;
 use Core\http\Request;
 use Core\Config\Config;
 use Core\http\Redirect;
+use Core\Render\Render;
 use Core\Upload\Storage;
-use Core\RenderInterface;
 use Core\Session\Session;
 use Core\Database\Database;
 use Core\Auth\AuthInterface;
+use Core\Event\EventManager;
 use Core\http\Router\Router;
+use Core\Upload\FileManager;
 use Core\Validator\Validator;
 use Core\http\RequestInterface;
 use Core\Config\ConfigInterface;
 use Core\http\RedirectInterface;
+use Core\Render\RenderInterface;
 use Core\Upload\StorageInterface;
 use Core\Session\SessionInterface;
 use Core\Database\DatabaseInterface;
-use Core\Event\EventManager;
 use Core\http\Router\RouterInterface;
-use Core\Upload\FileManager;
 use Core\Validator\ValidatorInterface;
 
 class Container

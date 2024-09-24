@@ -4,7 +4,7 @@ namespace Core\Controller;
 
 use Core\Auth\Auth;
 use Core\Upload\StorageInterface;
-use Core\RenderInterface;
+use Core\Render\RenderInterface;
 use Core\Auth\AuthInterface;
 use Core\Config\Config;
 use Core\Config\ConfigInterface;

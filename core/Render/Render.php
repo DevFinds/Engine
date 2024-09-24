@@ -1,6 +1,6 @@
 <?php
 
-namespace Core;
+namespace Core\Render;
 
 use Core\Auth\AuthInterface;
 use Core\Config\ConfigInterface;
@@ -14,8 +14,7 @@ class Render implements RenderInterface
         private SessionInterface $session,
         private AuthInterface $auth,
         private ConfigInterface $config,
-    ) {
-    }
+    ) {}
 
     public function page($path, array $data = [])
     {
