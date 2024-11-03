@@ -195,5 +195,16 @@
             "parameters": {
                 "id": "[0-9]+"
             }
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/db/manage",
+            "action": {
+                "controller": "Source\\Controllers\\DatabaseController",
+                "method": "index"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
         }
 ]

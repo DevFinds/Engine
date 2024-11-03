@@ -155,30 +155,72 @@ class Database implements DatabaseInterface
         return true;
     }
 
-    private function createTable()
-    {
-        try {
-            $sql = "CREATE TABLE `users` (
-            `id` int(255) NOT NULL AUTO_INCREMENT,
-            `username` varchar(32) DEFAULT NULL,
-            `login` varchar(32) DEFAULT NULL,
-            `email` varchar(100) DEFAULT NULL,
-            `password` varchar(100) DEFAULT NULL)
-            ENGINE=InnoDB DEFAULT CHARSET=utf8;
-            ALTER TABLE `users`
-            ADD PRIMARY KEY (`id`);";
-            $this->pdo->exec($sql);
-        } catch (PDOException $e) {
-            echo "Error creating table: " . $e->getMessage();
-        }
-    }
 
-    private function createColumn()
-    {
-        $sql = "ALTER TABLE `users`
-          ADD PRIMARY KEY (`id`);";
-        $this->pdo->exec($sql);
+    public function createTable(string $tableName, array $columns): bool
+{
+    $columnsSql = [];
+    foreach ($columns as $columnName => $attributes) {
+        $columnsSql[] = "`$columnName` {$attributes['type']} {$attributes['options']}";
     }
+    $sql = "CREATE TABLE `$tableName` (" . implode(", ", $columnsSql) . ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+    try {
+        $this->pdo->exec($sql);
+        return true;
+    } catch (PDOException $e) {
+        echo "Error creating table: " . $e->getMessage();
+        return false;
+    }
+}
+
+public function addColumn(string $tableName, string $columnName, string $columnType, string $options = ''): bool
+{
+    $sql = "ALTER TABLE `$tableName` ADD `$columnName` $columnType $options";
+    try {
+        $this->pdo->exec($sql);
+        return true;
+    } catch (PDOException $e) {
+        echo "Error adding column: " . $e->getMessage();
+        return false;
+    }
+}
+
+public function modifyColumn(string $tableName, string $columnName, string $columnType, string $options = ''): bool
+{
+    $sql = "ALTER TABLE `$tableName` MODIFY `$columnName` $columnType $options";
+    try {
+        $this->pdo->exec($sql);
+        return true;
+    } catch (PDOException $e) {
+        echo "Error modifying column: " . $e->getMessage();
+        return false;
+    }
+}
+
+public function dropColumn(string $tableName, string $columnName): bool
+{
+    $sql = "ALTER TABLE `$tableName` DROP COLUMN `$columnName`";
+    try {
+        $this->pdo->exec($sql);
+        return true;
+    } catch (PDOException $e) {
+        echo "Error dropping column: " . $e->getMessage();
+        return false;
+    }
+}
+
+public function dropTable(string $tableName): bool
+{
+    $sql = "DROP TABLE IF EXISTS `$tableName`";
+    try {
+        $this->pdo->exec($sql);
+        return true;
+    } catch (PDOException $e) {
+        echo "Error dropping table: " . $e->getMessage();
+        return false;
+    }
+}
+
 
     
 }
+

@@ -22,5 +22,6 @@
             <li class="dashboard-settings-list-item-"><input type="text" class="dashboard-settings-input"><button class="dashboard-settings-save-changes-button"></button></li>
         </ul>
     </div>
+    <a href="/admin/dashboard/db/manage" class="manage-db-button">Управление БД</a>
 </div>
 <?php $render->component('dashboard_footer'); ?>
