@@ -88,7 +88,11 @@ class Router implements RouterInterface
             call_user_func([$controller, 'setAuth'], $this->auth);
             call_user_func([$controller, 'setStorage'], $this->storage);
             call_user_func([$controller, 'setConfig'], $this->config);
-            call_user_func_array([$controller, $action], $this->extractParams($uri, $route));
+            try {
+                call_user_func_array([$controller, $action], $this->extractParams($uri, $route));
+            } catch (\Throwable $th) {
+                $this->render->page('404', ['error' => $th->getMessage()]);
+            }
         } else {
             // Или выполняем анонимную функцию, переданную в routes.php
             call_user_func($route->getAction());

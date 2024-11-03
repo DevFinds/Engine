@@ -24,7 +24,7 @@ class Database implements DatabaseInterface
     {
         $fields = array_keys($data);
         $columns = implode(', ', $fields);
-        $inserting_data = implode(', ', array_map(fn ($field) => ":$field", $fields));
+        $inserting_data = implode(', ', array_map(fn($field) => ":$field", $fields));
 
         $sql = "INSERT INTO $table ($columns) VALUES ($inserting_data)";
         $statement = $this->pdo->prepare($sql);
@@ -40,7 +40,7 @@ class Database implements DatabaseInterface
         return (int) $this->pdo->lastInsertId();
     }
 
-    public function update($table, $data, $conditions = []) : bool
+    public function update($table, $data, $conditions = []): bool
     {
         // Генерация SQL-запроса для обновления данных
         $updateQuery = "UPDATE $table SET ";
@@ -48,7 +48,7 @@ class Database implements DatabaseInterface
         foreach ($data as $key => $value) {
             $updateQuery .= "$key = :$key, ";
         }
-        
+
         $updateQuery = rtrim($updateQuery, ', ');
 
         // Добавление условий, если они переданы
@@ -63,7 +63,7 @@ class Database implements DatabaseInterface
         }
         // Подготовка запроса
         $stmt = $this->pdo->prepare($updateQuery);
-        
+
         // Выполнение запроса с передачей параметров
         try {
             $stmt->execute(array_merge($data, $conditions));
@@ -80,7 +80,7 @@ class Database implements DatabaseInterface
         $where = '';
 
         if (count($conditions) > 0) {
-            $where = 'WHERE ' . implode(' AND ', array_map(fn ($field) => "BINARY $field = :$field", array_keys($conditions)));
+            $where = 'WHERE ' . implode(' AND ', array_map(fn($field) => "BINARY $field = :$field", array_keys($conditions)));
         }
 
         $sql = "SELECT * FROM $table $where LIMIT 1";
@@ -94,12 +94,26 @@ class Database implements DatabaseInterface
         return $result ?: null;
     }
 
+    public function getTables(): array
+    {
+        $stmt = $this->pdo->query("SHOW TABLES");
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function getTableColumns(string $tableName): array
+    {
+        $stmt = $this->pdo->prepare("SHOW COLUMNS FROM `$tableName`");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
     public function get(string $table, array $conditions = []): ?array
     {
         $where = '';
 
         if (count($conditions) > 0) {
-            $where = 'WHERE ' . implode(' AND ', array_map(fn ($field) => "$field = :$field", array_keys($conditions)));
+            $where = 'WHERE ' . implode(' AND ', array_map(fn($field) => "$field = :$field", array_keys($conditions)));
         }
 
         $sql = "SELECT * FROM $table $where";
@@ -129,10 +143,6 @@ class Database implements DatabaseInterface
         } catch (\PDOException $exception) {
             exit("Ошибка подключения к БД: {$exception->getMessage()}");
         }
-
-        if ($this->isTableExists('users') == false) {
-            $this->createTable();
-        }
     }
 
     private function isTableExists(string $table): bool
@@ -157,70 +167,66 @@ class Database implements DatabaseInterface
 
 
     public function createTable(string $tableName, array $columns): bool
-{
-    $columnsSql = [];
-    foreach ($columns as $columnName => $attributes) {
-        $columnsSql[] = "`$columnName` {$attributes['type']} {$attributes['options']}";
+    {
+        $columnsSql = [];
+        foreach ($columns as $columnName => $attributes) {
+            $columnsSql[] = "`$columnName` {$attributes['type']} {$attributes['options']}";
+        }
+        $sql = "CREATE TABLE `$tableName` (" . implode(", ", $columnsSql) . ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+        try {
+            $this->pdo->exec($sql);
+            return true;
+        } catch (PDOException $e) {
+            echo "Error creating table: " . $e->getMessage();
+            return false;
+        }
     }
-    $sql = "CREATE TABLE `$tableName` (" . implode(", ", $columnsSql) . ") ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-    try {
-        $this->pdo->exec($sql);
-        return true;
-    } catch (PDOException $e) {
-        echo "Error creating table: " . $e->getMessage();
-        return false;
+
+    public function addColumn(string $tableName, string $columnName, string $columnType, string $options = ''): bool
+    {
+        $sql = "ALTER TABLE `$tableName` ADD `$columnName` $columnType $options";
+        try {
+            $this->pdo->exec($sql);
+            return true;
+        } catch (PDOException $e) {
+            echo "Error adding column: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function modifyColumn(string $tableName, string $columnName, string $columnType, string $options = ''): bool
+    {
+        $sql = "ALTER TABLE `$tableName` MODIFY `$columnName` $columnType $options";
+        try {
+            $this->pdo->exec($sql);
+            return true;
+        } catch (PDOException $e) {
+            echo "Error modifying column: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function dropColumn(string $tableName, string $columnName): bool
+    {
+        $sql = "ALTER TABLE `$tableName` DROP COLUMN `$columnName`";
+        try {
+            $this->pdo->exec($sql);
+            return true;
+        } catch (PDOException $e) {
+            echo "Error dropping column: " . $e->getMessage();
+            return false;
+        }
+    }
+
+    public function dropTable(string $tableName): bool
+    {
+        $sql = "DROP TABLE IF EXISTS `$tableName`";
+        try {
+            $this->pdo->exec($sql);
+            return true;
+        } catch (PDOException $e) {
+            echo "Error dropping table: " . $e->getMessage();
+            return false;
+        }
     }
 }
-
-public function addColumn(string $tableName, string $columnName, string $columnType, string $options = ''): bool
-{
-    $sql = "ALTER TABLE `$tableName` ADD `$columnName` $columnType $options";
-    try {
-        $this->pdo->exec($sql);
-        return true;
-    } catch (PDOException $e) {
-        echo "Error adding column: " . $e->getMessage();
-        return false;
-    }
-}
-
-public function modifyColumn(string $tableName, string $columnName, string $columnType, string $options = ''): bool
-{
-    $sql = "ALTER TABLE `$tableName` MODIFY `$columnName` $columnType $options";
-    try {
-        $this->pdo->exec($sql);
-        return true;
-    } catch (PDOException $e) {
-        echo "Error modifying column: " . $e->getMessage();
-        return false;
-    }
-}
-
-public function dropColumn(string $tableName, string $columnName): bool
-{
-    $sql = "ALTER TABLE `$tableName` DROP COLUMN `$columnName`";
-    try {
-        $this->pdo->exec($sql);
-        return true;
-    } catch (PDOException $e) {
-        echo "Error dropping column: " . $e->getMessage();
-        return false;
-    }
-}
-
-public function dropTable(string $tableName): bool
-{
-    $sql = "DROP TABLE IF EXISTS `$tableName`";
-    try {
-        $this->pdo->exec($sql);
-        return true;
-    } catch (PDOException $e) {
-        echo "Error dropping table: " . $e->getMessage();
-        return false;
-    }
-}
-
-
-    
-}
-

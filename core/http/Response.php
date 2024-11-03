@@ -2,6 +2,8 @@
 
 namespace Core\Http;
 
+use Core\http\Redirect;
+
 class Response
 {
     private string $content;
@@ -65,5 +67,11 @@ class Response
     {
         $this->sendHeaders();
         echo $this->content;
+    }
+
+    public static function redirect(string $uri)
+    {
+        $redirect = new Redirect();
+        $redirect->to($uri);
     }
 }
