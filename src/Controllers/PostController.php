@@ -19,12 +19,5 @@ class PostController extends Controller
         $file = $file->move('uploads');
         $fileUrl = null;
         $uploadedFile = $request->file('PostThumb');
-
-       
     }
-            
 }
-
-
-
-

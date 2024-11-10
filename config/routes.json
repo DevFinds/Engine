@@ -206,5 +206,42 @@
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
             ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/db/edit/{table_name}",
+            "action": {
+                "controller": "Source\\Controllers\\DatabaseController",
+                "method": "editTable"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "parameters": {
+                "table_name": "[0-9]+"
+            }
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/db/createTable",
+            "action": {
+                "controller": "Source\\Controllers\\DatabaseController",
+                "method": "createTable"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/db/drop-table",
+            "action": {
+                "controller": "Source\\Controllers\\DatabaseController",
+                "method": "dropTable"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
         }
+        
 ]

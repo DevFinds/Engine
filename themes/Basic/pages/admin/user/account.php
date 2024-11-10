@@ -10,33 +10,85 @@ $user = $this->auth->getUser();
 
 <?php $render->component('dashboard_header'); ?>
 
-<div class="account-page-container">
-    <div class="account-card">
-        <img class="account-avatar" src="<?php echo $user->avatar() ?>" alt="">
-        <form action="/user/change-avatar" method="post" enctype="multipart/form-data">
-            <input class="form-control" name="Avatar" type="file" id="UserAvatar">
-            <button type="submit">Изменить аватар</button>
-        </form>
-        <div class="account-card-info">
-            <div class="account-card-top-section">
-                <span class="account-username"><?php echo $user->username() ?> <?php echo $user->lastname(); ?></span>
-                <form action="/user/account-edit" method="post"><button type="submit"><img src="/assets/themes/Basic/img/edit.svg" alt=""></button></form>
+
+<div class="py-5">
+  <!--img-->
+  <div class="card-body">
+    <div class="d-flex flex-column gap-5">
+      <!--img-->
+      <div class="mt-n8">
+        <img src="<?php echo $user->avatar() ?>" alt="mentor 1" class="img-fluid rounded-4 mt-n8" style="width: 128px; height: 128px; border-radius: 100%;">
+      </div>
+      <div class="d-flex flex-column gap-5">
+        <div class="d-flex flex-column gap-3">
+          <div class="d-flex flex-md-row flex-column justify-content-between gap-2">
+            <!--heading-->
+            <div>
+              <h1 class="mb-0"><?php echo $user->username() ?> <?php echo $user->lastname(); ?></h1>
+              <!--content-->
+              <div class="d-flex flex-lg-row flex-column gap-2">
+                <small class="fw-medium text-gray-800"><?php echo $user->login() ?>&nbsp;</small>
+                <small class="fw-medium text-success"><?php echo $user->role() ?> &amp; </small>
+              </div>
             </div>
-            <span class="account-role"><?php echo $user->role() ?></span>
-            <hr class="account-hr">
-            <div class="account-info">
-                <ul class="account-info-list">
-                    <li><img src="/assets/themes/Basic/img/person.svg" alt=""> <?php echo $user->login() ?></li>
-                    <li><img src="/assets/themes/Basic/img/email.svg" alt=""><?php echo $user->email() ?></li>
-                    <li><img src="/assets/themes/Basic/img/phone.svg" alt=""><?php echo $user->phone_number() ?></li>
-                </ul>
+            <!--button-->
+            <div class="d-flex flex-row gap-3 align-items-center">
+              <form action="/user/account-edit" method="post"><button class="btn btn-outline-white" type="submit">Редактировать</button></form>
             </div>
+          </div>
+          <div class="d-flex flex-md-row flex-column gap-md-4 gap-2">
+            <div class="d-flex flex-row gap-2 align-items-center lh-1">
+              <!--icon-->
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-star-fill text-warning align-baseline" viewBox="0 0 16 16">
+                  <path d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"></path>
+                </svg>
+              </span>
+              <span>
+                <!--text-->
+                <span class="text-gray-800 fw-bold">5.0</span>
+                (16&nbsp;Reviews)
+              </span>
+            </div>
+            <div class="d-flex flex-row gap-2 align-items-center lh-1">
+              <!--icon-->
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-people-fill text-primary align-baseline" viewBox="0 0 16 16">
+                  <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"></path>
+                </svg>
+              </span>
+              <!--text-->
+              <span>
+                <span class="text-gray-800 fw-bold">40+</span>
+                Mentees
+              </span>
+            </div>
+            <div class="d-flex flex-row gap-2 align-items-center lh-1">
+              <!--icon-->
+              <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-geo-alt-fill text-danger" viewBox="0 0 16 16">
+                  <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10m0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6"></path>
+                </svg>
+              </span>
+              <!--text-->
+              <span>Казань</span>
+            </div>
+          </div>
         </div>
-    </div>
-    <div class="account-search-posts">
+        <div class="d-flex flex-column gap-2">
+          <!--heading-->
+          <h3 class="mb-0">Данные</h3>
 
+          <div class="gap-2 d-flex flex-wrap">
+            <a href="#!" class="btn btn-tag btn-sm btn-outline-success"><?php echo $user->email() ?></a>
+            <a href="#!" class="btn btn-tag btn-sm btn-outline-success"><?php echo $user->phone_number() ?></a>
+          </div>
+        </div>
+        <div>
+        </div>
+      </div>
     </div>
-
+  </div>
 </div>
 
 <?php $render->component('dashboard_footer'); ?>

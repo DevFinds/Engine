@@ -19,6 +19,23 @@ class Database implements DatabaseInterface
         $this->connect();
     }
 
+
+    public function beginTransaction(): void
+    {
+        $this->pdo->beginTransaction();
+    }
+
+    public function commit(): void
+    {
+        $this->pdo->commit();
+    }
+
+    public function rollBack(): void
+    {
+        $this->pdo->rollBack();
+    }
+
+
     // Метод для добавления записей в таблицы БД
     public function insert(string $table, array $data): int|false
     {
@@ -72,6 +89,16 @@ class Database implements DatabaseInterface
             return false;
         }
         return true;
+    }
+
+    // Метод для выполнения SQL-запроса
+    public function execute(string $sql): void
+    {
+        $stmt = $this->pdo->prepare($sql);
+        if (!$stmt->execute()) {
+            $errorInfo = $stmt->errorInfo();
+            throw new \Exception($errorInfo[2]);
+        }
     }
 
     public function first_found_in_db(string $table, array $conditions = []): ?array
@@ -145,7 +172,7 @@ class Database implements DatabaseInterface
         }
     }
 
-    private function isTableExists(string $table): bool
+    public function isTableExists(string $table): bool
     {
         try {
             $sql = "SELECT 1 FROM $table LIMIT 1";
@@ -156,7 +183,7 @@ class Database implements DatabaseInterface
             return false;
         }
     }
-    private function isColumnExists(string $table, string $column): bool
+    public function isColumnExists(string $table, string $column): bool
     {
         $sql = "SELECT $column FROM information_schema.columns WHERE table_name = '$table' AND column_name = '$column'";
         if (!$this->pdo->query($sql)) {

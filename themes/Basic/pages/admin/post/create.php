@@ -23,7 +23,7 @@
     <button onclick="execCmd('justifyRight')">Align Right</button>
     <button onclick="execCmd('justifyFull')">Justify</button>
 </div>
-<div class="posts-editor" contenteditable="true"></div>
+<div class="posts-editor" contenteditable="true" style="height: 250px; padding: 16px"></div>
 <form method="POST" action="/admin/post/create" enctype="multipart/form-data">
     <input type="hidden" name="content" id="hiddenContent">
     <input type="file" name="PostThumb"> <!-- Поле для выбора файла -->

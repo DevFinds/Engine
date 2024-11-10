@@ -5,6 +5,10 @@
  * @var array<\Source\Models\User> $users
  * @var array<\Source\Models\Role> $roles
  */
+
+$posts = $data['posts'];
+$authors = $data['authors'];
+
 ?>
 <?php $render->component('dashboard_header'); ?>
 
@@ -20,7 +24,7 @@
     </div>
     <div class="posts-post-grid">
         <div class="posts-add-new-post-block">
-            <p class="posts-count">Всего записей: <span class="posts-counter">8</span></p>
+            <p class="posts-count">Всего записей: <span class="posts-counter"><?php echo count($posts) ?></span></p>
             <a href="\admin\post\create" class="posts-create-new-post-button">
                 <img src="/assets/themes/Basic/img/create-new-post.svg" alt="" id="posts-create-new-post-icon"> Создать новую запись
             </a>
@@ -29,12 +33,12 @@
         <div class="posts-post-grid-block">
             <div class="posts-post-card-block">
                 <div class="posts-post-card">
-                    <img src="/assets/themes/Basic/img/post-thumb.png" alt="" class="posts-card-post-thumb">
+                    <img class="posts-card-post-thumb" src="/assets/themes/Basic/img/post-thumb.png" alt="" class="posts-card-post-thumb">
                     <div class="posts-post-card-content-block">
-                        <p class="posts-post-card-author"><img src="/assets/themes/Basic/img/post-card-author-icon.svg" alt="" id="post-author"> Oreele</p>
-                        <p class="posts-post-content">FeathersJS: Быстрая навигация в мире Node.js и MongoDB</p>
+                        <p class="posts-post-card-author"><img src="/assets/themes/Basic/img/post-card-author-icon.svg" alt="" id="post-author"> <?php echo $authors[$posts[0]['post_author']]->username() ?></p>
+                        <p class="posts-post-content"><?php echo $posts[0]['post_description'] ?></p>
                         <p class="posts-post-pub-date">
-                            <img src="/assets/themes/Basic/img/post-card-date-icon.svg" alt="" id="post-date"> 09.08.23
+                            <img src="/assets/themes/Basic/img/post-card-date-icon.svg" alt="" id="post-date"> <?php echo $posts[0]['post_date'] ?>
                         </p>
                     </div>
                 </div>

@@ -40,4 +40,6 @@ $profile_user_role_name = $data['profile_user_role_name'];
 
 </div>
 
+
+
 <?php $render->component('dashboard_footer'); ?>

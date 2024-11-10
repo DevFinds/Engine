@@ -98,13 +98,17 @@
 }
 
 .posts-post-card-block {
-    max-width: 262px!important;
+    max-width: 280px!important;
     border: 12px;
 }
 
 .posts-post-card {
     box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
     border: 12px;
+}
+
+.posts-card-post-thumb {
+    width: 100%;
 }
 
 .posts-post-card-content-block {
@@ -138,12 +142,22 @@
     list-style: none;
     gap: 8px;
     align-items: center;
+    padding: 0px;
 
 }
 
 .posts-action-button {
     padding: 24px 8px;
     background-color: #ECECEC;
+    border-radius: 4px;
+
+}
+
+.posts-action-button:hover {
+    background-color: var(--blue-accent);
+    color: var(--white);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
 
 }
 

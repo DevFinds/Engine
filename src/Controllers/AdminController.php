@@ -5,6 +5,7 @@ namespace Source\Controllers;
 
 use Core\http\Redirect;
 use Core\Controller\Controller;
+use Source\Services\PostService;
 use Source\Services\RoleService;
 use Source\Services\UserService;
 
@@ -39,7 +40,9 @@ class AdminController extends Controller
 
     public function posts()
     {
-        $this->render('admin/dashboard/posts');
+        $authors = (new UserService($this->getDatabase()))->getAllFromDB();
+        $posts = (new PostService($this->getDatabase()))->getPosts();
+        $this->render('admin/dashboard/posts', ['authors' => $authors, 'posts' => $posts]); 
     }
 
     public function addNewRole()
