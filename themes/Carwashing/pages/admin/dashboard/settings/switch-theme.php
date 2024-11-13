@@ -25,7 +25,13 @@
     </div>
     <div class="dashboard-div-second">
         <a href="/admin/dashboard/db/manage" class="manage-db-button">Управление БД</a>
-        <a href="/admin/dashboard/settings/switch-theme" class="switch-theme-button">Выбрать тему</a>
+        <select name="app-theme-select" id="app-theme-select">
+            <?php
+            foreach ($themes as $theme) {
+                echo '<option value="' . $theme . '">' . $theme . '</option>';
+            }
+            ?>
+        </select>
     </div>
 
 </div>

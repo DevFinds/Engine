@@ -242,6 +242,20 @@
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
             ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/settings/switch-theme",
+            "action": {
+                "controller": "Source\\Controllers\\ThemeController",
+                "method": "getThemesDirectories"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "parameters": {
+                "theme_name": "[a-z]"
+            }
         }
         
 ]

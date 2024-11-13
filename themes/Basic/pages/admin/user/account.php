@@ -4,8 +4,11 @@
  * @var \Core\Render $render
  * @var \Source\Models\User $user
  * @var \Source\Models\Role $role
+ * @var \Source\Models\RoleService $roles
  */
 $user = $this->auth->getUser();
+$role = $roles[$user->role() - 1]->role_name();
+
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -28,7 +31,7 @@ $user = $this->auth->getUser();
               <!--content-->
               <div class="d-flex flex-lg-row flex-column gap-2">
                 <small class="fw-medium text-gray-800"><?php echo $user->login() ?>&nbsp;</small>
-                <small class="fw-medium text-success"><?php echo $user->role() ?> &amp; </small>
+                <small class="fw-medium text-success"><?php echo $role ?> &amp; </small>
               </div>
             </div>
             <!--button-->
@@ -92,3 +95,4 @@ $user = $this->auth->getUser();
 </div>
 
 <?php $render->component('dashboard_footer'); ?>
+use Source\Services\UserService;
