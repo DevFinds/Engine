@@ -244,11 +244,11 @@
             ]
         },
         {
-            "method": "GET",
-            "uri": "/admin/dashboard/settings/switch-theme",
+            "method": "POST",
+            "uri": "/admin/dashboard/settings/switch-theme/{theme_name}",
             "action": {
-                "controller": "Source\\Controllers\\ThemeController",
-                "method": "getThemesDirectories"
+                "controller": "Source\\Controllers\\AdminController",
+                "method": "switch_theme"
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
@@ -256,6 +256,17 @@
             "parameters": {
                 "theme_name": "[a-z]"
             }
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/settings/route-manager",
+            "action": {
+                "controller": "Source\\Controllers\\RouteController",
+                "method": "index"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
         }
         
 ]

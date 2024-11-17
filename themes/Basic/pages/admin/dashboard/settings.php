@@ -26,6 +26,7 @@
     <div class="dashboard-div-second">
         <a href="/admin/dashboard/db/manage" class="manage-db-button">Управление БД</a>
         <a href="/admin/dashboard/settings/switch-theme" class="switch-theme-button">Выбрать тему</a>
+        <a href="/admin/dashboard/settings/route-manager" class="route-manage-button">Редактор маршрутов</a>
     </div>
 
 </div>

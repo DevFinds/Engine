@@ -9,7 +9,7 @@
         
         <!-- Сайдбар с меню -->
         <div class="menu-sidebar">
-            <img src="/assets/themes/Carwashing/img/brand-logo.svg" alt="" class="brand-logo">
+            <a href="/"><img src="/assets/themes/Carwashing/img/brand-logo.svg" alt="" class="brand-logo"></a>
             
             <?php $render->enqueue_menu('sidebar_menu'); ?>
 

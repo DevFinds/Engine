@@ -6,15 +6,17 @@ namespace Source\Controllers;
 use Core\http\Request;
 use Core\http\Response;
 use Core\http\Router\Route;
+use Core\Controller\Controller;
 use Core\http\Router\RouteManager;
 
-class RouteController
+class RouteController extends Controller
 {
     private $routeManager;
 
-    public function __construct()
+    public function index()
     {
         $this->routeManager = new RouteManager(APP_PATH . '/config/routes.json');
+        $this->render('/admin/dashboard/settings/route-manager', ['routes' => $this->getRoutes()]);
     }
 
     public function getRoutes()

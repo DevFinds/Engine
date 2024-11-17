@@ -44,6 +44,13 @@ class AdminController extends Controller
         $posts = (new PostService($this->getDatabase()))->getPosts();
         $this->render('admin/dashboard/posts', ['authors' => $authors, 'posts' => $posts]); 
     }
+    public function switch_theme($theme)
+    {
+
+        $this->getConfig()->setJson('app.theme', $theme);
+        $this->getConfig()->saveJson('app');
+        $this->redirect('/admin/dashboard/settings');
+    }
 
     public function addNewRole()
     {
