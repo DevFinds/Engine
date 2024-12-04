@@ -267,6 +267,17 @@
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
             ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/reports",
+            "action": {
+                "controller": "Source\\Controllers\\ReportController",
+                "method": "index"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
         }
         
 ]

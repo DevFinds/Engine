@@ -9,7 +9,7 @@
         {
             "name": "Отчеты",
             "icon": "icon-user",
-            "url": "/admin/dashboard/records"
+            "url": "/admin/dashboard/reports"
         },
         {
             "name": "Продажа услуг",
