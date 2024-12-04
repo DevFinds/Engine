@@ -10,7 +10,7 @@
 </div>
 
 <footer>
-
+    <?php $render->enqueue_all_scripts(); ?>
 </footer>
 
 </body>
