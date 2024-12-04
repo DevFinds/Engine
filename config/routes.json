@@ -267,6 +267,17 @@
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
             ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/service_sales",
+            "action": {
+                "controller": "Source\\Controllers\\ServiceController",
+                "method": "index"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
         }
         
 ]

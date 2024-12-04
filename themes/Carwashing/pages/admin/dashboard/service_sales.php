@@ -1,0 +1,132 @@
+<?php
+
+/**
+ * @var \Core\RenderInterface $render
+ * @var \Core\Session\SessionInterface $session
+ * @var \Core\Auth\AuthInterface $auth
+ */
+
+$user = $this->auth->getUser();
+?>
+
+<?php $render->component('dashboard_header'); ?>
+<!-- Сайдбар с меню -->
+    <?php $render->component('menu_sidebar'); ?>
+    <!-- Тело страницы -->
+    <!-- Контейнер с содержимым страницы -->
+    <div class="page-content-container">
+        <!-- Содержимое страницы -->
+        <div class="page-content">
+
+            <!-- Header страницы -->
+            <div class="page-content-header">
+
+<!-- Хлебные крошки -->
+<div class="breadcrumbs-container">
+    <a href="" class="breadcrumb-previous">Страницы</a>
+    <span class="breadcrumb-separator">/</span>
+    <a href="" class="breadcrumb-current">Продажа услуг</a>
+</div>
+
+<!-- Пользователь -->
+<div class="user-container">
+    <img src="./assets/img/avatar.png" class="user-avatar" alt="">
+    <span class="username">Иван Иванов</span>
+    <svg class="user-menu-icon" width="10" height="6" viewBox="0 0 10 6" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        
+</div>
+</div>
+
+
+<!-- Содержимое страницы -->
+<div class=page-content-body>
+
+<div class="tabs-container">
+
+    <div class="tabs">
+        <div class="tab active" data-tab="carWash" onclick="switchTab('carWash', 'tabs')">Автомойка</div>
+        <div class="tab" data-tab="cafe" onclick="switchTab('cafe')">Кафе</div>
+    </div>
+</div>
+
+<div id="carWashContainer" class = "tab-content">
+    <div class="about-service-forms">
+        <ul class="about-service-forms-first-column">
+            <li>
+                <label class="about-service-form-label">Услуга</label>
+                <select class="about-service-form">
+                    <option disabled selected>Выбрать услугу</option>
+                    <option>Мойка</option>
+                    <option>Полировка</option>
+                    <option>Химчистка</option>
+                </select>
+            </li>
+            <li>
+                <label class="about-service-form-label">Сотрудник</label>
+                <select class="about-service-form">
+                    <option disabled selected>Выбрать сотрудника</option>
+                    <option>Иван Иванов</option>
+                    <option>Иван Иванов</option>
+                    <option>Иван Иванов</option>
+                </select>
+            </li>
+            <li>
+                <label class="about-service-form-label">Скидка</label>
+                <input type="text" placeholder="Ввести промокод">
+            </li>
+        </ul>
+        <ul class="about-service-forms-second-column">
+            <li>
+                <label class="about-service-form-label">Гос. номер автомобиля</label>
+                <input type="text" 
+                placeholder="A000AA00"
+                pattern="[АВЕКМНОРСТУХ]{1}\d{3}[АВЕКМНОРСТУХ]{2}\d{2,3}"
+                title="Введите номер в формате A111AA111 или A111AA111R" 
+                required>
+            </li>
+            <li>
+                <label class="about-service-form-label">Модель автомобиля</label>
+                <input type="text" placeholder="Ввести модель">
+            </li>
+            <li>
+                <label class="about-service-form-label">Марка автомобиля</label>
+                <input type="text" placeholder="Ввести марку">
+            </li>
+        </ul>
+    </div>
+</div>
+    
+<div id="cafeContainer" class="tab-content" style="display: none;">
+    <div class="about-cafe-forms">
+        <div class="about-cafe-forms-first-column">
+            <label class="about-cafe-form-label">Товар</label>
+            <input type="text" placeholder="Выбрать товар">
+        </div>
+        <div class="about-cafe-forms-second-column">
+            <label class="about-cafe-form-label">Кол-во товара</label>
+            <input type="text" placeholder="Кол-во, шт">
+        </div>
+    </div>
+</div>
+<div class="payment-section">
+    <div class="payment-options">
+        <label class="payment-options-label"> Выбрать рассчет</label>
+        <div class="payment-buttons">
+            <button type="button" class="payment-button active" onclick="togglePayment('cash')">Наличный</button>
+            <button type="button" class="payment-button" onclick="togglePayment('card')">Безналичный</button>
+        </div>
+        <button class="save-button">Сохранить</button>
+    </div>
+    <div class="total-amount">
+        <label class="total-amount-label">Итоговая сумма</label>
+        <div class="total-amount-value">500 ₽</div>
+    </div>
+</div>
+
+</div>
+        </div>
+    </div>
+
+<?php $render->component('dashboard_footer'); ?>

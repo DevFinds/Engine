@@ -107,7 +107,7 @@
 }
 
 /*
-! tailwindcss v3.4.13 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.14 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -550,7 +550,7 @@ video {
 
 /* Make elements with the HTML hidden attribute stay hidden by default */
 
-[hidden] {
+[hidden]:where(:not([hidden="until-found"])) {
   display: none;
 }
 
@@ -780,7 +780,11 @@ li {
   padding: 12px 0px;
 }
 
+/* ------------------------------------------------- */
+
 /* Блок со стилями для главной страницы */
+
+/* ------------------------------------------------ */
 
 /* Маленькие виджеты */
 
@@ -877,7 +881,11 @@ li {
   margin-top: 24px;
 }
 
+/* ------------------------------------------------- */
+
 /* Блок со стилями для Страницы управления компанией */
+
+/* ------------------------------------------------- */
 
 .tabs-container {
   display: flex;
@@ -912,6 +920,7 @@ li {
 .tab.active {
   color: var(--white);
   border-bottom: var(--purple-accent) 2px solid;
+  display: block;
 }
 
 .about-company-tab-container {
@@ -941,17 +950,54 @@ li {
   font-size: 24px;
 }
 
+.employees-tab-container {
+  min-width: 100%;
+}
+
+.manage_company__date-range {
+  cursor: pointer;
+  background-color: #0f3460;
+  padding: 10px 20px;
+  border-radius: 5px;
+  display: inline-block;
+  font-size: 16px;
+  color: #fff;
+  text-align: center;
+}
+
+/* ------------------------------------------------ */
+
+/* Блок со стилями для Страницы управления доступом */
+
+/* ------------------------------------------------ */
+
+.role__list {
+  max-width: 40;
+}
+
+/* ------------------------------------------------ */
+
 /* Блок со стилями для Страницы продажи услуг и товаров */
+
+/* ------------------------------------------------ */
 
 /* Стили для контейнера формы */
 
-.car-wash-tab-container {
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+  /* Или flex, если используется flexbox */
+}
+
+.about-service-forms {
   display: flex;
-  gap: 20px;
-  margin-top: 20px;
+  flex-direction: row;
+  justify-content: space-between;
   width: 100%;
   max-width: 584px;
-  justify-content: space-between;
 }
 
 .about-service-forms-first-column {
@@ -1170,11 +1216,20 @@ input[type="text"]:focus,
   flex-direction: column;
   background-color: var(--dark-middle-bg);
   border-radius: 16px;
-  max-width: 760px;
   width: 100%;
 }
 
-.act-checking-container {
+.accountable-funds-tab-container {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--dark-middle-bg);
+  border-radius: 16px;
+  width: 100%;
+}
+
+.financial-accounting-first-container {
+  display: flex;
+  flex-direction: column;
   padding: 24px;
   background-color: var(--dark-bg);
   border-radius: 16px;
@@ -1184,13 +1239,13 @@ input[type="text"]:focus,
   margin-top: 16px;
 }
 
-.act-checking__create {
+.financial-accounting-first__create {
   display: flex;
   gap: 12px;
   flex-direction: column;
 }
 
-.act-checking__create-forms{
+.financial-accounting-first__create-forms{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -1199,8 +1254,8 @@ input[type="text"]:focus,
   -moz-appearance: textfield;
 }
 
-.act-checking__create-first-column,
-.act-checking__create-second-column {
+.financial-accounting-first__create-first-column,
+.financial-accounting-first__create-second-column {
   list-style-type: none;
   padding: 0;
   display: flex;
@@ -1209,15 +1264,21 @@ input[type="text"]:focus,
   width: 100%;
 }
 
-.act-checking-label{
+.financial-accounting-first-label{
   font-size: var(--font-size-menu);
   color: var(--white);
   font-family: var(--font-family);
 }
 
-.act-checking__create input[type="number"],
-.act-checking__create input[type="date"],
-.act-checking__create-select  {
+.financial-accounting-first__list-label{
+  font-size: var(--font-size-menu);
+  color: var(--white);
+  font-family: var(--font-family);
+}
+
+.financial-accounting-first__create input[type="number"],
+.financial-accounting-first__create input[type="date"],
+.financial-accounting-first__create-select  {
   width: 100%;
   padding: 11px;
   font-size: 14px;
@@ -1228,19 +1289,19 @@ input[type="text"]:focus,
   height: 43px;
 }
 
-.act-checking__create input[type="number"]::-webkit-outer-spin-button,
-.act-checking__create input[type="number"]::-webkit-inner-spin-button {
+.financial-accounting-first__create input[type="number"]::-webkit-outer-spin-button,
+.financial-accounting-first__create input[type="number"]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-.act-checking__create-select option {
+.financial-accounting-first__create-select option {
   color: var(--dark-inactive);
 }
 
 /* Стиль для кнопки с комментарием */
 
-.act-checking__note-container {
+.financial-accounting-first__note-container {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -1249,7 +1310,7 @@ input[type="text"]:focus,
 
 /* Кнопка добавления примечания */
 
-.act-checking__note-button {
+.financial-accounting-first__note-button {
   padding: 12px 0px 12px 0px;
   font-size: var(--font-size-menu);
   color: var(--white);
@@ -1262,14 +1323,14 @@ input[type="text"]:focus,
   margin-bottom: -18px;
 }
 
-.act-checking__note-button:hover {
-  background-color: #5a67d8;
+.financial-accounting-first__note-button:hover {
+  background-color: var(--purple-accent);
   /* Немного темнее при наведении */
 }
 
 /* Контейнер для текстового поля примечания */
 
-.act-checking__note-field-container {
+.financial-accounting-first__note-field-container {
   max-height: 0;
   opacity: 0;
   overflow: hidden;
@@ -1279,7 +1340,7 @@ input[type="text"]:focus,
 
 /* При отображении */
 
-.act-checking__note-field-container.show {
+.financial-accounting-first__note-field-container.open {
   max-height: 120px;
   /* Настраиваемая высота при показе */
   opacity: 1;
@@ -1289,7 +1350,7 @@ input[type="text"]:focus,
 
 /* Поле ввода для примечания */
 
-.act-checking__note-field {
+.financial-accounting-first__note-field {
   width: 100%;
   padding: 12px;
   font-size: var(--font-size-menu);
@@ -1303,14 +1364,14 @@ input[type="text"]:focus,
 
 /* Стили для кнопок */
 
-.act-checking__buttons {
+.financial-accounting-first__buttons {
   display: flex;
   gap: 12px;
   margin-top: 12px;
 }
 
-.act-checking__button-save,
-.act-checking__button-clear {
+.financial-accounting-first__button-save,
+.financial-accounting-first__button-clear {
   padding: 12px 24px;
   font-size: var(--font-size-menu);
   color: var(--white);
@@ -1323,17 +1384,17 @@ input[type="text"]:focus,
   max-height: 43px;
 }
 
-.act-checking__button-save {
+.financial-accounting-first__button-save {
   background-color: var(--purple-accent);
 }
 
-.act-checking__button-clear {
+.financial-accounting-first__button-clear {
   background-color: var(--dark-hover);
 }
 
-.act-checking__list {
+.financial-accounting-first__list {
   width: 100%;
-  max-width: 760px;
+  max-width: 1080px;
   background-color: var(--dark-bg);
   border-radius: 16px;
   /* Закругление основного контейнера */
@@ -1345,7 +1406,13 @@ input[type="text"]:focus,
   margin-top: 16px;
 }
 
-.act-checking__list table {
+.financial-accounting-first-list-label{
+  font-size: var(--font-size-menu);
+  color: var(--white);
+  font-family: var(--font-family);
+}
+
+.financial-accounting-first__list table {
   width: 100%;
   border-collapse: separate;
   /* Разделяем строки для закругления */
@@ -1353,7 +1420,7 @@ input[type="text"]:focus,
   /* Отступ между строками */
 }
 
-.act-checking__list th {
+.financial-accounting-first__list th {
   text-align: left;
   padding: 12px;
   color: var(--dark-inactive);
@@ -1361,27 +1428,27 @@ input[type="text"]:focus,
   font-weight: var(--font-weight-regular);
 }
 
-.act-checking__list thead {
+.financial-accounting-first__list thead {
   margin-bottom: 12px;
   /* Отступ между thead и tbody */
 }
 
-.act-checking__list tbody tr {
+.financial-accounting-first__list tbody tr {
   position: relative;
   background-color: var(--dark-bg);
   /* Цвет строки по умолчанию */
   transition: background-color 0.3s ease;
 }
 
-.act-checking__list tbody tr:nth-child(even) {
+.financial-accounting-first__list tbody tr:nth-child(odd) {
   background-color: var(--dark-middle-bg);
   /* Чередование цветов строк */
 }
 
-.act-checking__list tbody tr:hover {
+.financial-accounting-first__list tbody tr:hover {
 }
 
-.act-checking__list tbody tr td {
+.financial-accounting-first__list tbody tr td {
   padding: 12px;
   text-align: left;
   color: var(--white);
@@ -1389,14 +1456,14 @@ input[type="text"]:focus,
 
 /* Закругление для первой и последней ячейки строки */
 
-.act-checking__list tbody tr td:first-child {
+.financial-accounting-first__list tbody tr td:first-child {
   border-top-left-radius: 8px;
   /* Левый верхний угол */
   border-bottom-left-radius: 8px;
   /* Левый нижний угол */
 }
 
-.act-checking__list tbody tr td:last-child {
+.financial-accounting-first__list tbody tr td:last-child {
   border-top-right-radius: 8px;
   /* Правый верхний угол */
   border-bottom-right-radius: 8px;
@@ -1405,7 +1472,7 @@ input[type="text"]:focus,
 
 /* Стили для кнопки или иконки редактирования */
 
-.act-checking__edit-button {
+.financial-accounting-first__edit-button {
   position: absolute;
   right: 16px;
   top: 50%;
@@ -1429,7 +1496,7 @@ input[type="text"]:focus,
   transition: opacity 0.7s ease, visibility 0.s linear 0.2s, background-color 0.3s ease;
 }
 
-.act-checking__list tbody tr:hover .act-checking__edit-button {
+.financial-accounting-first__list tbody tr:hover .financial-accounting-first__edit-button {
   opacity: 1;
   /* Плавное появление */
   visibility: visible;
@@ -1441,27 +1508,379 @@ input[type="text"]:focus,
 
 /* Подсветка кнопки при наведении */
 
-.act-checking__edit-button:hover {
+.financial-accounting-first__edit-button:hover {
   background-color: #3F4653;
-  /* Синий фон кнопки */
 }
 
 /* SVG внутри кнопки */
 
-.act-checking__edit-button svg {
+.financial-accounting-first__edit-button svg {
   fill: var(--purple-accent);
   /* Цвет иконки */
 }
 
 /* Вкладка подотчетных средств */
 
-.accountable-funds-tab-container {
+.accountable-fundsContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--dark-middle-bg);
+  border-radius: 16px;
+  max-width: 760px;
+  width: 100%;
+}
+
+#cash-transactionsContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--dark-middle-bg);
+  border-radius: 16px;
+  width: 100%;
+}
+
+#debt-accountingContainer {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--dark-middle-bg);
+  border-radius: 16px;
+  width: 100%;
+}
+
+/* Блок со стилями для экрана склада */
+
+.warehouseOOO-tab-container{
+  display: flex;
+  flex-direction: column;
+  background-color: var(--dark-middle-bg);
+  border-radius: 16px;
+  width: 100%;
+}
+
+.warehouseIP-tab-container{
+  display: flex;
+  flex-direction: column;
+  background-color: var(--dark-middle-bg);
+  border-radius: 16px;
+  width: 100%;
+}
+
+.warehouse-button{
+  display: flex;
+  margin-top: 16px;
+  padding: 12px 16px;
+  align-items: center;
+  justify-content: center;
+  max-width:240px;
+  font-family: var(--font-family);
+  font-size: 16px;
+  color: var(--white);
+  background-color: var(--purple-accent);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 36px;
+}
+
+.warehouse-label{
+  color: var(--white);
+  font-size: var(--font-size-menu);
+}
+
+.warehouse-move-label{
+  color: var(--white);
+  font-size: var(--font-size-menu);
+  margin-top: 12px ;
+}
+
+.warehouse-list-label{
+  color: var(--white);
+  font-size: var(--font-size-menu);
+}
+
+.warehouse-list table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 2px;
+  /* Расстояние между строками */
+  background-color: var(--dark-bg);
+  margin-top: 16px;
+  padding: 24px;
+  border-radius: 16px;
+  max-width: 640px;
+}
+
+.warehouse-list th {
+  text-align: left;
+  padding: 12px;
+  color: var(--dark-inactive);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-regular);
+}
+
+.warehouse-list thead {
+  margin-bottom: 12px;
+}
+
+.warehouse-list tbody tr {
+  /* Основной цвет строк */
+  transition: background-color 0.3s ease;
+}
+
+.warehouse-list tbody tr:hover {
+  background-color: var(--dark-hover);
+  /* Цвет строки при наведении */
+}
+
+.warehouse-list td {
+  padding: 12px;
+  text-align: left;
+  color: var(--white);
+  font-family: var(--font-family);
+}
+
+.warehouse-list tbody tr:nth-child(odd) {
+  background-color: var(--dark-middle-bg);
+  /* Чередование цветов строк */
+}
+
+.warehouse-list tbody tr:nth-child(odd):hover{
+  background-color: var(--dark-hover);
+}
+
+/* Закругление для первой и последней ячейки строки */
+
+.warehouse-list td:first-child {
+  border-top-left-radius: 8px;
+  /* Левый верхний угол */
+  border-bottom-left-radius: 8px;
+  /* Левый нижний угол */
+}
+
+.warehouse-list td:last-child {
+  border-top-right-radius: 8px;
+  /* Правый верхний угол */
+  border-bottom-right-radius: 8px;
+  /* Правый нижний угол */
+}
+
+/* Дополнительные отступы и оформление */
+
+.warehouse-list th:first-child,
+.warehouse-list td:first-child {
+  padding-left: 16px;
+  /* Отступ слева */
+}
+
+.warehouse-list th:last-child,
+.warehouse-list td:last-child {
+  padding-right: 16px;
+  /* Отступ справа */
+}
+
+/* Блок со стилями для форм складского учета */
+
+.warehouse-forms-container{
+  display: flex;
+  flex-direction: row;
+  background-color: var(--dark-middle-bg);
+  width: 100%;
+}
+
+.warehouse-first-column{
+  width: 100%;
+  max-width: 640px;
+}
+
+.warehouse-second-column {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  margin-left: 36px;
+  gap: 32px;
+}
+
+.warehouse-form-label {
+  font-size: 16px;
+  font-family: var(--font-family);
+  color: var(--white);
+  font-weight: var(--font-weight-regular);
+}
+
+.warehouse-income-form, .warehouse-manage-form {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--dark-bg);
+  border-radius: 16px;
+  padding: 24px;
+  gap: 12px;
+  /* Расстояние между элементами формы */
+  margin-top: 16px;
+}
+
+.warehouse-form-select, .warehouse-income-form input, .warehouse-manage-form input {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--dark-hover);
+  border: none;
+  border-radius: 8px;
+  color: var(--dark-inactive);
+  font-family: var(--font-family);
+  font-size: var(--font-size-menu);
+}
+
+.warehouse-form-button-container {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 24px;
+  gap: 16px;
+}
+
+.warehouse-form-button {
+  padding: 12px 24px;
+  background-color: var(--purple-accent);
+  border: none;
+  border-radius: 8px;
+  color: var(--white);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: var(--font-family);
+  font-size: var(--font-size-menu);
+}
+
+.warehouse-form-button:hover {
+  background-color: var(--dark-hover);
+}
+
+.warehouse-form-button.cancel {
+  background-color: var(--dark-bg);
+  color: var(--dark-inactive);
+}
+
+.warehouse-form-button.cancel:hover {
+  background-color: var(--dark-hover);
+  color: var(--white);
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Блок со стилями для экрана отчетов */
+
+.create-report-tab-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.create-report-container{
+  display: flex;
+  flex-direction: column;
   padding: 24px;
   background-color: var(--dark-bg);
   border-radius: 16px;
-  margin-top: -16px;
-  max-width: 760px;
+  margin-bottom: 36px;
+  max-width: 1080px;
   width: 100%;
+  margin-top: 16px;
+}
+
+.reports-tab-container{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.reports-container{
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  background-color: var(--dark-bg);
+  border-radius: 16px;
+  margin-bottom: 36px;
+  max-width: 1080px;
+  width: 100%;
+  margin-top: 16px;
+}
+
+.report-search-results {
+  padding-top: 16px;
+  border-radius: 16px;
+  max-width: 100%;
+  width: 100%;
+  max-width: 1080px;
+  color: var(--white);
+  font-family: var(--font-family);
+  font-size: var(--font-size-menu);
+  overflow: hidden;
+}
+
+.report {
+  background-color: var(--dark-bg);
+  padding: 16px;
+  margin-bottom: 12px;
+  border-radius: 16px;
+}
+
+.report-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.report-title {
+  font-size: var(--font-size-menu);
+  font-family: var(--font-family);
+}
+
+.report-type {
+  font-size: var(--font-size-menu);
+  color: var(--white);
+}
+
+.report-type-label{
+  font-size: var(--font-size-menu);
+  color: var(--dark-inactive);
+}
+
+.report-body {
+  display: flex;
+  justify-content: space-between;
+}
+
+.report-selection {
+  font-size: var(--font-size-menu);
+  color: var(--white);
+}
+
+.report-selection-label{
+  font-size: var(--font-size-menu);
+  color: var(--dark-inactive);
+}
+
+.report-dates {
+  font-size: var(--font-size-menu);
+  color: var(--dark-inactive);
+}
+
+.report-date {
+  margin-left: 10px;
+  font-size: var(--font-size-menu);
+  color: var(--dark-inactive);
+}
+
+.report-period{
+  font-size: var(--font-size-menu);
+  color: var(--white);
+}
+
+/* Дополнительное оформление для hover */
+
+.report:hover {
+  background-color: var(--dark-hover);
 }
 
 /* Блок со стилями для экрана настроек */
@@ -1618,4 +2037,200 @@ input[type="text"]:focus,
 
 .theme-color-5{
   background-color: var(--middle-bg);
+}
+
+/* Блок "Товары и услуги" */
+
+/* Форма товаров */
+
+.create-goods-container{
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.goods-form-section{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  background-color: var(--dark-bg);
+  padding: 24px;
+  border-radius: 16px;
+}
+
+.goods-form-main-fields{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.goods-form-main-fields-inputs{
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+.goods-form-main-fields-column{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 8px;
+}
+
+.goods-form-main-fields-inputs input{
+  width: 100%;
+  background-color: var(--dark-hover);
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: var(--white);
+  font-size: 16px;
+}
+
+.goods-form-unit-measurement-select{
+  width: 100%;
+  background-color: var(--dark-hover);
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: var(--white);
+  font-size: 16px;
+}
+
+.goods-form-buy-and-sell-fields{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.goods-form-buy-and-sell-fields-inputs{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+.goods-form-buy-and-sell-fields input{
+  width: 100%;
+  background-color: var(--dark-hover);
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: var(--white);
+  font-size: 16px;
+}
+
+.goods-form-information{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.goods-form-information-selects{
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+}
+
+.goods-form-information-selects select{
+  width: 100%;
+  background-color: var(--dark-hover);
+  padding: 12px 16px;
+  border-radius: 8px;
+  color: var(--white);
+  font-size: 16px;
+}
+
+/* Стиль для кнопки с комментарием */
+
+.goods-form-note-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Кнопка добавления примечания */
+
+.goods-form-note-button {
+  padding: 12px 0px 12px 0px;
+  font-size: var(--font-size-menu);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  max-width: 180px;
+  margin-bottom: -18px;
+}
+
+.goods-form-note-button:hover {
+  background-color: #5a67d8;
+  /* Немного темнее при наведении */
+}
+
+/* Контейнер для текстового поля примечания */
+
+.goods-form-note-container {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+  margin-top: 0;
+}
+
+/* При отображении */
+
+.goods-form-note-container.open {
+  max-height: 120px;
+  /* Настраиваемая высота при показе */
+  opacity: 1;
+  margin-top: 16px;
+  /* Отступ между кнопкой и полем при показе */
+}
+
+/* Поле ввода для примечания */
+
+.goods-form-note-area {
+  width: 100%;
+  padding: 12px;
+  font-size: var(--font-size-menu);
+  color: var(--white);
+  background-color: var(--dark-hover);
+  border: none;
+  border-radius: 8px;
+  resize: none;
+  min-height: 100px;
+}
+
+/* Стили для кнопок */
+
+.goods-form-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.goods-form-button-save,
+.goods-form-button-clear {
+  padding: 12px 24px;
+  font-size: var(--font-size-menu);
+  color: var(--white);
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+  max-width: 132px;
+  max-height: 43px;
+}
+
+.goods-form-button-save {
+  background-color: var(--purple-accent);
+}
+
+.goods-form-button-clear {
+  background-color: var(--dark-hover);
 }
