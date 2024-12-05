@@ -12,6 +12,11 @@
             "url": "/admin/dashboard/reports"
         },
         {
+            "name": "Товары и услуги",
+            "icon": "icon-user",
+            "url": "/admin/dashboard/goods_and_services"
+        },
+        {
             "name": "Продажа услуг",
             "icon": "icon-settings",
             "url": "/admin/dashboard/service_sales"
@@ -29,12 +34,18 @@
         {
             "name": "Управление компанией",
             "icon": "icon-settings",
-            "url": "/admin/dashboard/company_management"
+            "url": "/admin/dashboard/company_managments"
+        },
+        {
+            "name": "Управление доступом",
+            "icon": "icon-user",
+            "url": "/admin/dashboard/access_managments"
         },
         {
             "name": "Настройки",
             "icon": "icon-settings",
             "url": "/admin/dashboard/settings"
         }
+        
     ]
 }

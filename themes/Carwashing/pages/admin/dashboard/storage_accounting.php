@@ -1,0 +1,267 @@
+<?php
+
+/**
+ * @var \Core\RenderInterface $render
+ * @var \Core\Session\SessionInterface $session
+ * @var \Core\Auth\AuthInterface $auth
+ */
+
+$user = $this->auth->getUser();
+?>
+
+<?php $render->component('dashboard_header'); ?>
+<!-- Сайдбар с меню -->
+    <?php $render->component('menu_sidebar'); ?>
+    <!-- Тело страницы -->
+    <!-- Контейнер с содержимым страницы -->
+    <div class="page-content-container">
+        <!-- Содержимое страницы -->
+        <div class="page-content">
+
+            <!-- Header страницы -->
+            <div class="page-content-header">
+
+<!-- Хлебные крошки -->
+<div class="breadcrumbs-container">
+    <a href="" class="breadcrumb-previous">Страницы</a>
+    <span class="breadcrumb-separator">/</span>
+    <a href="" class="breadcrumb-current">Продажа услуг</a>
+</div>
+
+<!-- Пользователь -->
+<div class="user-container">
+    <img src="./assets/img/avatar.png" class="user-avatar" alt="">
+    <span class="username">Иван Иванов</span>
+    <svg class="user-menu-icon" width="10" height="6" viewBox="0 0 10 6" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        
+</div>
+</div>
+
+
+<!-- Содержимое страницы -->
+<div class=page-content-body>
+
+<div class="tabs-container">
+
+    <div class="tabs">
+        <div class="tab active" data-tab="warehouseOOO" onclick="switchTab('warehouseOOO')">Склад ООО</div>
+        <div class="tab" data-tab="warehouseIP" onclick="switchTab('warehouseIP')">Склад ИП</div>
+    </div>
+</div>
+
+
+<div id="warehouseOOOContainer" class = "tab-content">
+   <div class="warehouseOOO-tab-container">      
+        <div class="warehouse-forms-container">
+            <ul class="warehouse-first-column">
+            
+                <div class="warehouse-move-label"><label>Переместить из склада</label></div>
+                <button class="warehouse-button">Переместить на склад ИП</button>
+                <li><label class="warehouse-list-label">Список товаров</label></li>
+                <li>
+                    <div class="warehouse-list">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Товар</th>
+                                    <th>Склад</th>
+                                    <th>Кол-во</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1234</td>
+                                    <td>Сникерс</td>
+                                    <td>ООО</td>
+                                    <td>421 шт.</td>
+                                </tr>
+                                <tr>
+                                    <td>1234</td>
+                                    <td>Кола</td>
+                                    <td>ИП</td>
+                                    <td>421 шт.</td>
+                                </tr>
+                                <tr>
+                                    <td>1234</td>
+                                    <td>Сникерс</td>
+                                    <td>ООО</td>
+                                    <td>421 шт.</td>
+                                </tr>
+                                <tr>
+                                    <td>1234</td>
+                                    <td>Кола</td>
+                                    <td>ИП</td>
+                                    <td>421 шт.</td>
+                                </tr>
+                                <tr>
+                                    <td>1234</td>
+                                    <td>Сникерс</td>
+                                    <td>ООО</td>
+                                    <td>421 шт.</td>
+                                </tr>
+                                <tr>
+                                    <td>1234</td>
+                                    <td>Кола</td>
+                                    <td>ИП</td>
+                                    <td>421 шт.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </li>
+            </ul>   
+                
+        
+            
+
+            <ul class="warehouse-second-column">
+                <li class="warehouse-income-form-container">
+                    <label class="warehouse-form-label">Поступление товара</label>
+                    <form action="" class="warehouse-income-form">
+                        <select class="warehouse-form-select">
+                            <option disabled selected>Поставщик</option>
+                        </select>
+                        <select class="warehouse-form-select">
+                            <option disabled selected>Товар</option>
+                        </select>
+                        <input type="number" placeholder="Количество">
+                        <input type="date">
+                        <div class="warehouse-form-button-container">
+                            <button type="submit" class="warehouse-form-button">Сохранить</button>
+                            <button type="button" class="warehouse-form-button cancel">Отменить</button>
+                        </div>
+                    </form>
+                    
+                </li>
+                <li class="warehouse-manage-form-container">
+                    <label class="warehouse-form-label">Управление закупками</д>
+                    <div class="warehouse-manage-form">
+                        <select class="warehouse-form-select">
+                            <option disabled selected>Поставщик</option>
+                        </select>
+                        <select class="warehouse-form-select">
+                            <option disabled selected>Товар</option>
+                        </select>
+                        <input type="number" placeholder="Количество">
+                        <input type="date">
+                        <div class="warehouse-form-button-container">
+                            <button type="submit" class="warehouse-form-button">Сохранить</button>
+                            <button type="button" class="warehouse-form-button cancel">Отменить</button>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+    
+<div id="warehouseIPContainer" class = "tab-content">
+        <div class="warehouseIP-tab-container">
+            <div class="warehouse-forms-container">
+                <ul class="warehouse-first-column">
+                 <div class="warehouse-move-label"><label>Переместить из склада</label></div>
+                 <button class="warehouse-button">Переместить на склад ИП</button>
+                 <li><label class="warehouse-list-label">Список товаров</label></li>
+                 <li>
+                     <div class="warehouse-list">
+                         <table>
+                             <thead>
+                                 <tr>
+                                     <th>ID</th>
+                                     <th>Товар</th>
+                                     <th>Склад</th>
+                                     <th>Кол-во</th>
+                                 </tr>
+                             </thead>
+                             <tbody>
+                                 <tr>
+                                     <td>1234</td>
+                                     <td>Сникерс</td>
+                                     <td>ООО</td>
+                                     <td>421 шт.</td>
+                                 </tr>
+                                 <tr>
+                                     <td>1234</td>
+                                     <td>Кола</td>
+                                     <td>ИП</td>
+                                     <td>421 шт.</td>
+                                 </tr>
+                                 <tr>
+                                     <td>1234</td>
+                                     <td>Сникерс</td>
+                                     <td>ООО</td>
+                                     <td>421 шт.</td>
+                                 </tr>
+                                 <tr>
+                                     <td>1234</td>
+                                     <td>Кола</td>
+                                     <td>ИП</td>
+                                     <td>421 шт.</td>
+                                 </tr>
+                                 <tr>
+                                     <td>1234</td>
+                                     <td>Сникерс</td>
+                                     <td>ООО</td>
+                                     <td>421 шт.</td>
+                                 </tr>
+                                 <tr>
+                                     <td>1234</td>
+                                     <td>Кола</td>
+                                     <td>ИП</td>
+                                     <td>421 шт.</td>
+                                 </tr>
+                             </tbody>
+                         </table>
+                     </div>
+                 </li>
+             </ul>   
+
+                <ul class="warehouse-second-column">
+                    <li class="warehouse-income-form-container">
+                        <label class="warehouse-form-label">Поступление товара</label>
+                        <form action="" class="warehouse-income-form">
+                            <select class="warehouse-form-select">
+                                <option disabled selected>Поставщик</option>
+                            </select>
+                            <select class="warehouse-form-select">
+                                <option disabled selected>Товар</option>
+                            </select>
+                            <input type="number" placeholder="Количество">
+                            <input type="date">
+                            <div class="warehouse-form-button-container">
+                                <button type="submit" class="warehouse-form-button">Сохранить</button>
+                                <button type="button" class="warehouse-form-button cancel">Отменить</button>
+                            </div>
+                        </form>
+                    </li>
+
+                    <li class="warehouse-manage-form-container">
+                        <label class="warehouse-form-label">Управление закупками</д>
+                        <div class="warehouse-manage-form">
+                            <select class="warehouse-form-select">
+                                <option disabled selected>Поставщик</option>
+                            </select>
+                            <select class="warehouse-form-select">
+                                <option disabled selected>Товар</option>
+                            </select>
+                            <input type="number" placeholder="Количество">
+                            <input type="date">
+                            <div class="warehouse-form-button-container">
+                                <button type="submit" class="warehouse-form-button">Сохранить</button>
+                                <button type="button" class="warehouse-form-button cancel">Отменить</button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div> 
+        </div>                   
+</div>
+</div>
+        </div>
+    </div>
+</div>
+
+<?php $render->component('dashboard_footer'); ?>
