@@ -279,6 +279,73 @@
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
             ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/access_managments",
+            "action": {
+                "controller": "Source\\Controllers\\AccessManagmentsController",
+                "method": "index"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/company_managments",
+            "action": {
+                "controller": "Source\\Controllers\\ManageCompanyController",
+                "method": "index"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/financial_accounting",
+            "action": {
+                "controller": "Source\\Controllers\\FinancialAccountingController",
+                "method": "index"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/storage_accounting",
+            "action": {
+                "controller": "Source\\Controllers\\StorageAccountingController",
+                "method": "index"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/reports",
+            "action": {
+                "controller": "Source\\Controllers\\ReportsController",
+                "method": "index"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/goods_and_services",
+            "action": {
+                "controller": "Source\\Controllers\\GoodsAndServicesController",
+                "method": "index"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ]
         }
+        
         
 ]
