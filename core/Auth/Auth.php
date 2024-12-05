@@ -6,6 +6,7 @@ namespace Core\Auth;
 use Core\Auth\AuthInterface;
 use Core\Config\ConfigInterface;
 use Core\Database\DatabaseInterface;
+use Core\http\Router\Route;
 use Core\Session\SessionInterface;
 
 class Auth implements AuthInterface
@@ -13,7 +14,7 @@ class Auth implements AuthInterface
     public function __construct(
         private DatabaseInterface $database,
         private SessionInterface $session,
-        private ConfigInterface $config,
+        private ConfigInterface $config
 
     ) {}
 
@@ -120,10 +121,4 @@ class Auth implements AuthInterface
     {
         return $this->session->get($key);
     }
-
-    public function get_route_access_level()
-    {
-        
-    }
-
 }

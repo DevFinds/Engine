@@ -5,7 +5,11 @@
             "action": {
                 "controller": "Source\\Controllers\\HomeController",
                 "method": "index"
-            }
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 1
         },
         {
             "method": "GET",
@@ -13,7 +17,11 @@
             "action": {
                 "controller": "Source\\Controllers\\HomeController",
                 "method": "index"
-            }
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 1
         },
         {
             "method": "GET",
@@ -24,7 +32,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 2
         },
         {
             "method": "GET",
@@ -35,7 +44,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\GuestMiddleware"
-            ]
+            ],
+            "access_level": 1
         },
         {
             "method": "POST",
@@ -51,10 +61,7 @@
             "action": {
                 "controller": "Source\\Controllers\\LoginController",
                 "method": "index"
-            },
-            "middlewares": [
-                "Source\\Middleware\\GuestMiddleware"
-            ]
+            }
         },
         {
             "method": "POST",
@@ -81,7 +88,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 2
         },
         {
             "method": "POST",
@@ -92,7 +100,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 2
         },
         {
             "method": "GET",
@@ -103,7 +112,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 2
         },
         {
             "method": "GET",
@@ -115,7 +125,7 @@
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
             ],
-            "access_level": "admin"
+            "access_level": 2
         },
         {
             "method": "POST",
@@ -126,7 +136,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 3
         },
         {
             "method": "GET",
@@ -137,7 +148,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 2
         },
         {
             "method": "GET",
@@ -148,7 +160,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 1
         },
         {
             "method": "POST",
@@ -159,7 +172,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 2
         },
         {
             "method": "POST",
@@ -170,7 +184,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 1
         },
         {
             "method": "GET",
@@ -181,7 +196,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 2
         },
         {
             "method": "GET",
@@ -195,7 +211,8 @@
             ],
             "parameters": {
                 "id": "[0-9]+"
-            }
+            },
+            "access_level": 2
         },
         {
             "method": "GET",
@@ -206,7 +223,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 4
         },
         {
             "method": "GET",
@@ -220,7 +238,8 @@
             ],
             "parameters": {
                 "table_name": "[0-9]+"
-            }
+            },
+            "access_level": 4
         },
         {
             "method": "POST",
@@ -231,7 +250,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 4
         },
         {
             "method": "POST",
@@ -242,7 +262,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 4
         },
         {
             "method": "POST",
@@ -256,7 +277,8 @@
             ],
             "parameters": {
                 "theme_name": "[a-z]"
-            }
+            },
+            "access_level": 2
         },
         {
             "method": "GET",
@@ -267,7 +289,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 4
         },
         {
             "method": "GET",
@@ -278,7 +301,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 1
         },
         {
             "method": "GET",
@@ -289,7 +313,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 3
         },
         {
             "method": "GET",
@@ -300,7 +325,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 3
         },
         {
             "method": "GET",
@@ -311,7 +337,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 2
         },
         {
             "method": "GET",
@@ -322,7 +349,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 2
         },
         {
             "method": "GET",
@@ -333,7 +361,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 2
         },
         {
             "method": "GET",
@@ -344,7 +373,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": 2
         }
         
         
