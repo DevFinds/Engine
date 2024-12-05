@@ -15,8 +15,7 @@ class Auth implements AuthInterface
         private SessionInterface $session,
         private ConfigInterface $config,
 
-    ) {
-    }
+    ) {}
 
     public function logout()
     {
@@ -54,6 +53,18 @@ class Auth implements AuthInterface
 
 
         return null;
+    }
+
+    public function getRole(): ?Role
+    {
+        $role = $this->database->get('roles', ['role_id' => $this->getUser()->Role()]);
+        $role_instance = new Role(
+            $role[0]['role_id'],
+            $role[0]['role_name'],
+            $role[0]['role_perm_level']
+        );
+
+        return $role_instance;
     }
 
     public function is_user_exist_with_value(string $table, string $value, string $field): bool
@@ -103,5 +114,10 @@ class Auth implements AuthInterface
     public function session_field(): string
     {
         return $this->config->getJson('auth.session_field', 'user_id');
+    }
+
+    public function get_from_session(string $key)
+    {
+        return $this->session->get($key);
     }
 }
