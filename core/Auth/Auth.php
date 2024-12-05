@@ -68,6 +68,11 @@ class Auth implements AuthInterface
         return $role_instance;
     }
 
+    public function getRoleList(): array
+    {
+        return $this->database->get('roles');
+    }
+
     public function is_user_exist_with_value(string $table, string $value, string $field): bool
     {
         $user = $this->database->first_found_in_db($table, [

@@ -6,7 +6,7 @@
  * @var \Core\Auth\AuthInterface $auth
  */
 
-$user = $this->auth->getUser();
+$roles = $this->auth->getRoleList();
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -64,10 +64,11 @@ $user = $this->auth->getUser();
                     </tr>
                 </thead>
                 <tbody>
+                    <?php foreach ($roles as $role => $role_data): ?>
                     <tr>
-                    <td>1</td>
-                    <td>Администратор</td>
-                    <td style="display: flex; justify-content: center;">1</td>
+                    <td><?php echo $role_data['role_id']; ?></td>
+                    <td><?php echo $role_data['role_name']; ?></td>
+                    <td style="display: flex; justify-content: center;"><?php echo $role_data['role_perm_level']; ?></td>
                     <td>
                         <button class="financial-accounting-first__edit-button">
                             <svg width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -76,6 +77,7 @@ $user = $this->auth->getUser();
                         </button>
                     </td>
                     </tr>
+                    <?php endforeach; ?>
             </table>
         </div>
     </div>
