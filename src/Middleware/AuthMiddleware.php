@@ -15,5 +15,8 @@ class AuthMiddleware extends AbstractMiddleware
         if (!$this->auth->check()) {
             $this->redirect->to('/login');
         }
+        if ($this->auth->getRole()->perm_level() < $this->route->getAccessLevel()) {
+            $this->redirect->to('/login');
+        }
     }
 }

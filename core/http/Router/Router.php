@@ -63,7 +63,7 @@ class Router implements RouterInterface
                  * @var AbstractMiddleware $middleware 
                  * */
                 // Создаем сущности этих классов
-                $middleware = new $middleware($this->request, $this->auth, $this->redirect);
+                $middleware = new $middleware($this->request, $this->auth, $this->redirect, $route);
                 // Вызываем обработчики данных классов
                 $middleware->handle();
             }
@@ -145,23 +145,12 @@ class Router implements RouterInterface
             $route['uri'],
             $route['method'],
             [$route['action']['controller'], $route['action']['method']],
-            $route['middlewares'] ?? []
+            $route['middlewares'] ?? [],
+            $route['regular'] ?? [],
+            $route['access_level'] ?? 1
         ), $routes);
     }
 
-    // 
-    // 
-    // 
-    // Старый метод для получения маршрутов из config/routes.php
-
-    // private function getRoutes(): array
-    // {
-    //     return require_once APP_PATH . '/config/routes.php';
-    // }
-
-    // 
-    // 
-    // 
 
     // В данном блоке происходит обработка регулярных выражений в маршрутах
 

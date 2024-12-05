@@ -5,10 +5,10 @@ namespace Source\Controllers;
 
 use Core\Controller\Controller;
 
-class ReportController extends Controller
+class ManageCompanyController extends Controller
 {
     public function index()
     {
-        $this->render('admin/dashboard/reports');
+        $this->render('/admin/dashboard/company_managments');
     }
 }

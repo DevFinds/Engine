@@ -6,6 +6,7 @@ namespace Core\Middleware;
 use Core\Auth\AuthInterface;
 use Core\http\RedirectInterface;
 use Core\http\RequestInterface;
+use Core\http\Router\Route;
 
 abstract class AbstractMiddleware
 {
@@ -13,8 +14,8 @@ abstract class AbstractMiddleware
         protected RequestInterface $request,
         protected AuthInterface $auth,
         protected RedirectInterface $redirect,
-    ) {
-    }
+        protected Route $route
+    ) {}
 
     abstract public function handle(): void;
 }
