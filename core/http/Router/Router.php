@@ -149,19 +149,6 @@ class Router implements RouterInterface
         ), $routes);
     }
 
-    // 
-    // 
-    // 
-    // Старый метод для получения маршрутов из config/routes.php
-
-    // private function getRoutes(): array
-    // {
-    //     return require_once APP_PATH . '/config/routes.php';
-    // }
-
-    // 
-    // 
-    // 
 
     // В данном блоке происходит обработка регулярных выражений в маршрутах
 

@@ -13,8 +13,7 @@ class Route
         private $action, // Действие
         private array $middlewares = [], // Массив с промежуточными обработчиками
         private array $regular = [] // Регулярное выражение
-    ) {
-    }
+    ) {}
 
     // Геттеры и сеттеры для приватных переменных
 
@@ -60,11 +59,14 @@ class Route
         return !empty($this->middlewares);
     }
 
+    public function getAccessLevel()
+    {
+        dd($this->getRegular());
+    }
+
     public function where(array $regular): static
     {
         $this->regular = $regular;
         return $this;
     }
-
-    
 }

@@ -120,4 +120,10 @@ class Auth implements AuthInterface
     {
         return $this->session->get($key);
     }
+
+    public function get_route_access_level()
+    {
+        
+    }
+
 }

@@ -114,7 +114,8 @@
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
-            ]
+            ],
+            "access_level": "admin"
         },
         {
             "method": "POST",
