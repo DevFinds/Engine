@@ -1,52 +1,46 @@
 <?php
 
-
 namespace Source\Models;
 
-class Post
+class Report
 {
     public function __construct(
+        private $id,
+        private $type,
+        private $generated_at,
+        private $period_start,
+        private $period_end,
+        private $document_url
+    ) {
+    }
 
-        private int $id,
-        private string $type,
-        private string $generated_at,
-        private string $generated_by,
-        private string $period_start,
-        private string $period_end
-    ) {}
-
-    public function id(): int
+    public function id()
     {
         return $this->id;
     }
 
-    public function type(): string
+    public function type()
     {
-        return $this->title;
+        return $this->type;
     }
 
-    public function description(): string
+    public function generated_at()
     {
-        return $this->description;
+        return $this->generated_at;
     }
 
-    public function content(): string
+    public function period_start()
     {
-        return $this->content;
+        return $this->period_start;
     }
 
-    public function author(): string
+    public function period_end()
     {
-        return $this->author;
+        return $this->period_end;
     }
 
-    public function date(): string
+    public function document_url()
     {
-        return $this->date;
-    }
-
-    public function image(): string
-    {
-        return $this->image;
+        return $this->document_url;
     }
 }
