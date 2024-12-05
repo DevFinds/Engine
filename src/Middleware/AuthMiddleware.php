@@ -13,7 +13,7 @@ class AuthMiddleware extends AbstractMiddleware
     public function handle(): void
     {
 
-        dd($this->request);
+        // dd($this->request);
         if ($this->auth->getRole()->perm_level() < 2) {
             $this->redirect->to('/login');
         }
