@@ -2,18 +2,19 @@
 
 
 namespace Source\Services;
+
 use Core\Database\DatabaseInterface;
 use Source\Models\Service;
+
 class ServiceService
 {
     public function __construct(
         private DatabaseInterface $db,
-    ) {
-    }
+    ) {}
 
     public function getAllFromDB(): array
     {
-        $services = $this->db->get('services');
+        $services = $this->db->get('Service');
         $services = array_map(function ($service) {
             return new Service(
                 $service['id'],
