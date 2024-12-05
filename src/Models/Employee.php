@@ -1,94 +1,106 @@
 <?php
 
-
 namespace Source\Models;
+
 class Employee
 {
     public function __construct(
-        private int $id,
-        private string $last_name,
-        private string $name,
-        private string $surname,
-        private string $position,
-        private string $work_schedule,
-        private string $status,
-        private string $hire_date,
-        private string $phone,
-        private string $email,
-        private string $hourly_rate,
-        private string $salary,
-        private string $notes,
-        private string $organization_id
-    ) {}
+        private $id,
+        private $last_name,
+        private $name,
+        private $surname,
+        private $position,
+        private $work_schedule_id,
+        private $status,
+        private $hire_date,
+        private $phone,
+        private $email,
+        private $hourly_rate,
+        private $salary,
+        private $notes,
+        private $organization_id,
+        private $start_date,
+        private $user_id
+    ) {
+    }
 
-    public function id(): int
+    public function id()
     {
         return $this->id;
     }
 
-    public function last_name(): string
+    public function last_name()
     {
         return $this->last_name;
     }
 
-    public function name(): string
+    public function name()
     {
         return $this->name;
     }
 
-    public function surname(): string
+    public function surname()
     {
         return $this->surname;
     }
 
-    public function position(): string
+    public function position()
     {
         return $this->position;
     }
 
-    public function work_schedule(): string
+    public function work_schedule_id()
     {
-        return $this->work_schedule;
+        return $this->work_schedule_id;
     }
 
-    public function status(): string
+    public function status()
     {
         return $this->status;
     }
 
-    public function hire_date(): string
+    public function hire_date()
     {
         return $this->hire_date;
     }
 
-    public function phone(): string
+    public function phone()
     {
         return $this->phone;
     }
 
-    public function email(): string
+    public function email()
     {
         return $this->email;
     }
 
-    public function hourly_rate(): string
+    public function hourly_rate()
     {
         return $this->hourly_rate;
     }
 
-    public function salary(): string
+    public function salary()
     {
         return $this->salary;
     }
 
-    public function notes(): string
+    public function notes()
     {
         return $this->notes;
     }
 
-    public function organization_id(): string
+    public function organization_id()
     {
         return $this->organization_id;
     }
-    
+
+    public function start_date()
+    {
+        return $this->start_date;
+    }
+
+    public function user_id()
+    {
+        return $this->user_id;
+    }
 }

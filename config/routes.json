@@ -270,9 +270,9 @@
         },
         {
             "method": "GET",
-            "uri": "/admin/dashboard/reports",
+            "uri": "/admin/dashboard/service_sales",
             "action": {
-                "controller": "Source\\Controllers\\ReportController",
+                "controller": "Source\\Controllers\\ServiceController",
                 "method": "index"
             },
             "middlewares": [
