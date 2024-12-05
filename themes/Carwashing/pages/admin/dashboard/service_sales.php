@@ -1,12 +1,14 @@
 <?php
-
+use \Source\Models\Service;
 /**
  * @var \Core\RenderInterface $render
  * @var \Core\Session\SessionInterface $session
  * @var \Core\Auth\AuthInterface $auth
+ * @var \Source\Models\Service $service
  */
 
 $user = $this->auth->getUser();
+dd($service);
 ?>
 
 <?php $render->component('dashboard_header'); ?>
