@@ -9,8 +9,7 @@ class Supplier
         private $name,
         private $phone,
         private $email
-    ) {
-    }
+    ) {}
 
     public function id()
     {
