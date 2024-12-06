@@ -17,4 +17,5 @@ interface AuthInterface
     public function is_user_exist_with_value(string $table, string $value, string $field): bool;
     public function get_from_session(string $key);
     public function getRole(): ?Role;
+    public function getRoleList(): array;
 }

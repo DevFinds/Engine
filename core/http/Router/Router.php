@@ -63,7 +63,7 @@ class Router implements RouterInterface
                  * @var AbstractMiddleware $middleware 
                  * */
                 // Создаем сущности этих классов
-                $middleware = new $middleware($this->request, $this->auth, $this->redirect);
+                $middleware = new $middleware($this->request, $this->auth, $this->redirect, $route);
                 // Вызываем обработчики данных классов
                 $middleware->handle();
             }
@@ -145,7 +145,9 @@ class Router implements RouterInterface
             $route['uri'],
             $route['method'],
             [$route['action']['controller'], $route['action']['method']],
-            $route['middlewares'] ?? []
+            $route['middlewares'] ?? [],
+            $route['regular'] ?? [],
+            $route['access_level'] ?? 1
         ), $routes);
     }
 
