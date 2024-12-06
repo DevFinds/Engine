@@ -81,6 +81,14 @@
         },
         {
             "method": "GET",
+            "uri": "/logout",
+            "action": {
+                "controller": "Source\\Controllers\\LoginController",
+                "method": "logout"
+            }
+        },
+        {
+            "method": "GET",
             "uri": "/admin/post/create",
             "action": {
                 "controller": "Source\\Controllers\\PostController",

@@ -19,12 +19,7 @@
         <!-- Header страницы -->
         <div class="page-content-header">
 
-            <!-- Хлебные крошки -->
-            <div class="breadcrumbs-container">
-                <a href="" class="breadcrumb-previous">Страницы</a>
-                <span class="breadcrumb-separator">/</span>
-                <a href="" class="breadcrumb-current">Финансовый учет</a>
-            </div>
+        <?php $render->component('pagecontent_header'); ?>
 
             <!-- Пользователь -->
             <div class="user-container">

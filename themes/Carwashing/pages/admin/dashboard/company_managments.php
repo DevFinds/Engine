@@ -21,26 +21,7 @@ dd($company_types);
     <!-- Содержимое страницы -->
     <div class="page-content">
 
-        <!-- Header страницы -->
-        <div class="page-content-header">
-
-            <!-- Хлебные крошки -->
-            <div class="breadcrumbs-container">
-                <a href="" class="breadcrumb-previous">Страницы</a>
-                <span class="breadcrumb-separator">/</span>
-                <a href="" class="breadcrumb-current">Управление компанией</a>
-            </div>
-
-            <!-- Пользователь -->
-            <div class="user-container">
-                <img src="./assets/img/avatar.png" class="user-avatar" alt="">
-                <span class="username">Иван Иванов</span>
-                <svg class="user-menu-icon" width="10" height="6" viewBox="0 0 10 6" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-
-            </div>
-        </div>
+        <?php $render->component('pagecontent_header'); ?>
 
 
         <!-- Содержимое страницы -->
