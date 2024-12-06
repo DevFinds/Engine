@@ -11,6 +11,7 @@ use \Source\Models\Service;
 
 $user = $this->auth->getUser();
 $services = $data['service']->getAllFromDB();
+$employees = $data['employees']->getAllFromDB();
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -71,9 +72,9 @@ $services = $data['service']->getAllFromDB();
                             <label class="about-service-form-label">Сотрудник</label>
                             <select class="about-service-form">
                                 <option disabled selected>Выбрать сотрудника</option>
-                                <option>Иван Иванов</option>
-                                <option>Иван Иванов</option>
-                                <option>Иван Иванов</option>
+                                <?php foreach ($employees as $employee=> $employee_model) : ?>
+                                    <option value="<?= $employee_model->id() ?>"><?= $employee_model->name() ?></option>
+                                <?php endforeach; ?>
                             </select>
                         </li>
                         <li>
@@ -125,7 +126,7 @@ $services = $data['service']->getAllFromDB();
                 </div>
                 <div class="total-amount">
                     <label class="total-amount-label">Итоговая сумма</label>
-                    <div class="total-amount-value">500 ₽</div>
+                    <div class="total-amount-value"> 500 руб</div>
                 </div>
             </div>
 
