@@ -6,11 +6,19 @@
  * @var \Core\Auth\AuthInterface $auth
  */
 
+$companies = $data['companies'];
+$company_types = $data['company_types'];
 $user = $this->auth->getUser();
 ?>
 
 <?php $render->component('dashboard_header'); ?>
 <!-- Сайдбар с меню -->
+<?php $render->component('menu_sidebar'); ?>
+<!-- Тело страницы -->
+<!-- Контейнер с содержимым страницы -->
+<div class="page-content-container">
+    <!-- Содержимое страницы -->
+    <div class="page-content">
 <?php $render->component('menu_sidebar'); ?>
 <!-- Тело страницы -->
 <!-- Контейнер с содержимым страницы -->

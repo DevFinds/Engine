@@ -4,12 +4,15 @@
  * @var \Core\RenderInterface $render
  * @var \Core\Session\SessionInterface $session
  * @var \Core\Auth\AuthInterface $auth
+ * @var \Source\Models\Company $company
+ * @var \Source\Models\CompanyType $company_type
  */
 
+use Source\Models\Company;
+
 $user = $this->auth->getUser();
-$companies = $data['companies']->getCompanies();
-$company_types = $data['company_types']->getAll();
-dd($company_types);
+$companies = $data['companies'];
+$company_types = $data['company_types'];
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -128,34 +131,24 @@ dd($company_types);
                                     <th>Факт. адрес</th>
                                     <th>Email</th>
                                     <th>Телефон</th>
-                                    <th>Телефон</th>
+                                    <th>Контактная информация</th>
                                     <th>Налоговый режим</th>
                                 </tr>
                             </thead>
-                            <tr>
-                                <td>Партнер 1</td>
-                                <td>ООО "Партнер 1"</td>
-                                <td>123456789012</td>
-                                <td>1234567890123</td>
-                                <td>г. Набережные Челны, ул. Пушкина, д. 18</td>
-                                <td>г. Набережные Челны, ул. Пушкина, д. 18</td>
-                                <td>detailing@yandex.ru</td>
-                                <td>+7 999 999 99 99</td>
-                                <td>ОСНО</td>
-                                <td>12%</td>
-                            </tr>
-                            <?php foreach ($companies as $company): ?>
+                            <?php foreach ($companies->getCompanies() as $company => $companyData) : ?>
                                 <tr>
-                                    <td><?php echo $company['type']; ?></td>
-                                    <td>ООО "Партнер 1"</td>
-                                    <td>123456789012</td>
-                                    <td>1234567890123</td>
-                                    <td>г. Набережные Челны, ул. Пушкина, д. 18</td>
-                                    <td>г. Набережные Челны, ул. Пушкина, д. 18</td>
-                                    <td>detailing@yandex.ru</td>
-                                    <td>+7 999 999 99 99</td>
-                                    <td>ОСНО</td>
-                                    <td>12%</td>
+                                    <!-- echo $data['сompanies']->getCompanyType($companyData->type())[0]['company_type_name'];  -->
+                                    <?php $company_type = $companyData['type']; ?>
+                                    <td><?php echo $companies->getCompanyType($company_type)[0]['company_type_name']; ?></td>
+                                    <td><?php echo $companyData['name']; ?></td>
+                                    <td><?php echo $companyData['inn']; ?></td>
+                                    <td><?php echo $companyData['ogrn']; ?></td>
+                                    <td><?php echo $companyData['legal_address']; ?></td>
+                                    <td><?php echo $companyData['actual_address']; ?></td>
+                                    <td><?php echo $companyData['company_email']; ?></td>
+                                    <td><?php echo $companyData['company_phone']; ?></td>
+                                    <td><?php echo $companyData['contact_info']; ?></td>
+                                    <td><?php echo $companyData['tax_id']; ?></td>
                                 </tr>
                             <?php endforeach; ?>
                         </table>

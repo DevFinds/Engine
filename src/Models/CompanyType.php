@@ -6,8 +6,8 @@ namespace Source\Models;
 class CompanyType
 {
     public function __construct(
-        private $id,
-        private $company_type_name
+        private int $id,
+        private string $company_type_name
     ) {}
 
     public function id()
