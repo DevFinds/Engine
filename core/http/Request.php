@@ -47,6 +47,10 @@ class Request implements RequestInterface
         return $this->post[$key] ?? $this->get[$key] ?? $default;
     }
 
+    /**
+     * Возвращает все входные данные
+     * @return array
+     */
     public function AllInputs(): array
     {
         return $this->post;

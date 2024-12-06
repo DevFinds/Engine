@@ -3,6 +3,8 @@
 
 namespace Source\Services;
 
+use Source\Models\Company;
+use Source\Models\CompanyType;
 use Core\Database\DatabaseInterface;
 
 class CompanyService
@@ -13,11 +15,27 @@ class CompanyService
 
     /**
      * Возвращает массив со всеми компаниями
-     * @return array
+     * @return array of \Source\Models\Company
      */
-    public function getCompanies(): array
+    public function getCompanies()
     {
         return $this->database->get('Company');
+        $companies = array_map(fn($company) =>
+        new Company(
+            $company['id'],
+            $company['name'],
+            $company['inn'],
+            $company['ogrn'],
+            $company['legal_address'],
+            $company['actual_address'],
+            $company['company_email'],
+            $company['company_phone'],
+            $company['contact_info'],
+            $company['tax_id'],
+            $company['type']
+        ), $companies);
+
+        return $companies;
     }
 
     /**
@@ -31,5 +49,18 @@ class CompanyService
     public function getCompanyByType(int $type): array
     {
         return $this->database->get('Company', ['type' => $type]);
+    }
+
+    /**
+     * Возвращает название типа компании
+     * @param int $company_type_id
+     * 
+     * @return string
+     */
+    public function getCompanyType(int $company_type_id)
+    {
+        return $this->database->get('Company_type', ['id' => $company_type_id]);
+        $company_type = new CompanyType($company_type['id'], $company_type['name']);
+        return $company_type->name();
     }
 }
