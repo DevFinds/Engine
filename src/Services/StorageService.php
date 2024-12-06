@@ -11,6 +11,11 @@ class StorageService
         private DatabaseInterface $database
     ) 
     {
+
+    }
+
+    public function getAllFromDB()
+    {
         
     }
 }

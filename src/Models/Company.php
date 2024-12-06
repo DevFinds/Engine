@@ -14,9 +14,9 @@ class Company
         private $company_email,
         private $company_phone,
         private $contact_info,
-        private $tax_id
-    ) {
-    }
+        private $tax_id,
+        private $type
+    ) {}
 
     public function id()
     {
@@ -66,5 +66,10 @@ class Company
     public function tax_id()
     {
         return $this->tax_id;
+    }
+
+    public function type()
+    {
+        return $this->type;
     }
 }
