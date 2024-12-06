@@ -8,13 +8,19 @@ class CashRegister
         private $id,
         private $cash_amount,
         private $organization_id,
-        private $cash_type
+        private $cash_type,
+        private $name
     ) {
     }
 
     public function id()
     {
         return $this->id;
+    }
+
+    public function name()
+    {
+        return $this->name;
     }
 
     public function cash_amount()
