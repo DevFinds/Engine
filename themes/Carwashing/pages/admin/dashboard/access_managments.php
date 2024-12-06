@@ -25,7 +25,7 @@ $user = $this->auth->getUser();
 <div class="breadcrumbs-container">
     <a href="" class="breadcrumb-previous">Страницы</a>
     <span class="breadcrumb-separator">/</span>
-    <a href="" class="breadcrumb-current">Управление компанией</a>
+    <a href="" class="breadcrumb-current">Управление доступом</a>
 </div>
 
 <!-- Пользователь -->
