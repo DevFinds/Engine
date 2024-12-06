@@ -125,7 +125,7 @@ $services = $data['service']->getAllFromDB();
                 </div>
                 <div class="total-amount">
                     <label class="total-amount-label">Итоговая сумма</label>
-                    <div class="total-amount-value">500 ₽</div>
+                    <div class="total-amount-value"> 500 руб</div>
                 </div>
             </div>
 
