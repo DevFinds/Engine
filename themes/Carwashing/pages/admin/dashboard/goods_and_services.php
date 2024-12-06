@@ -12,13 +12,6 @@ $user = $this->auth->getUser();
 ?>
 
 <?php $render->component('dashboard_header'); ?>
-<!-- Сайдбар с меню -->
-<?php $render->component('menu_sidebar'); ?>
-<!-- Тело страницы -->
-<!-- Контейнер с содержимым страницы -->
-<div class="page-content-container">
-    <!-- Содержимое страницы -->
-    <div class="page-content">
 <?php $render->component('menu_sidebar'); ?>
 <!-- Тело страницы -->
 <!-- Контейнер с содержимым страницы -->
@@ -26,7 +19,7 @@ $user = $this->auth->getUser();
     <!-- Содержимое страницы -->
     <div class="page-content">
 
-    <?php $render->component('pagecontent_header'); ?>
+        <?php $render->component('pagecontent_header'); ?>
 
         <!-- Содержимое страницы -->
         <div class=page-content-body>
