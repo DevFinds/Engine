@@ -17,8 +17,7 @@ class TransactionTypeService
         return array_map(function ($transactionType) {
             return new TransactionType(
                 $transactionType['id'],
-                $transactionType['purpose'],
-                $transactionType['operation']
+                $transactionType['purpose']
             );
         }, $transactionTypes);
     }

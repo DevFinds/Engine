@@ -16,7 +16,8 @@ class TransactionService
         return array_map(function ($transaction) {
             return new Transaction(
                 $transaction['id'],
-                $transaction['type'],
+                $transaction['transaction_type_id'],
+                $transaction['operation_type_id'],
                 $transaction['addresser'],
                 $transaction['addressee'],
                 $transaction['sum'],
