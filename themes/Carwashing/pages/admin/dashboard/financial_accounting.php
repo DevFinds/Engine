@@ -14,6 +14,7 @@ $transactions = $data['transactions']->getAllFromDB();
 $transactionTypes = $data['transactionTypes']->getAllFromDB();
 $cashRegisters = $data['cashRegisters']->getAllFromDB();
 $debts = $data['debts']->getAllFromDB();
+$operationTypes = $data['operationTypes']->getAllFromDB();
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -208,8 +209,8 @@ $debts = $data['debts']->getAllFromDB();
                                 <li>
                                     <select class="financial-accounting-first__create-select">
                                         <option disabled selected>Тип операции</option>
-                                        <?php foreach ($transactionTypes as $transactionType => $transactionType_model) : ?>
-                                            <option value="<?= $transactionType_model->id() ?>"><?= $transactionType_model->operation() ?></option>
+                                        <?php foreach ($operationTypes as $operationType => $operationType_model) : ?>
+                                            <option value="<?= $operationType_model->id() ?>"><?= $operationType_model->operation() ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </li>

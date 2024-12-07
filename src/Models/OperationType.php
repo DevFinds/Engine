@@ -2,23 +2,21 @@
 
 
 namespace Source\Models;
-class TransactionType
+class OperationType
 {
 	public function __construct(
         private $id,
-        private $purpose
+        private $operation
     ) {
     }
 
-    public function id(): int
+    public function id()
     {
         return $this->id;
     }
 
-    public function purpose(): string
+    public function operation()
     {
-        return $this->purpose;
+        return $this->operation;
     }
-
-  
 }

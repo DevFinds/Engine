@@ -4,7 +4,9 @@
  * @var \Core\RenderInterface $render
  * @var \Core\Session\SessionInterface $session
  * @var \Core\Auth\AuthInterface $auth
+ * @var \Source\Models\Employee $employee
  */
+$employees = $data['employees']->getAllFromDB();
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -40,6 +42,7 @@
                                     <li>
                                         <select class="financial-accounting-first__create-select">
                                             <option disabled selected>Отчет по сотрудникам</option>
+                                            
                                         </select>
                                     </li>
                                     <li>
@@ -50,6 +53,9 @@
                                     <li>
                                         <select class="financial-accounting-first__create-select">
                                             <option disabled selected>Сотрудник</option>
+                                            <?php foreach ($employees as $employee=> $employee_model) : ?>
+                                                <option value="<?= $employee_model->id() ?>"><?= $employee_model->name() ?></option>
+                                            <?php endforeach; ?>
                                         </select>
                                     </li>
                                     <li><input type="date" placeholder="Дата конца"></li>

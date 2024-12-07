@@ -10,6 +10,7 @@ use Source\Services\TransactionService;
 use Source\Services\TransactionTypeService;
 use Source\Services\CashRegisterService;
 use Source\Services\DebtService;
+use Source\Services\OperationTypeService;
 
 class FinancialAccountingController extends Controller
 {
@@ -21,13 +22,15 @@ class FinancialAccountingController extends Controller
         $transactionTypeService = new TransactionTypeService($this->getDatabase());
         $cashRegisterService = new CashRegisterService($this->getDatabase());
         $debtService = new DebtService($this->getDatabase());
+        $operationTypeService = new OperationTypeService($this->getDatabase());
         $this->render('/admin/dashboard/financial_accounting', [
             'suppliers' => $supplierService,
             'employees' => $employeeService,
             'transactions' => $transactionService,
             'transactionTypes' => $transactionTypeService,
             'cashRegisters' => $cashRegisterService,
-            'debts' => $debtService
+            'debts' => $debtService,
+            'operationTypes' => $operationTypeService
         ]);
     }
 }
