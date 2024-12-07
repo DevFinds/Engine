@@ -2455,3 +2455,25 @@ input[type="number"]::-webkit-outer-spin-button {
   color: var(--white);
   border-bottom: 3px solid var(--purple-accent);
 }
+
+.account-popup{
+  width: 180px;
+  border-radius: 12px;
+  overflow: hidden;
+  position: absolute;
+  right: 64px;
+  top: 80px;
+}
+
+.account-popup-point{
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: var(--middle-bg);
+  color: var(--white);
+  padding: 12px 0px;
+}
+
+.account-popup-point:hover{
+  background: var(--purple-accent);
+}
