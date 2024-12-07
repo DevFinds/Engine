@@ -2031,6 +2031,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .create-goods-container{
   display: flex;
+  width: 100%;
   flex-direction: column;
   gap: 16px;
 }
@@ -2453,25 +2454,4 @@ input[type="number"]::-webkit-outer-spin-button {
 .analitics-tab:active{
   color: var(--white);
   border-bottom: 3px solid var(--purple-accent);
-}
-
-.account-popup{
-  display: flex;
-  flex-direction: column;
-  background-color: var(--middle-bg);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.account-popup-point{
-  display: flex;
-  padding: 12px 0px;
-  color: var(--white);
-  font-size: 16px;
-  width: 180px;
-  justify-content: center;
-}
-
-.account-popup-point:hover{
-  background-color: var(--purple-accent);
 }
