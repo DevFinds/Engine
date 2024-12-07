@@ -5,8 +5,9 @@ namespace Source\Controllers;
 
 use Core\Controller\Controller;
 use Source\Services\CompanyService;
-use Source\Services\CompanyTypeService;
+use Source\Services\ProductService;
 use Source\Services\WarehouseService;
+use Source\Services\CompanyTypeService;
 
 class GoodsAndServicesController extends Controller
 {
@@ -15,12 +16,14 @@ class GoodsAndServicesController extends Controller
         $company_service = new CompanyService($this->getDatabase());
         $company_type_service = new CompanyTypeService($this->getDatabase());
         $warehouse_service = new WarehouseService($this->getDatabase());
+        $product_service = new ProductService($this->getDatabase());
 
         $this->render('/admin/dashboard/goods_and_services', [
 
             'company_service' => $company_service,
             'company_type_service' => $company_type_service,
-            'warehouse_service' => $warehouse_service
+            'warehouse_service' => $warehouse_service,
+            'product_service' => $product_service
         ]);
     }
 
