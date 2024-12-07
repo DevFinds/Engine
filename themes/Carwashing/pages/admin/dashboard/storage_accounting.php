@@ -9,6 +9,7 @@
 $user = $this->auth->getUser();
 $products_OOO = $data['products']->getAllFromDB(1);
 $products_IP = $data['products']->getAllFromDB(2);
+$suppliers = $data['suppliers']->getAllFromDB();
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -20,7 +21,7 @@ $products_IP = $data['products']->getAllFromDB(2);
     <!-- Содержимое страницы -->
     <div class="page-content">
 
-    <?php $render->component('pagecontent_header'); ?>
+        <?php $render->component('pagecontent_header'); ?>
 
 
         <!-- Содержимое страницы -->
@@ -73,13 +74,19 @@ $products_IP = $data['products']->getAllFromDB(2);
 
                         <ul class="warehouse-second-column">
                             <li class="warehouse-income-form-container">
-                                <label class="warehouse-form-label">Поступление товара</label>
+                                <label class="warehouse-form-label">Поступление товара на склад ООО</label>
                                 <form action="" class="warehouse-income-form">
                                     <select class="warehouse-form-select">
                                         <option disabled selected>Поставщик</option>
+                                        <?php foreach ($suppliers as $supplier) : ?>
+                                            <option value="<?= $supplier->id() ?>"><?= $supplier->name() ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                     <select class="warehouse-form-select">
                                         <option disabled selected>Товар</option>
+                                        <?php foreach ($products_OOO as $product_array => $product) : ?>
+                                            <option value="<?php echo $product['id']; ?>"> <?php echo $product['name']; ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                     <input type="number" placeholder="Количество">
                                     <input type="date">
@@ -88,24 +95,6 @@ $products_IP = $data['products']->getAllFromDB(2);
                                         <button type="button" class="warehouse-form-button cancel">Отменить</button>
                                     </div>
                                 </form>
-
-                            </li>
-                            <li class="warehouse-manage-form-container">
-                                <label class="warehouse-form-label">Управление закупками</д>
-                                    <div class="warehouse-manage-form">
-                                        <select class="warehouse-form-select">
-                                            <option disabled selected>Поставщик</option>
-                                        </select>
-                                        <select class="warehouse-form-select">
-                                            <option disabled selected>Товар</option>
-                                        </select>
-                                        <input type="number" placeholder="Количество">
-                                        <input type="date">
-                                        <div class="warehouse-form-button-container">
-                                            <button type="submit" class="warehouse-form-button">Сохранить</button>
-                                            <button type="button" class="warehouse-form-button cancel">Отменить</button>
-                                        </div>
-                                    </div>
                             </li>
                         </ul>
                     </div>
@@ -146,13 +135,19 @@ $products_IP = $data['products']->getAllFromDB(2);
 
                         <ul class="warehouse-second-column">
                             <li class="warehouse-income-form-container">
-                                <label class="warehouse-form-label">Поступление товара</label>
+                                <label class="warehouse-form-label">Поступление товара на склад ИП</label>
                                 <form action="" class="warehouse-income-form">
                                     <select class="warehouse-form-select">
                                         <option disabled selected>Поставщик</option>
+                                        <?php foreach ($suppliers as $supplier) : ?>
+                                            <option value="<?= $supplier->id() ?>"><?= $supplier->name() ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                     <select class="warehouse-form-select">
                                         <option disabled selected>Товар</option>
+                                        <?php foreach ($products_IP as $product_array => $product) : ?>
+                                            <option value="<?php echo $product['id']; ?>"> <?php echo $product['name']; ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                     <input type="number" placeholder="Количество">
                                     <input type="date">
@@ -163,23 +158,6 @@ $products_IP = $data['products']->getAllFromDB(2);
                                 </form>
                             </li>
 
-                            <li class="warehouse-manage-form-container">
-                                <label class="warehouse-form-label">Управление закупками</д>
-                                    <div class="warehouse-manage-form">
-                                        <select class="warehouse-form-select">
-                                            <option disabled selected>Поставщик</option>
-                                        </select>
-                                        <select class="warehouse-form-select">
-                                            <option disabled selected>Товар</option>
-                                        </select>
-                                        <input type="number" placeholder="Количество">
-                                        <input type="date">
-                                        <div class="warehouse-form-button-container">
-                                            <button type="submit" class="warehouse-form-button">Сохранить</button>
-                                            <button type="button" class="warehouse-form-button cancel">Отменить</button>
-                                        </div>
-                                    </div>
-                            </li>
                         </ul>
                     </div>
                 </div>
