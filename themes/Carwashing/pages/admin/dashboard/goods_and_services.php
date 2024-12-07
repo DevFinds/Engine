@@ -45,11 +45,11 @@ $user = $this->auth->getUser();
                             <label for="" class="goods-form-main-fields-label">Основные поля</label>
                             <div class="goods-form-main-fields-inputs">
                                 <ul class="goods-form-main-fields-column">
-                                    <li><input type="number" name="name" placeholder="ID"></li>
-                                    <li><input type="text" name="amount" placeholder="Наименование товара"></li>
+                                    <li><input type="text" name="name" placeholder="Название"></li>
+                                    <li><input type="number" name="amount" placeholder="Количество"></li>
                                 </ul>
                                 <ul class="goods-form-main-fields-column">
-                                    <li><input type="date" placeholder="Дата добавления"></li>
+                                    <li><input type="date" name="created_at" placeholder="Дата добавления"></li>
                                     <li>
                                         <select class="goods-form-unit-measurement-select" aria-placeholder="Ед. изм." name="unit_measurement">
                                             <option disabled selected>Ед. изм.</option>
@@ -76,7 +76,7 @@ $user = $this->auth->getUser();
                                     <select class="goods-form-provider-select" name="supplier_id">
                                         <option disabled selected>Поставщик</option>
                                         <?php foreach ($suppliers as $supplier => $supplierData) : ?>
-                                            <option value="<?php echo $supplierData['id'] ?>"><?php echo $supplierData['id'] ?> <?= $supplierData['name'] ?></option>
+                                            <option value="<?php echo $supplierData['id'] ?>"><?= $supplierData['name'] ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </li>
@@ -99,6 +99,22 @@ $user = $this->auth->getUser();
                                 <button type="submit" class="goods-form-button-save">Сохранить</button>
                                 <button type="button" class="goods-form-button-clear">Очистить</button>
                             </div>
+                            <?php
+                            $data_to_check = [
+                                'user_lastname',
+                            ];
+
+                            foreach ($data_to_check as $data) {
+                                if ($session->has($data)) {
+
+                            ?>
+                                    <ul class="error-list d-flex flex-column">
+                                        <?php foreach ($session->getFlash($data, 'nothing') as $error) {
+                                        ?>
+                                            <span class="register-error-message"><?php echo $error; ?></span>
+                                <?php  }
+                                    }
+                                } ?>
                         </div>
                     </form>
 
@@ -212,7 +228,7 @@ $user = $this->auth->getUser();
                         <div class="goods-form-note-section">
                             <button class="goods-form-note-button" onclick="toggleNoteField('note-field-services')">Добавить примечание</button>
                             <div class="goods-form-note-container" id="note-field-services">
-                                <textarea class="goods-form-note-area" placeholder="Введите комментарий"></textarea>
+                                <textarea class="goods-form-note-area" placeholder="Введите комментарий" name="description"></textarea>
                             </div>
                         </div>
                         <div class="goods-form-buttons">

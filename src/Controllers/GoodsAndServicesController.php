@@ -53,10 +53,9 @@ class GoodsAndServicesController extends Controller
         }
 
         if ($this->getDatabase()->first_found_in_db('Product', ['name' => $this->request()->input('name')])) {
-            foreach ($this->request()->errors() as $field => $errors) {
-                $this->session()->set($field, $errors);
-            }
-        } else {
+            dd('Таблица уже существует');
+        }
+        else {
             $Product = $this->getDatabase()->insert('Product', [
                 'name' => $this->request()->input('name'),
                 'amount' => $this->request()->input('amount'),
@@ -70,7 +69,7 @@ class GoodsAndServicesController extends Controller
             ]);
         }
 
-
+        
 
 
         $this->redirect('/admin/dashboard/goods_and_services');
