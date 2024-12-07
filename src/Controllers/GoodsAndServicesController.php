@@ -52,17 +52,25 @@ class GoodsAndServicesController extends Controller
             //dd('Validation failed', $this->request()->errors());
         }
 
-        $Product = $this->getDatabase()->insert('Product', [
-            'name' => $this->request()->input('name'),
-            'amount' => $this->request()->input('amount'),
-            'created_at' => $this->request()->input('created_at'),
-            'unit_measurement' => $this->request()->input('unit_measurement'),
-            'purchase_price' => $this->request()->input('purchase_price'),
-            'sale_price' => $this->request()->input('sale_price'),
-            'supplier_id' => $this->request()->input('supplier_id'),
-            'warehouse_id' => $this->request()->input('warehouse_id'),
-            'description' => $this->request()->input('description')
-        ]);
+        if ($this->getDatabase()->first_found_in_db('Product', ['name' => $this->request()->input('name')])) {
+            foreach ($this->request()->errors() as $field => $errors) {
+                $this->session()->set($field, $errors);
+            }
+        } else {
+            $Product = $this->getDatabase()->insert('Product', [
+                'name' => $this->request()->input('name'),
+                'amount' => $this->request()->input('amount'),
+                'created_at' => $this->request()->input('created_at'),
+                'unit_measurement' => $this->request()->input('unit_measurement'),
+                'purchase_price' => $this->request()->input('purchase_price'),
+                'sale_price' => $this->request()->input('sale_price'),
+                'supplier_id' => $this->request()->input('supplier_id'),
+                'warehouse_id' => $this->request()->input('warehouse_id'),
+                'description' => $this->request()->input('description')
+            ]);
+        }
+
+
 
 
         $this->redirect('/admin/dashboard/goods_and_services');

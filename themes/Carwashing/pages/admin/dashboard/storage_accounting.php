@@ -21,7 +21,7 @@ $suppliers = $data['suppliers']->getAllFromDB();
     <!-- Содержимое страницы -->
     <div class="page-content">
 
-    <?php $render->component('pagecontent_header'); ?>
+        <?php $render->component('pagecontent_header'); ?>
 
 
         <!-- Содержимое страницы -->
@@ -74,7 +74,7 @@ $suppliers = $data['suppliers']->getAllFromDB();
 
                         <ul class="warehouse-second-column">
                             <li class="warehouse-income-form-container">
-                                <label class="warehouse-form-label">Поступление товара</label>
+                                <label class="warehouse-form-label">Поступление товара на склад ООО</label>
                                 <form action="" class="warehouse-income-form">
                                     <select class="warehouse-form-select">
                                         <option disabled selected>Поставщик</option>
@@ -95,24 +95,6 @@ $suppliers = $data['suppliers']->getAllFromDB();
                                         <button type="button" class="warehouse-form-button cancel">Отменить</button>
                                     </div>
                                 </form>
-
-                            </li>
-                            <li class="warehouse-manage-form-container">
-                                <label class="warehouse-form-label">Управление закупками</д>
-                                    <div class="warehouse-manage-form">
-                                        <select class="warehouse-form-select">
-                                            <option disabled selected>Поставщик</option>
-                                        </select>
-                                        <select class="warehouse-form-select">
-                                            <option disabled selected>Товар</option>
-                                        </select>
-                                        <input type="number" placeholder="Количество">
-                                        <input type="date">
-                                        <div class="warehouse-form-button-container">
-                                            <button type="submit" class="warehouse-form-button">Сохранить</button>
-                                            <button type="button" class="warehouse-form-button cancel">Отменить</button>
-                                        </div>
-                                    </div>
                             </li>
                         </ul>
                     </div>
@@ -153,7 +135,7 @@ $suppliers = $data['suppliers']->getAllFromDB();
 
                         <ul class="warehouse-second-column">
                             <li class="warehouse-income-form-container">
-                                <label class="warehouse-form-label">Поступление товара</label>
+                                <label class="warehouse-form-label">Поступление товара на склад ИП</label>
                                 <form action="" class="warehouse-income-form">
                                     <select class="warehouse-form-select">
                                         <option disabled selected>Поставщик</option>
@@ -176,23 +158,6 @@ $suppliers = $data['suppliers']->getAllFromDB();
                                 </form>
                             </li>
 
-                            <li class="warehouse-manage-form-container">
-                                <label class="warehouse-form-label">Управление закупками</д>
-                                    <div class="warehouse-manage-form">
-                                        <select class="warehouse-form-select">
-                                            <option disabled selected>Поставщик</option>
-                                        </select>
-                                        <select class="warehouse-form-select">
-                                            <option disabled selected>Товар</option>
-                                        </select>
-                                        <input type="number" placeholder="Количество">
-                                        <input type="date">
-                                        <div class="warehouse-form-button-container">
-                                            <button type="submit" class="warehouse-form-button">Сохранить</button>
-                                            <button type="button" class="warehouse-form-button cancel">Отменить</button>
-                                        </div>
-                                    </div>
-                            </li>
                         </ul>
                     </div>
                 </div>
