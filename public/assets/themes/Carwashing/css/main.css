@@ -1380,7 +1380,6 @@ input[type="text"]:focus,
 
 .financial-accounting-first__list {
   width: 100%;
-  max-width: 1080px;
   background-color: var(--dark-bg);
   border-radius: 16px;
   /* Закругление основного контейнера */
@@ -2476,4 +2475,84 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .account-popup-point:hover{
   background: var(--purple-accent);
+}
+
+
+.partners-table {
+  width: 100%;
+  background-color: var(--dark-bg);
+  border-radius: 16px; /* Закругление основного контейнера */
+  padding: 16px;
+  color: var(--white);
+  font-family: var(--font-family);
+  font-size: var(--font-size-menu);
+  overflow: hidden;
+  margin-top: 16px;
+}
+
+.financial-accounting-first-list-label{
+  font-size: var(--font-size-menu);
+  color: var(--white);
+  font-family: var(--font-family);
+  
+}
+
+.partners-table table {
+  width: 100%;
+  border-collapse: separate; /* Разделяем строки для закругления */
+  border-spacing: 0 8px; /* Отступ между строками */
+}
+
+.partners-table th {
+  text-align: left;
+  padding: 12px;
+  color: var(--dark-inactive);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-regular);
+}
+
+.partners-table thead {
+  margin-bottom: 12px; /* Отступ между thead и tbody */
+}
+
+.partners-table tbody tr {
+  position: relative;
+  background-color: var(--dark-bg); /* Цвет строки по умолчанию */
+  transition: background-color 0.3s ease;
+}
+
+.partners-table tbody tr:nth-child(odd) {
+  background-color: var(--dark-middle-bg); /* Чередование цветов строк */
+}
+
+.partners-table tbody tr:hover {
+  
+}
+
+.partners-table tbody tr td {
+  padding: 12px;
+  text-align: left;
+  color: var(--white);
+}
+
+/* Закругление для первой и последней ячейки строки */
+.partners-table tbody tr td:first-child {
+  border-top-left-radius: 8px; /* Левый верхний угол */
+  border-bottom-left-radius: 8px; /* Левый нижний угол */
+}
+
+.partners-table tbody tr td:last-child {
+  border-top-right-radius: 8px; /* Правый верхний угол */
+  border-bottom-right-radius: 8px; /* Правый нижний угол */
+}
+
+.partners-table tbody tr:hover .financial-accounting-first__edit-button {
+  opacity: 1; /* Плавное появление */
+  visibility: visible; /* Делает элемент видимым */
+  pointer-events: auto; /* Включает кликабельность */
+  transition: opacity 0.7s ease, visibility 0.5s linear 0.3s, background-color 0.3s ease;
+}
+
+.employees-list-tab-container{
+  width: 100%;
 }
