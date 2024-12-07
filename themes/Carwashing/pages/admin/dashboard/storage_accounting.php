@@ -9,6 +9,7 @@
 $user = $this->auth->getUser();
 $products_OOO = $data['products']->getAllFromDB(1);
 $products_IP = $data['products']->getAllFromDB(2);
+$suppliers = $data['suppliers']->getAllFromDB();
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -77,9 +78,15 @@ $products_IP = $data['products']->getAllFromDB(2);
                                 <form action="" class="warehouse-income-form">
                                     <select class="warehouse-form-select">
                                         <option disabled selected>Поставщик</option>
+                                        <?php foreach ($suppliers as $supplier) : ?>
+                                            <option value="<?= $supplier->id() ?>"><?= $supplier->name() ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                     <select class="warehouse-form-select">
                                         <option disabled selected>Товар</option>
+                                        <?php foreach ($products_OOO as $product_array => $product) : ?>
+                                            <option value="<?php echo $product['id']; ?>"> <?php echo $product['name']; ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                     <input type="number" placeholder="Количество">
                                     <input type="date">
@@ -150,9 +157,15 @@ $products_IP = $data['products']->getAllFromDB(2);
                                 <form action="" class="warehouse-income-form">
                                     <select class="warehouse-form-select">
                                         <option disabled selected>Поставщик</option>
+                                        <?php foreach ($suppliers as $supplier) : ?>
+                                            <option value="<?= $supplier->id() ?>"><?= $supplier->name() ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                     <select class="warehouse-form-select">
                                         <option disabled selected>Товар</option>
+                                        <?php foreach ($products_IP as $product_array => $product) : ?>
+                                            <option value="<?php echo $product['id']; ?>"> <?php echo $product['name']; ?></option>
+                                        <?php endforeach; ?>
                                     </select>
                                     <input type="number" placeholder="Количество">
                                     <input type="date">
