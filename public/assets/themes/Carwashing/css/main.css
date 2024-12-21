@@ -988,6 +988,19 @@ li {
   max-width: 584px;
 }
 
+#carWashContainer {
+
+  display: flex;
+  flex-direction: column;
+
+}
+
+#cafeContainer {
+
+  display: flex;
+  flex-direction: column;
+}
+
 .about-service-forms-first-column {
   width: 100%;
   max-width: 260px;

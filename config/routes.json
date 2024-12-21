@@ -313,6 +313,18 @@
             "access_level": 1
         },
         {
+            "method": "POST",
+            "uri": "/admin/dashboard/service_sales/addNewServiceSale",
+            "action": {
+                "controller": "Source\\Controllers\\ServiceController",
+                "method": "addNewServiceSale"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 1
+        },
+        {
             "method": "GET",
             "uri": "/admin/dashboard/access_managments",
             "action": {

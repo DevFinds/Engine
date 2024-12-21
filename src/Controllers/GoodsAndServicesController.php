@@ -54,7 +54,7 @@ class GoodsAndServicesController extends Controller
             }
 
             $this->redirect('/admin/dashboard/goods_and_services');
-            //dd('Validation failed', $this->request()->errors());
+            dd('Проверка не пройдена', $this->request()->errors());
         }
 
         if ($this->getDatabase()->first_found_in_db('Product', ['name' => $this->request()->input('name')])) {

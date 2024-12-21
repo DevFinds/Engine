@@ -35,7 +35,7 @@ class Validator implements ValidatorInterface
                 $error = $this->validateRule($key, $ruleName, $ruleValue);
 
                 if ($error) {
-                    $this->errors[$key][] = $error;
+                    $this->errors['validation_errors'][$key][] = $error;
                 }
             }
         }
@@ -72,17 +72,17 @@ class Validator implements ValidatorInterface
                 break;
             case 'email':
                 if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-                    return "Field $key must be a valid email address";
+                    return "Поле $key должно быть email адресом";
                 }
                 break;
             case 'confirmed':
                 if ($value !== $this->data["{$key}_confirmation"]) {
-                    return "Field $key must be confirmed";
+                    return "Поле $key должно быть подтверждено";
                 }
                 break;
             case 'already_exist':
                 if ($this->auth->is_user_exist_with_value('users', $value, $key)) {
-                    return "Пользователь с таким $key уже существует";
+                    return "Элемент с таким $key уже существует";
                 }
                 break;
                 
