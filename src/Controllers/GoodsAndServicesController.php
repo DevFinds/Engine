@@ -43,8 +43,7 @@ class GoodsAndServicesController extends Controller
             'purchase_price' => ['required'],
             'sale_price' => ['required'],
             'supplier_id' => ['required'],
-            'warehouse_id' => ['required'],
-            'description' => ['required'],
+            'warehouse_id' => ['required']
         ]);
 
         if (!$validation) {

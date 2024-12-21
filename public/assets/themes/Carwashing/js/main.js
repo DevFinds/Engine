@@ -6,19 +6,26 @@ document.addEventListener('DOMContentLoaded', () => {
         switchTab(defaultTabName); // Устанавливаем первую вкладку активной
     }
 });
-function switchTab(tabElement, tabName) {
-    // Получаем родительский контейнер текущей группы
-    const tabsGroup = tabElement.closest('.tabs-group');
 
-    // Убираем активный класс со всех вкладок текущей группы
-    const tabs = tabsGroup.querySelectorAll(".tab");
+
+function switchTab(tabName) {
+    console.log(`Переключение на вкладку: ${tabName}`); // Проверяем вызов функции
+
+    // Убираем активный класс со всех вкладок
+    const tabs = document.querySelectorAll(".tab");
     tabs.forEach(tab => tab.classList.remove("active"));
 
     // Добавляем активный класс к текущей вкладке
-    tabElement.classList.add("active");
+    const activeTab = document.querySelector(`.tab[data-tab="${tabName}"]`);
+    if (activeTab) {
+        activeTab.classList.add("active");
+        console.log(`Активная вкладка: ${tabName}`);
+    } else {
+        console.warn(`Вкладка с data-tab="${tabName}" не найдена.`);
+    }
 
-    // Прячем все контейнеры вкладок текущей группы
-    const tabContents = tabsGroup.querySelectorAll(".tab-content");
+    // Прячем все контейнеры вкладок
+    const tabContents = document.querySelectorAll(".tab-content");
     tabContents.forEach(content => {
         content.style.display = "none";
         content.style.opacity = "0";
@@ -26,19 +33,16 @@ function switchTab(tabElement, tabName) {
     });
 
     // Показываем активный контейнер
-    const activeContent = tabsGroup.querySelector(`#${tabName}Container`);
+    const activeContent = document.getElementById(`${tabName}Container`);
     if (activeContent) {
-        activeContent.style.display = "flex"; // Или "block"
+        activeContent.style.display = "flex"; // Или "flex"
         activeContent.style.opacity = "1";
         activeContent.style.visibility = "visible";
+        console.log(`Контейнер с ID '${tabName}Container' отображён.`);
     } else {
         console.error(`Контейнер с ID '${tabName}Container' не найден.`);
     }
 }
-
-
-
-
 
 
 function togglePayment(paymentType) {
@@ -68,36 +72,6 @@ function toggleNoteField(noteFieldId) {
         noteFieldContainer.classList.toggle('open');
     } else {
         console.error(`Элемент с id "${noteFieldId}" не найден.`);
-    }
-}
-
-function switchTabGeneral(tabElement, tabName) {
-    // Определяем группу табов
-    const group = tabElement.closest('[data-group]').getAttribute('data-group');
-
-    // Убираем активный класс со всех вкладок в группе
-    const tabs = document.querySelectorAll(`[data-group="${group}"] .analitics-tab`);
-    tabs.forEach(tab => tab.classList.remove('active'));
-
-    // Добавляем активный класс к текущей вкладке
-    tabElement.classList.add('active');
-
-    // Прячем все таб-контейнеры в группе
-    const tabContents = document.querySelectorAll(`[data-group="${group}"] .tab-content`);
-    tabContents.forEach(content => {
-        content.style.display = 'none'; // Скрываем контент
-        content.style.opacity = '0';   // Для анимации
-        content.style.visibility = 'hidden'; // Скрываем визуально
-    });
-
-    // Показываем активный таб-контейнер
-    const activeContent = document.querySelector(`[data-group="${group}"] #${tabName}Container`);
-    if (activeContent) {
-        activeContent.style.display = 'block'; // Показываем контент
-        activeContent.style.opacity = '1';    // Для анимации
-        activeContent.style.visibility = 'visible'; // Отображаем визуально
-    } else {
-        console.error(`Контейнер с ID '${tabName}Container' не найден.`);
     }
 }
 
