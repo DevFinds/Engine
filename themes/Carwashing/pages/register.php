@@ -18,12 +18,6 @@
 
         <div class="right-side">
             <h1>Регистрация</h1>
-            <ul class="icon-list">
-                <li class="icon-item"><a href=""><img src="assets\img\logo_git.svg" alt=""></a></li>
-                <li class="icon-item"><a href=""><img src="assets\img\logo_google.svg" alt=""></a></li>
-                <li class="icon-item"><a href=""><img src="assets\img\logo_discord.svg" alt=""></a></li>
-                <li class="icon-item"><a href=""><img src="assets\img\logo_telegram.svg" alt=""></a></li>
-            </ul>
             <div class="right-container">
                 <form action="/register" method="post">
                     <div class="register-step-1">

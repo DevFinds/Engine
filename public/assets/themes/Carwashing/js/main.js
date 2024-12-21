@@ -75,3 +75,13 @@ function toggleNoteField(noteFieldId) {
         console.error(`Элемент с id "${noteFieldId}" не найден.`);
     }
 }
+
+
+function toggle_account_popup() {
+    var accountPopup = document.getElementById('account-popup');
+    var accountToggler = document.getElementById('user-menu-toggler');
+    
+    accountToggler.addEventListener('click', function() {
+        console.log("test");
+    });
+}

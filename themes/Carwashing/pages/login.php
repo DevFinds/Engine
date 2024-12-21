@@ -10,22 +10,70 @@
 
 <?php $render->component('header_without_navbar') ?>
 
+<style>
+    h1 {
+        color: #FFF !important;
+        font-size: 40px;
+        text-align: center;
+        margin-bottom: 24px;
+    }
+
+    .body-container {
+         display: flex;
+         justify-content: center;
+         align-items: center;
+         justify-self: center;
+         width: 100%;
+         height: 100vh;
+    }
+
+    .right-container form{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        justify-self: center;
+    }
+
+    form input {
+        min-width: 300px;
+        max-width: 300px;
+        height: 40px;
+        border-radius: 10px;
+        border: none;
+        margin: 10px;
+        padding: 12px 12px;
+    }
+
+    .auth-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        justify-self: center;
+        margin-top: 20px;
+        gap:48px;
+    }
+
+    .register-button {
+        background-color: #707FDD;
+        padding: 12px 32px;
+        border: none;
+        border-radius: 8px;
+        min-width: 100%;
+        margin-top: 20px;        
+    }
+
+    .register_double_btn_block {
+        width: 300px;
+        max-width: 300px;
+    }
+</style>
 
 <div class="body-container">
     <div class="form-container">
-        <div class="left-side">
-            <img src="./assets/img/logo_ShapeSider.svg" href="/" alt="logo">
-            <p class="first-paragraph">Soft by DevFinds</p>
-        </div>
 
         <div class="right-side">
             <h1>Авторизация</h1>
-            <ul class="icon-list">
-                <li class="icon-item"><a href=""><img src="assets\img\logo_git.svg" alt=""></a></li>
-                <li class="icon-item"><a href=""><img src="assets\img\logo_google.svg" alt=""></a></li>
-                <li class="icon-item"><a href=""><img src="assets\img\logo_discord.svg" alt=""></a></li>
-                <li class="icon-item"><a href=""><img src="assets\img\logo_telegram.svg" alt=""></a></li>
-            </ul>
             <div class="right-container">
                 <form action="/login" method="post">
                     <div class="login-label_and_error">

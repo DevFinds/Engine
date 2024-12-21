@@ -17,12 +17,12 @@ class LoginController extends Controller
         $login = $this->request()->input('user_login');
         $password = $this->request()->input('user_password');
         $this->getAuth()->attempt($login, $password);
-        $this->redirect('/');
+        $this->redirect('/admin/dashboard/general');
     }
 
     public function logout()
     {
         $this->getAuth()->logout();
-        $this->redirect('/');
+        $this->redirect('/login');
     }
 }

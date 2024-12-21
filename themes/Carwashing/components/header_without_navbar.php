@@ -16,7 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <?php $render->enqueue_selected_styles(['main.css']); ?>
-    <title>Админка</title>
+    <title>Авторизация</title>
 </head>
 <style>
     * {
