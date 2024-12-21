@@ -33,7 +33,16 @@ class GoodsAndServicesController extends Controller
     public function addNewGood()
     {
 
-
+        $labels = [
+            'name' => 'Наименование',
+            'amount' => 'Количество',
+            'created_at' => 'Дата создания',
+            'unit_measurement' => 'Ед. изм.',
+            'purchase_price' => 'Цена закупки',
+            'sale_price' => 'Цена продажи',
+            'supplier_id' => 'Поставщик',
+            'warehouse_id' => 'Склад'
+        ];
 
         $validation = $this->request()->validate([
             'name' => ['required'],
@@ -44,7 +53,7 @@ class GoodsAndServicesController extends Controller
             'sale_price' => ['required'],
             'supplier_id' => ['required'],
             'warehouse_id' => ['required']
-        ]);
+        ], $labels);
 
         if (!$validation) {
 
@@ -59,8 +68,7 @@ class GoodsAndServicesController extends Controller
 
         if ($this->getDatabase()->first_found_in_db('Product', ['name' => $this->request()->input('name')])) {
             dd('Таблица уже существует');
-        }
-        else {
+        } else {
             $Product = $this->getDatabase()->insert('Product', [
                 'name' => $this->request()->input('name'),
                 'amount' => $this->request()->input('amount'),
@@ -74,7 +82,7 @@ class GoodsAndServicesController extends Controller
             ]);
         }
 
-        
+
 
 
         $this->redirect('/admin/dashboard/goods_and_services');
@@ -82,11 +90,17 @@ class GoodsAndServicesController extends Controller
 
     public function addNewService()
     {
+        $labels = [
+            'name' => 'Наименование',
+            'price' => 'Цена',
+            'category' => 'Категория'
+        ];
+
         $validation = $this->request()->validate([
             'name' => ['required'],
             'price' => ['required'],
             'category' => ['required']
-        ]);
+        ], $labels);
 
         if (!$validation) {
 
@@ -101,8 +115,7 @@ class GoodsAndServicesController extends Controller
 
         if ($this->getDatabase()->first_found_in_db('Service', ['name' => $this->request()->input('name')])) {
             dd('Таблица уже существует');
-        }
-        else {
+        } else {
             $Service = $this->getDatabase()->insert('Service', [
                 'name' => $this->request()->input('name'),
                 'description' => $this->request()->input('description'),
@@ -112,6 +125,5 @@ class GoodsAndServicesController extends Controller
         }
 
         $this->redirect('/admin/dashboard/goods_and_services');
-
     }
 }

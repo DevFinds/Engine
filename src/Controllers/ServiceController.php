@@ -21,6 +21,15 @@ class ServiceController extends Controller
 
     public function addNewServiceSale()
     {
+        $labels = [
+            'service_id' => 'Услуга',
+            'employee_id' => 'Сотрудник',
+            'car_number' => 'Номер машины',
+            'car_model' => 'Модель машины',
+            'car_brand' => 'Марка машины',
+            'payment_type' => 'Тип оплаты'
+        ];
+
         $validation = $this->request()->validate([
             'service_id' => ['required'],
             'employee_id' => ['required'],
@@ -28,7 +37,7 @@ class ServiceController extends Controller
             'car_model' => ['required'],
             'car_brand' => ['required'],
             'payment_type' => ['required']
-        ]);
+        ], $labels);
 
         if (!$validation) {
 

@@ -15,7 +15,7 @@ interface RequestInterface
     public function input(string $key, $default = null);
     public function AllInputs(): array;
     public function setValidator(Validator $validator);
-    public function validate(array $rules): bool;
+    public function validate(array $rules, array $labels): bool;
     public function errors(): array;
     public function file(string $key): ?UploadedFileInterface;
 }

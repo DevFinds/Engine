@@ -1,5 +1,5 @@
 <?php
-dd($_SESSION);
+
 /**
  * @var \Core\RenderInterface $render
  * @var \Core\Session\SessionInterface $session

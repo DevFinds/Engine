@@ -76,7 +76,7 @@ class Request implements RequestInterface
         $this->validator = $validator;
     }
 
-    public function validate(array $rules): bool
+    public function validate(array $rules, array $labels = []): bool
     {
 
         $data = [];
@@ -85,7 +85,7 @@ class Request implements RequestInterface
             $data[$field] = $this->input($field);
         }
 
-        return $this->validator->validate($data, $rules);
+        return $this->validator->validate($data, $rules, $labels);
     }
 
     public function errors(): array
