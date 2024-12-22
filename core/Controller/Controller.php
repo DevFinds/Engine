@@ -12,6 +12,10 @@ use Core\http\RequestInterface;
 use Core\http\RedirectInterface;
 use Core\Session\SessionInterface;
 use Core\Database\DatabaseInterface;
+use Core\Event\EventInterface;
+use Core\Event\EventManager;
+use Source\Events\FieldErrorEvent;
+use Source\Listeners\FieldErrorListener;
 
 abstract class Controller
 {
@@ -23,7 +27,7 @@ abstract class Controller
     private AuthInterface $auth;
     private StorageInterface $storage;
     private ConfigInterface $config;
-
+    private EventManager $eventManager;
 
     public function render(string $page_name, array $data = []): void
     {
@@ -118,5 +122,24 @@ abstract class Controller
     public function getStorage(): StorageInterface
     {
         return $this->storage;
+    }
+
+    public function setEventManager(EventManager $eventManager)
+    {
+        $this->eventManager = $eventManager;
+    }
+
+    public function getEventManager(): EventManager
+    {
+        return $this->eventManager;
+    }
+
+    public function FieldErrorEventDispath(string $error_type, string $error_title = null, string $error_message): EventInterface
+    {
+        $this->eventManager->addListener('error', new FieldErrorListener());
+        $error_field_event = new FieldErrorEvent($error_type, $error_title, $error_message);
+        $this->eventManager->dispatch($error_field_event);
+
+        return $error_field_event;
     }
 }

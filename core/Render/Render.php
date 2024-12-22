@@ -4,6 +4,7 @@ namespace Core\Render;
 
 use Core\Auth\AuthInterface;
 use Core\Config\ConfigInterface;
+use Core\Event\EventManager;
 use Core\Session\SessionInterface;
 
 
@@ -16,6 +17,7 @@ class Render implements RenderInterface
         private SessionInterface $session,
         private AuthInterface $auth,
         private ConfigInterface $config,
+        private EventManager $eventManager
     ) {
 
         $this->activeTheme = $this->config->getJson('app.theme', 'Basic');
@@ -144,6 +146,7 @@ class Render implements RenderInterface
             'render' => $this,
             'session' => $this->session,
             'auth' => $this->auth,
+            'eventManager' => $this->eventManager
         ];
     }
 }
