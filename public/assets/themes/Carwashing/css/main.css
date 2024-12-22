@@ -567,6 +567,7 @@ video {
   --purple-accent: #707FDD;
   --dirt-white: #DDDDDD;
   --middle-bg: #3F4653;
+  --error-red: #F05B5B;
   /* Шрифты */
   --font-family: 'Inter', sans-serif;
   --font-weight-regular: 400;

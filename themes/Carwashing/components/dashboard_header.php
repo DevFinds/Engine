@@ -15,7 +15,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <?php $render->enqueue_selected_styles(['main.css']); ?>
+    <?php $render->enqueue_all_styles(); ?>
     <title>Админка</title>
 </head>
 <style>
