@@ -1,12 +1,14 @@
-<div class="attention-popup">
-    <div class="attention-popup-content">
-        <div class="attention-popup-content-text">
-            <h2>Внимание!</h2>
-            <p>Вы действительно хотите удалить данную услугу?</p>    
-        </div>                        
-        <div class="attention-popup-content-buttons">
-            <button class="attention-popup-content-buttons-cancel">Отменить</button>
-            <button class="attention-popup-content-buttons-delete">Удалить</button>
+<div class="modal-popup">
+    <div class="modal-popup-header attention-popup-header">
+        <img src="/assets/themes/Carwashing/img/Triangle_Warning.svg" alt="">
+        <h2>Внимание!</h2>
+    </div>
+    <div class="modal-popup-body attention-popup-body">
+        <div class="modal-popup-content">
+            <p>Кажется, форма заполнена неправильно. Проверьте ошибки</p>
+        </div>
+        <div class="modal-popup-buttons">
+            <button class="modal-popup-button-cancel">ОК</button>
         </div>
     </div>
 </div>
