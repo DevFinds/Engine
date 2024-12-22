@@ -1,4 +1,5 @@
 <!-- Header страницы -->
+<?php $user = $this->auth->getUser(); ?>
 <div class="page-content-header">
 
     <!-- Хлебные крошки -->
@@ -11,7 +12,7 @@
     <!-- Пользователь -->
     <div class="user-container">
         <img src="/storage/default/empty_avatar.png" class="user-avatar" alt="">
-        <span class="username">Иван Иванов</span>
+        <span class="username"><?php echo $user->username(); ?> <?php echo $user->lastname(); ?></span>
         <button id="user-menu-toggler" class="user-menu-toggler"><svg id="user-menu-icon" class="user-menu-icon" width="10" height="6" viewBox="0 0 10 6" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
