@@ -68,7 +68,7 @@ class Container
         $this->redirect = new Redirect();
         $this->session = new Session();
         $this->auth = new Auth($this->database, $this->session, $this->config);
-        $this->render = new Render($this->session, $this->auth, $this->config);
+        $this->render = new Render($this->session, $this->auth, $this->config, $this->eventManager);
         $this->storage = new Storage($this->config);
         $this->fileManager = new FileManager($this->storage);
         $this->validator = new Validator($this->auth, $this->database);

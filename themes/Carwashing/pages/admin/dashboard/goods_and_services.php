@@ -4,6 +4,7 @@
  * @var \Core\RenderInterface $render
  * @var \Core\Session\SessionInterface $session
  * @var \Core\Auth\AuthInterface $auth
+ * @var \Core\Event\EventManager $eventManager
  */
 
 //  Поставщики

@@ -6,19 +6,25 @@ namespace Source\Controllers;
 use Core\Controller\Controller;
 use Source\Services\CompanyService;
 use Source\Services\ProductService;
+use Source\Services\ServiceService;
 use Source\Services\WarehouseService;
 use Source\Services\CompanyTypeService;
-use Source\Services\ServiceService;
 
 class GoodsAndServicesController extends Controller
 {
+
     public function index()
     {
+
         $company_service = new CompanyService($this->getDatabase());
         $company_type_service = new CompanyTypeService($this->getDatabase());
         $warehouse_service = new WarehouseService($this->getDatabase());
         $product_service = new ProductService($this->getDatabase());
         $service_service = new ServiceService($this->getDatabase());
+
+        
+        $field_error_event = $this->FieldErrorEventDispath('error', 'error', 'error');
+        $error_array = $field_error_event->getPayload();
 
         $this->render('/admin/dashboard/goods_and_services', [
 

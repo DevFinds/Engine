@@ -88,6 +88,7 @@ class Router implements RouterInterface
             call_user_func([$controller, 'setAuth'], $this->auth);
             call_user_func([$controller, 'setStorage'], $this->storage);
             call_user_func([$controller, 'setConfig'], $this->config);
+            call_user_func([$controller, 'setEventManager'], $this->eventManager);
             try {
                 call_user_func_array([$controller, $action], $this->extractParams($uri, $route));
             } catch (\Throwable $th) {

@@ -186,3 +186,5 @@ $user = $this->auth->getUser();
 </div>
 
 <?php $render->component('dashboard_footer'); ?>
+<?php $render->component('modals/attention_popup'); ?>
+<?php $render->component('modals/error_popup'); ?>
