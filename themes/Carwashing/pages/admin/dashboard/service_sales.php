@@ -101,34 +101,38 @@ $employees = $data['employees']->getAllFromDB();
 
             </form>
 
-            <div id="cafeContainer" class="tab-content" style="display: none;">
+            <form id="cafeContainer" class="tab-content" action="/admin/dashboard/service_sales/addNewProductSale" method="post" style="display: none;">
                 <div class="about-cafe-forms">
                     <div class="about-cafe-forms-first-column">
                         <label class="about-cafe-form-label">Товар</label>
-                        <input type="text" placeholder="Выбрать товар">
+                        <input type="text" placeholder="Введите название товара" name="product_name" required>
                     </div>
                     <div class="about-cafe-forms-second-column">
                         <label class="about-cafe-form-label">Кол-во товара</label>
-                        <input type="text" placeholder="Кол-во, шт">
+                        <input type="number" placeholder="Кол-во, шт" name="product_amount" min="1" required>
                     </div>
                 </div>
 
                 <div class="payment-section">
                     <div class="payment-options">
-                        <label class="payment-options-label"> Выбрать рассчет</label>
-                        <div class="payment-buttons">
-                            <button type="button" class="payment-button active" onclick="togglePayment('cash')">Наличный</button>
-                            <button type="button" class="payment-button" onclick="togglePayment('card')">Безналичный</button>
-                        </div>
+                        <label class="payment-options-label">Выбрать рассчет</label>
+                        <fieldset class="payment-buttons">
+                            <label>
+                                <input value="cash" name="payment_type" type="radio" class="payment-button active" onclick="togglePayment('cash')" required> Наличный
+                            </label>
+                            <label>
+                                <input value="card" name="payment_type" type="radio" class="payment-button" onclick="togglePayment('card')"> Безналичный
+                            </label>
+                        </fieldset>
                         <button type="submit" class="save-button">Сохранить</button>
                     </div>
                     <div class="total-amount">
                         <label class="total-amount-label">Итоговая сумма</label>
-                        <div class="total-amount-value"> 500 руб</div>
+                        <div class="total-amount-value">500 руб</div>
                     </div>
                 </div>
+            </form>
 
-            </div>
 
 
         </div>

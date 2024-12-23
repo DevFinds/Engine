@@ -419,6 +419,18 @@
                 "Source\\Middleware\\AuthMiddleware"
             ],
             "access_level": 2
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/goods_and_services/addNewProductSale",
+            "action": {
+                "controller": "Source\\Controllers\\GoodsAndServicesController",
+                "method": "addNewProduct"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 2
         }
         
         

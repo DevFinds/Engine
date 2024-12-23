@@ -126,4 +126,40 @@ class GoodsAndServicesController extends Controller
 
         $this->redirect('/admin/dashboard/goods_and_services');
     }
+
+    public function addNewProductSale()
+    {
+        $labels = [
+            'product_name' => 'Товар',
+            'product_amount' => 'Кол-во товара',
+            'payment_type' => 'Тип оплаты'
+        ];
+
+        $validation = $this->request()->validate([
+            'product_name' => ['required'],
+            'product_amount' => ['required'],
+            'payment_type' => ['required']
+        ], $labels);
+
+        if (!$validation) {
+            foreach ($this->request()->errors() as $field => $errors) {
+                $this->session()->set($field, $errors);
+            }
+
+            $this->redirect('/admin/dashboard/sale_service');
+            dd('Проверка не пройдена', $this->request()->errors());
+        }
+
+        if ($this->getDatabase()->first_found_in_db('Product', ['name' => $this->request()->input('product_name')])) {
+            dd('Таблица уже существует');
+        } else {
+            $Product_sale = $this->getDatabase()->insert('Product_Sale', [
+                'product_name' => $this->request()->input('product_name'),
+                'product_amount' => $this->request()->input('product_amount'),
+                'payment_method' => $this->request()->input('payment_type')
+            ]);
+        }
+
+        $this->redirect('/admin/dashboard/service_sales');
+    }
 }
