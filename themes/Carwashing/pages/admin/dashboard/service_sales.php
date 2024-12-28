@@ -122,19 +122,25 @@ $warehouses = $warehouse_service->getAllFromDB();
                 <div id="productLinesContainer">
                     <!-- Одна строка (изначальная) -->
                     <div class="product-line" data-index="0">
-                        <label>Товар + склад:</label>
-                        <select name="products[0][product_warehouse]" class="productSelect" style="width: 320px;"></select>
+                        <div class="product-line-good">
+                            <label>Товар</label>
+                            <select name="products[0][product_warehouse]" class="productSelect" style="width: 320px;"></select>
+                        </div>
 
-                        <label>Кол-во:</label>
-                        <input type="number" name="products[0][amount]" class="productAmountInput" value="1" min="1" style="width: 100px;">
+                        <div class="product-line-count">
+                            <label>Кол-во</label>
+                            <input type="number" name="products[0][amount]" class="productAmountInput" value="1" min="1" style="width: 100px;">
+                        </div>
 
-                        <!-- Лейбл, где показываем "Всего на складе: XXX (ед. изм.)" -->
-                        <label for="products[0][amount]" class="warehouseStockLabel">
-                            Всего на складе: ---
-                        </label>
+                        <div class="product-line-btn">
+                            <!-- Лейбл, где показываем "Всего на складе: XXX (ед. изм.)" -->
+                            <label for="products[0][amount]" class="warehouseStockLabel">
+                                Всего на складе:
+                            </label>
 
-                        <!-- Кнопка удаления позиции -->
-                        <button type="button" class="removeLineBtn">X</button>
+                            <!-- Кнопка удаления позиции -->
+                            <button type="button" class="removeLineBtn"><img src="/assets/themes/Carwashing/img/trash-icon.svg" alt=""></button>
+                        </div>
                     </div>
                 </div>
 
@@ -159,7 +165,7 @@ $warehouses = $warehouse_service->getAllFromDB();
                     </div>
                 </div>
 
-                <button type="submit">Сохранить</button>
+                <button type="submit" id="saveLineBtn">Сохранить</button>
             </form>
 
 
@@ -186,17 +192,21 @@ $warehouses = $warehouse_service->getAllFromDB();
 
             // HTML для новой строки
             lineDiv.innerHTML = `
-            <label>Товар + склад:</label>
-            <select name="products[${lineIndex}][product_warehouse]" class="productSelect" style="width: 320px;"></select>
+            <div class="product-line-good">
+                <label>Товар</label>
+                <select name="products[${lineIndex}][product_warehouse]" class="productSelect" style="width: 320px;"></select>
+            </div>
+            <div class="product-line-count">
+                <label>Кол-во</label>
+                <input type="number" name="products[${lineIndex}][amount]" class="productAmountInput" value="1" min="1" style="width: 100px;">
+            </div>
+            <div class="product-line-btn">
+                <label for="products[${lineIndex}][amount]" class="warehouseStockLabel">
+                    Всего на складе:
+                </label>
 
-            <label>Кол-во:</label>
-            <input type="number" name="products[${lineIndex}][amount]" class="productAmountInput" value="1" min="1" style="width: 100px;">
-
-            <label for="products[${lineIndex}][amount]" class="warehouseStockLabel">
-                Всего на складе: ---
-            </label>
-
-            <button type="button" class="removeLineBtn">X</button>
+                <button type="button" class="removeLineBtn"><img src="/assets/themes/Carwashing/img/trash-icon.svg" alt=""></button>
+            </div>
         `;
             productLinesContainer.appendChild(lineDiv);
 
