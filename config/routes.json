@@ -316,7 +316,7 @@
             "method": "POST",
             "uri": "/admin/dashboard/service_sales/addNewServiceSale",
             "action": {
-                "controller": "Source\\Controllers\\ServiceController",
+                "controller": "Source\\Controllers\\GoodsAndServicesController",
                 "method": "addNewServiceSale"
             },
             "middlewares": [
@@ -422,10 +422,10 @@
         },
         {
             "method": "POST",
-            "uri": "/admin/dashboard/goods_and_services/addNewProductSale",
+            "uri": "/admin/dashboard/service_sales/addNewProductSale",
             "action": {
                 "controller": "Source\\Controllers\\GoodsAndServicesController",
-                "method": "addNewProduct"
+                "method": "addNewProductSale"
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"

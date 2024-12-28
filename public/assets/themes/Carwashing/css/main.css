@@ -2581,3 +2581,34 @@ input[type="number"]::-webkit-outer-spin-button {
 .user-menu-toggler {
   width: 24px;
 }
+
+
+/* Стилизация селектов для библитеки select2 */
+
+.select2-dropdown {
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--dark-bg);
+  border: none;
+  padding: 2px 0px;
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+  background-color: var(--dark-hover);
+  color: white;
+  border: none;
+}
+
+.select2-container--default .select2-selection--single{
+  background-color: var(--dark-bg);
+  color: #000;
+  border-radius: 12px;
+  border: none;
+  padding: 8px 16px;
+  height: auto;
+  width: auto;
+}
+
+.select2-container--default .select2-results__option--selected {
+  background-color: var(--purple-accent);
+}

@@ -12,6 +12,11 @@ use \Source\Models\Service;
 $user = $this->auth->getUser();
 $services = $data['service']->getAllFromDB();
 $employees = $data['employees']->getAllFromDB();
+
+// Товары
+$product_service = $data['products'];
+$products = $product_service->getAllFromDBAllSuppliers();
+
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -101,42 +106,171 @@ $employees = $data['employees']->getAllFromDB();
 
             </form>
 
-            <form id="cafeContainer" class="tab-content" action="/admin/dashboard/service_sales/addNewProductSale" method="post" style="display: none;">
-                <div class="about-cafe-forms">
-                    <div class="about-cafe-forms-first-column">
-                        <label class="about-cafe-form-label">Товар</label>
-                        <input type="text" placeholder="Введите название товара" name="product_name" required>
-                    </div>
-                    <div class="about-cafe-forms-second-column">
-                        <label class="about-cafe-form-label">Кол-во товара</label>
-                        <input type="number" placeholder="Кол-во, шт" name="product_amount" min="1" required>
+            <script>
+                // Пример: productsJS — массив с товарами (id, name, sale_price, ...).
+                // Его можно сгенерировать в PHP: json_encode($products).
+                const productsJS = <?php echo json_encode($products, JSON_UNESCAPED_UNICODE); ?>;
+            </script>
+
+            <form id="cafeContainer"
+                action="/admin/dashboard/service_sales/addNewProductSale"
+                method="post"
+                style="display: block;">
+
+                <!-- Контейнер для списка позиций -->
+                <div id="productLinesContainer">
+                    <!-- Пример одной строки (шаблон) -->
+                    <div class="product-line" data-index="0">
+                        <label>Товар:</label>
+                        <select name="products[0][product_id]" class="productSelect" style="width: 300px;"></select>
+
+                        <label>Кол-во:</label>
+                        <input type="number" name="products[0][amount]" class="productAmountInput" value="1" min="1" style="width: 100px;">
+
+                        <button type="button" class="removeLineBtn" style="padding: 8px 16px; background-color: #F05B5B; color: white; border: none; border-radius: 8px;">X</button>
                     </div>
                 </div>
+
+                <!-- Кнопка добавления новой строки -->
+                <button type="button" id="addLineBtn">Добавить товар</button>
 
                 <div class="payment-section">
                     <div class="payment-options">
-                        <label class="payment-options-label">Выбрать рассчет</label>
-                        <fieldset class="payment-buttons">
+                        <label>Выбрать расчет</label>
+                        <fieldset>
                             <label>
-                                <input value="cash" name="payment_type" type="radio" class="payment-button active" onclick="togglePayment('cash')" required> Наличный
+                                <input value="cash" name="payment_type" type="radio" checked> Наличный
                             </label>
                             <label>
-                                <input value="card" name="payment_type" type="radio" class="payment-button" onclick="togglePayment('card')"> Безналичный
+                                <input value="card" name="payment_type" type="radio"> Безналичный
                             </label>
                         </fieldset>
-                        <button type="submit" class="save-button">Сохранить</button>
                     </div>
                     <div class="total-amount">
-                        <label class="total-amount-label">Итоговая сумма</label>
-                        <div class="total-amount-value">500 руб</div>
+                        <label>Итоговая сумма</label>
+                        <div class="total-amount-value" id="productTotal">0 руб</div>
                     </div>
                 </div>
-            </form>
 
+                <button type="submit">Сохранить</button>
+            </form>
 
 
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 1. Селекторы
+        const productLinesContainer = document.getElementById('productLinesContainer');
+        const addLineBtn = document.getElementById('addLineBtn');
+        const totalAmountElem = document.getElementById('productTotal');
+
+        // 2. Инициализация Select2 на уже имеющейся строке (индекс 0)
+        initializeLine(productLinesContainer.querySelector('.product-line'), 0);
+
+        // 3. Обработчик добавления новой строки
+        let lineIndex = 1; // следующий индекс для новой строки
+        addLineBtn.addEventListener('click', function() {
+            // Создаем div.product-line
+            const lineDiv = document.createElement('div');
+            lineDiv.className = 'product-line';
+            lineDiv.setAttribute('data-index', lineIndex);
+
+            // Формируем HTML для select и input
+            lineDiv.innerHTML = `
+            <label>Товар:</label>
+            <select name="products[${lineIndex}][product_id]" class="productSelect" style="width: 300px;"></select>
+
+            <label>Кол-во:</label>
+            <input type="number" name="products[${lineIndex}][amount]" class="productAmountInput" value="1" min="1" style="width: 100px;">
+
+            <button type="button" class="removeLineBtn" style="padding: 8px 16px; background-color: #F05B5B; color: white; border: none; border-radius: 8px;">X</button>
+        `;
+
+            // Вставляем в контейнер
+            productLinesContainer.appendChild(lineDiv);
+
+            // Инициализируем Select2 + привязка обработчиков
+            initializeLine(lineDiv, lineIndex);
+
+            lineIndex++;
+        });
+
+        // 4. Функция инициализации строки:
+        function initializeLine(lineDiv, index) {
+            // Найдём select
+            const selectEl = lineDiv.querySelector('.productSelect');
+            const amountEl = lineDiv.querySelector('.productAmountInput');
+            const removeBtn = lineDiv.querySelector('.removeLineBtn');
+
+            // Заполним select опциями из productsJS
+            fillSelectWithProducts(selectEl);
+
+            // Подключим Select2
+            $(selectEl).select2({
+                placeholder: 'Выбрать товар',
+                allowClear: true,
+                language: {
+                    noResults: function() {
+                        return 'Товар не найден';
+                    }
+                }
+            });
+
+            // При изменении select или amount → пересчитываем итог
+            $(selectEl).on('change', updateTotalPrice);
+            amountEl.addEventListener('input', updateTotalPrice);
+
+            // Удаление строки
+            removeBtn.addEventListener('click', function() {
+                lineDiv.remove();
+                updateTotalPrice(); // пересчитать после удаления
+            });
+        }
+
+        // 5. Функция заполнения <select> опциями
+        function fillSelectWithProducts(selectEl) {
+            // Очищаем сначала
+            selectEl.innerHTML = '<option disabled selected>Выбрать товар</option>';
+            // Заполняем
+            productsJS.forEach(product => {
+                const opt = document.createElement('option');
+                opt.value = product.id; // Сохраняем id (на сервере будем искать этот товар)
+                opt.textContent = product.name;
+                // никаких data-price не храним, т.к. будем использовать productsJS массив
+                selectEl.appendChild(opt);
+            });
+        }
+
+        // 6. Функция пересчёта общей суммы по всем строкам
+        function updateTotalPrice() {
+            let total = 0;
+
+            // Перебираем все .product-line
+            document.querySelectorAll('.product-line').forEach(line => {
+                const selectEl = line.querySelector('.productSelect');
+                const amountEl = line.querySelector('.productAmountInput');
+
+                const productId = selectEl.value;
+                const amount = parseFloat(amountEl.value) || 1;
+
+                // Ищем объект товара в productsJS
+                const productObj = productsJS.find(p => String(p.id) === productId);
+                if (productObj) {
+                    const price = parseFloat(productObj.sale_price) || 0;
+                    total += price * amount;
+                }
+            });
+
+            totalAmountElem.textContent = `${total} руб`;
+        }
+
+        // 7. При загрузке страницы считаем итог, если нужно
+        updateTotalPrice();
+    });
+</script>
+
+
 
 <?php $render->component('dashboard_footer'); ?>

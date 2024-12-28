@@ -21,7 +21,4 @@ class ServiceController extends Controller
             'products' => $product_service
         ]);
     }
-
-
-
 }
