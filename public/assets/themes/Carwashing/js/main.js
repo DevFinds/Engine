@@ -1,3 +1,35 @@
+document.addEventListener("DOMContentLoaded", () => {
+    const userMenuToggler = document.getElementById("user-menu-toggler");
+    const accountPopup = document.querySelector(".account-popup");
+
+    if (!userMenuToggler || !accountPopup) {
+        return; // Если элементы не найдены, ничего не делаем
+    }
+
+    // Функция для скрытия попапа при клике вне его области
+    function hidePopupOnOutsideClick(event) {
+        if (!accountPopup.contains(event.target) && !userMenuToggler.contains(event.target)) {
+            accountPopup.classList.add("hidden");
+            document.removeEventListener("click", hidePopupOnOutsideClick);
+        }
+    }
+
+    // Обработчик клика по кнопке
+    userMenuToggler.addEventListener("click", (event) => {
+        event.stopPropagation(); // Предотвращаем всплытие события
+        accountPopup.classList.toggle("hidden");
+
+        // Добавляем обработчик для скрытия попапа при клике вне его
+        if (!accountPopup.classList.contains("hidden")) {
+            document.addEventListener("click", hidePopupOnOutsideClick);
+        }
+    });
+});
+
+
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
     // Находим первую вкладку на странице
     const firstTab = document.querySelector('.tab[data-tab]');
