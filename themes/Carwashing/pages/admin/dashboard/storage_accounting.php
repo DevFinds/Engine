@@ -41,8 +41,7 @@ $suppliers = $data['suppliers']->getAllFromDB();
                     <div class="warehouse-forms-container">
                         <ul class="warehouse-first-column">
 
-                            <div class="warehouse-move-label"><label>Переместить из склада</label></div>
-                            <button class="warehouse-button">Переместить на склад ИП</button>
+                            
                             <li><label class="warehouse-list-label">Список товаров</label></li>
                             <li>
                                 <div class="warehouse-list">
@@ -67,6 +66,8 @@ $suppliers = $data['suppliers']->getAllFromDB();
                                     </table>
                                 </div>
                             </li>
+                            <div class="warehouse-move-label"><label>Переместить из склада</label></div>
+                            <button class="warehouse-button">Переместить на склад ИП</button>
                         </ul>
 
 
@@ -105,8 +106,6 @@ $suppliers = $data['suppliers']->getAllFromDB();
                 <div class="warehouseIP-tab-container">
                     <div class="warehouse-forms-container">
                         <ul class="warehouse-first-column">
-                            <div class="warehouse-move-label"><label>Переместить из склада</label></div>
-                            <button class="warehouse-button">Переместить на склад ООО</button>
                             <li><label class="warehouse-list-label">Список товаров</label></li>
                             <li>
                                 <!-- Таьблица склада ИП -->
@@ -131,6 +130,8 @@ $suppliers = $data['suppliers']->getAllFromDB();
                                     </table>
                                 </div>
                             </li>
+                            <div class="warehouse-move-label"><label>Переместить из склада</label></div>
+                            <button class="warehouse-button">Переместить на склад ООО</button>
                         </ul>
 
                         <ul class="warehouse-second-column">
