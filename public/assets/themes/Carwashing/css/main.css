@@ -2464,9 +2464,10 @@ input[type="number"]::-webkit-outer-spin-button {
   align-items: center;
   color: var(--dark-inactive);
   padding: 0px 16px;
+  cursor: pointer;
 }
 
-.analitics-tab:active{
+.analitics-tab .active{
   color: var(--white);
   border-bottom: 3px solid var(--purple-accent);
 }
@@ -2581,3 +2582,4 @@ input[type="number"]::-webkit-outer-spin-button {
 .user-menu-toggler {
   width: 24px;
 }
+
