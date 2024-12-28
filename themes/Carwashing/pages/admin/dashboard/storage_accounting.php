@@ -106,7 +106,7 @@ $suppliers = $data['suppliers']->getAllFromDB();
                     <div class="warehouse-forms-container">
                         <ul class="warehouse-first-column">
                             <div class="warehouse-move-label"><label>Переместить из склада</label></div>
-                            <button class="warehouse-button">Переместить на склад ИП</button>
+                            <button class="warehouse-button">Переместить на склад ООО</button>
                             <li><label class="warehouse-list-label">Список товаров</label></li>
                             <li>
                                 <!-- Таьблица склада ИП -->

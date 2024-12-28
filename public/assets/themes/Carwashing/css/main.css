@@ -2472,6 +2472,10 @@ input[type="number"]::-webkit-outer-spin-button {
   border-bottom: 3px solid var(--purple-accent);
 }
 
+.hidden {
+  display: none;
+}
+
 .account-popup{
   width: 180px;
   border-radius: 12px;
@@ -2488,6 +2492,7 @@ input[type="number"]::-webkit-outer-spin-button {
   background: var(--middle-bg);
   color: var(--white);
   padding: 12px 0px;
+  cursor: pointer;
 }
 
 .account-popup-point:hover{

@@ -20,7 +20,7 @@
     </div>
 
     <!-- Popup -->
-    <div class="account-popup">
+    <div id="account-popup" class="account-popup hidden">
         <a href="/admin/user/account">
             <div class="account-popup-point">
                 <span>Аккаунт</span>
@@ -32,5 +32,5 @@
             </div>
         </a>  
     </div>
-
+    <script src="main.js"></script>
 </div>
