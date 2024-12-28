@@ -17,6 +17,10 @@ $employees = $data['employees']->getAllFromDB();
 $product_service = $data['products'];
 $products = $product_service->getAllFromDBAllSuppliers();
 
+// Склады
+$warehouse_service = $data['warehouses'];
+$warehouses = $warehouse_service->getAllFromDB();
+
 ?>
 
 <?php $render->component('dashboard_header'); ?>
