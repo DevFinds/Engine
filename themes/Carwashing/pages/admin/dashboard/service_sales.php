@@ -111,8 +111,6 @@ $warehouses = $warehouse_service->getAllFromDB();
             </form>
 
             <script>
-                // Пример: productsJS — массив с товарами (id, name, sale_price, ...).
-                // Его можно сгенерировать в PHP: json_encode($products).
                 const productsJS = <?php echo json_encode($products, JSON_UNESCAPED_UNICODE); ?>;
             </script>
 
@@ -121,21 +119,26 @@ $warehouses = $warehouse_service->getAllFromDB();
                 method="post"
                 style="display: block;">
 
-                <!-- Контейнер для списка позиций -->
                 <div id="productLinesContainer">
-                    <!-- Пример одной строки (шаблон) -->
+                    <!-- Одна строка (изначальная) -->
                     <div class="product-line" data-index="0">
-                        <label>Товар:</label>
-                        <select name="products[0][product_id]" class="productSelect" style="width: 300px;"></select>
+                        <label>Товар + склад:</label>
+                        <select name="products[0][product_warehouse]" class="productSelect" style="width: 320px;"></select>
 
                         <label>Кол-во:</label>
                         <input type="number" name="products[0][amount]" class="productAmountInput" value="1" min="1" style="width: 100px;">
 
-                        <button type="button" class="removeLineBtn" style="padding: 8px 16px; background-color: #F05B5B; color: white; border: none; border-radius: 8px;">X</button>
+                        <!-- Лейбл, где показываем "Всего на складе: XXX (ед. изм.)" -->
+                        <label for="products[0][amount]" class="warehouseStockLabel">
+                            Всего на складе: ---
+                        </label>
+
+                        <!-- Кнопка удаления позиции -->
+                        <button type="button" class="removeLineBtn">X</button>
                     </div>
                 </div>
 
-                <!-- Кнопка добавления новой строки -->
+                <!-- Кнопка добавления новой строки (ещё один товар) -->
                 <button type="button" id="addLineBtn">Добавить товар</button>
 
                 <div class="payment-section">
@@ -165,54 +168,58 @@ $warehouses = $warehouse_service->getAllFromDB();
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // 1. Селекторы
         const productLinesContainer = document.getElementById('productLinesContainer');
         const addLineBtn = document.getElementById('addLineBtn');
         const totalAmountElem = document.getElementById('productTotal');
 
-        // 2. Инициализация Select2 на уже имеющейся строке (индекс 0)
+        // 1. Инициализация уже существующей строки (data-index="0")
         initializeLine(productLinesContainer.querySelector('.product-line'), 0);
 
-        // 3. Обработчик добавления новой строки
-        let lineIndex = 1; // следующий индекс для новой строки
+        let lineIndex = 1; // следующая строка
+
+        // 2. Кнопка "Добавить товар"
         addLineBtn.addEventListener('click', function() {
-            // Создаем div.product-line
+            // Создаём div
             const lineDiv = document.createElement('div');
             lineDiv.className = 'product-line';
             lineDiv.setAttribute('data-index', lineIndex);
 
-            // Формируем HTML для select и input
+            // HTML для новой строки
             lineDiv.innerHTML = `
-            <label>Товар:</label>
-            <select name="products[${lineIndex}][product_id]" class="productSelect" style="width: 300px;"></select>
+            <label>Товар + склад:</label>
+            <select name="products[${lineIndex}][product_warehouse]" class="productSelect" style="width: 320px;"></select>
 
             <label>Кол-во:</label>
             <input type="number" name="products[${lineIndex}][amount]" class="productAmountInput" value="1" min="1" style="width: 100px;">
 
-            <button type="button" class="removeLineBtn" style="padding: 8px 16px; background-color: #F05B5B; color: white; border: none; border-radius: 8px;">X</button>
-        `;
+            <label for="products[${lineIndex}][amount]" class="warehouseStockLabel">
+                Всего на складе: ---
+            </label>
 
-            // Вставляем в контейнер
+            <button type="button" class="removeLineBtn">X</button>
+        `;
             productLinesContainer.appendChild(lineDiv);
 
-            // Инициализируем Select2 + привязка обработчиков
             initializeLine(lineDiv, lineIndex);
-
             lineIndex++;
         });
 
-        // 4. Функция инициализации строки:
-        function initializeLine(lineDiv, index) {
-            // Найдём select
-            const selectEl = lineDiv.querySelector('.productSelect');
-            const amountEl = lineDiv.querySelector('.productAmountInput');
+        /**
+         * Функция инициализации логики в строке
+         */
+        function initializeLine(lineDiv, idx) {
+            const productSelect = lineDiv.querySelector('.productSelect');
+            const amountInput = lineDiv.querySelector('.productAmountInput');
             const removeBtn = lineDiv.querySelector('.removeLineBtn');
 
-            // Заполним select опциями из productsJS
-            fillSelectWithProducts(selectEl);
+            // Лейбл, где показываем остаток
+            const warehouseStockLabel = lineDiv.querySelector('.warehouseStockLabel');
 
-            // Подключим Select2
-            $(selectEl).select2({
+            // Заполним <select> опциями
+            fillProductSelect(productSelect);
+
+            // Подключим Select2 (опционально)
+            $(productSelect).select2({
                 placeholder: 'Выбрать товар',
                 allowClear: true,
                 language: {
@@ -220,57 +227,87 @@ $warehouses = $warehouse_service->getAllFromDB();
                         return 'Товар не найден';
                     }
                 }
+            }).on('change', function() {
+                updateLineStockAndPrice(lineDiv);
+                updateTotalPrice();
             });
 
-            // При изменении select или amount → пересчитываем итог
-            $(selectEl).on('change', updateTotalPrice);
-            amountEl.addEventListener('input', updateTotalPrice);
+            // При вводе количества
+            amountInput.addEventListener('input', function() {
+                updateTotalPrice();
+            });
 
             // Удаление строки
             removeBtn.addEventListener('click', function() {
                 lineDiv.remove();
-                updateTotalPrice(); // пересчитать после удаления
+                updateTotalPrice();
             });
         }
 
-        // 5. Функция заполнения <select> опциями
-        function fillSelectWithProducts(selectEl) {
-            // Очищаем сначала
+        /**
+         * Заполняет <select> вариантами "товар+склад"
+         * productsJS: массив, где каждый элемент = {id, name, warehouse_id, amount, unit_measurement, sale_price...}
+         */
+        function fillProductSelect(selectEl) {
             selectEl.innerHTML = '<option disabled selected>Выбрать товар</option>';
-            // Заполняем
-            productsJS.forEach(product => {
+            productsJS.forEach(prod => {
                 const opt = document.createElement('option');
-                opt.value = product.id; // Сохраняем id (на сервере будем искать этот товар)
-                opt.textContent = product.name;
-                // никаких data-price не храним, т.к. будем использовать productsJS массив
+                // value = "productId_warehouseId"
+                opt.value = prod.id + '_' + prod.warehouse_id;
+                opt.textContent = `${prod.name} [склад ${prod.warehouse_id}]`;
+                // для пересчёта цены
+                opt.setAttribute('data-price', prod.sale_price);
+                // для вывода остатка
+                opt.setAttribute('data-amount', prod.amount);
+                // для вывода ед. изм.
+                opt.setAttribute('data-unit', prod.unit_measurement);
                 selectEl.appendChild(opt);
             });
         }
 
-        // 6. Функция пересчёта общей суммы по всем строкам
-        function updateTotalPrice() {
-            let total = 0;
+        /**
+         * При выборе товара-склада обновляем лейбл "Всего на складе: ..."
+         */
+        function updateLineStockAndPrice(lineDiv) {
+            const productSelect = lineDiv.querySelector('.productSelect');
+            const warehouseStockLabel = lineDiv.querySelector('.warehouseStockLabel');
 
-            // Перебираем все .product-line
-            document.querySelectorAll('.product-line').forEach(line => {
-                const selectEl = line.querySelector('.productSelect');
-                const amountEl = line.querySelector('.productAmountInput');
+            const selectedOption = productSelect.options[productSelect.selectedIndex];
+            if (!selectedOption) {
+                warehouseStockLabel.textContent = 'Всего на складе: ---';
+                return;
+            }
 
-                const productId = selectEl.value;
-                const amount = parseFloat(amountEl.value) || 1;
-
-                // Ищем объект товара в productsJS
-                const productObj = productsJS.find(p => String(p.id) === productId);
-                if (productObj) {
-                    const price = parseFloat(productObj.sale_price) || 0;
-                    total += price * amount;
-                }
-            });
-
-            totalAmountElem.textContent = `${total} руб`;
+            const wAmount = selectedOption.getAttribute('data-amount') || '0';
+            const wUnit = selectedOption.getAttribute('data-unit') || '';
+            warehouseStockLabel.textContent = `Всего на складе: ${wAmount} (${wUnit})`;
         }
 
-        // 7. При загрузке страницы считаем итог, если нужно
+        /**
+         * Считает общую сумму по всем строкам
+         */
+        function updateTotalPrice() {
+            let grandTotal = 0;
+
+            document.querySelectorAll('.product-line').forEach(line => {
+                const productSelect = line.querySelector('.productSelect');
+                const amountInput = line.querySelector('.productAmountInput');
+
+                const userAmount = parseFloat(amountInput.value) || 1;
+                const selectedOption = productSelect.options[productSelect.selectedIndex];
+                if (!selectedOption) return;
+
+                const price = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+                const lineTotal = price * userAmount;
+                grandTotal += lineTotal;
+            });
+
+            // Выводим результат
+            document.getElementById('productTotal').textContent = `${grandTotal} руб`;
+        }
+
+        // Инициализация строки [0]
+        updateLineStockAndPrice(productLinesContainer.querySelector('.product-line'));
         updateTotalPrice();
     });
 </script>
