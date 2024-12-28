@@ -8,6 +8,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+/*************  ✨ Codeium Command ⭐  *************/
+/**
+ * Switches the active tab to the specified tab name.
+ * 
+
+
+/******  39462a2d-d07b-4da3-a716-cbb40e1482a8  *******/
 function switchTab(tabName) {
     console.log(`Переключение на вкладку: ${tabName}`); // Проверяем вызов функции
 
@@ -45,6 +52,43 @@ function switchTab(tabName) {
 }
 
 
+function switchTab_group(group, tabName) {
+    console.log(`Переключение на вкладку: ${tabName} в группе: ${group}`); 
+
+    // Убираем активный класс со всех вкладок в группе
+    const tabs = document.querySelectorAll(`.analitics-tab[data-group="${group}"]`);
+    tabs.forEach(tab => tab.classList.remove("active"));
+
+    // Добавляем активный класс к текущей вкладке
+    const activeTab = document.querySelector(`.analitics-tab[data-group="${group}"][data-tab="${tabName}"]`);
+    if (activeTab) {
+        activeTab.classList.add("active");
+    } else {
+        console.warn(`Вкладка с data-tab="${tabName}" в группе "${group}" не найдена.`);
+    }
+
+    // Прячем все контейнеры вкладок в группе
+    const tabContents = document.querySelectorAll(`.tab-content[data-group="${group}"]`);
+    tabContents.forEach(content => {
+        content.style.display = "none";
+        content.style.opacity = "0";
+        content.style.visibility = "hidden";
+    });
+
+    // Показываем активный контейнер
+    const activeContent = document.querySelector(`#${tabName}Container${group === 'services' ? '-services' : ''}`);
+    if (activeContent) {
+        activeContent.style.display = "flex";
+        activeContent.style.opacity = "1";
+        activeContent.style.visibility = "visible";
+    } else {
+        console.error(`Контейнер с ID '${tabName}Container' для группы '${group}' не найден.`);
+    }
+}
+
+
+
+
 function togglePayment(paymentType) {
     // Получаем кнопки
     const cashButton = document.querySelector('.payment-buttons .payment-button:nth-child(1)');
@@ -74,4 +118,8 @@ function toggleNoteField(noteFieldId) {
         console.error(`Элемент с id "${noteFieldId}" не найден.`);
     }
 }
+
+
+
+
 
