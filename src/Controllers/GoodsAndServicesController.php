@@ -140,24 +140,21 @@ class GoodsAndServicesController extends Controller
 
     public function addNewProductSale()
     {
-        // 1. Проверка полей, например, payment_type
+        // Валидация, e.g. payment_type required
         $validation = $this->request()->validate([
-            'payment_type' => ['required'],
-            // Можем проверить наличие products, но это сложнее (много полей)
+            'payment_type' => ['required']
         ], [
             'payment_type' => 'Тип оплаты'
         ]);
 
         if (!$validation) {
-            // Вывод ошибок/редирект
-            $this->redirect('/admin/dashboard/service_sales');
+            // ...
             return;
         }
 
-        // 2. Получаем массив позиций
-        // Пример: products[0][product_id] = 4, products[0][amount] = 2, ...
-        $productLines = $this->request()->input('products');
-        if (!is_array($productLines) || empty($productLines)) {
+        // Получаем массив products
+        $lines = $this->request()->input('products');
+        if (!is_array($lines) || empty($lines)) {
             $this->session()->set('error', 'Не выбраны товары');
             $this->redirect('/admin/dashboard/service_sales');
             return;
@@ -166,44 +163,55 @@ class GoodsAndServicesController extends Controller
         $paymentType = $this->request()->input('payment_type');
         $grandTotal = 0;
 
-        // 3. Перебираем все строки
-        foreach ($productLines as $line) {
-            // проверим, что есть product_id и amount
-            if (empty($line['product_id']) || empty($line['amount'])) {
-                continue; // или обработать как ошибку
-            }
+        foreach ($lines as $idx => $line) {
+            $productWarehouseVal = $line['product_warehouse'] ?? null; // e.g. "4_1"
+            $amount = (int)($line['amount'] ?? 0);
 
-            // Найдем товар в базе (по id)
-            $product = $this->getDatabase()->first_found_in_db('Product', ['id' => $line['product_id']]);
-            if (!$product) {
-                // Товар не найден — можно пропустить или вернуть ошибку
+            if (!$productWarehouseVal || $amount < 1) {
                 continue;
             }
 
-            $amount = (int)$line['amount'];
-            $price  = (float)$product['sale_price'];
-            $lineTotal = $price * $amount;
+            list($productId, $warehouseId) = explode('_', $productWarehouseVal);
 
-            // 4. Записываем в таблицу Product_Sale
-            $productSaleId = $this->getDatabase()->insert('Product_Sale', [
-                'product_id' => $product['id'],      // например, сохраняем текстом
+            // Ищем в DB
+            $productRow = $this->getDatabase()->first_found_in_db('Product', [
+                'id' => $productId,
+                'warehouse_id' => $warehouseId
+            ]);
+            if (!$productRow) {
+                // Неверное значение, пропускаем
+                continue;
+            }
+
+            $price = (float)$productRow['sale_price'];
+            $lineTotal = $price * $amount;
+            $grandTotal += $lineTotal;
+
+            // Запись в Product_Sale
+            $this->getDatabase()->insert('Product_Sale', [
+                'product_id' => $productRow['id'],  // или product_id => $productId
+                'total_amount' => $grandTotal,
                 'payment_method' => $paymentType
             ]);
 
-            // 5. Суммируем к общему итогу
-            $grandTotal += $lineTotal;
+            //Можно уменьшить остаток
+            $newAmount = max(0, $productRow['amount'] - $amount);
+            $this->getDatabase()->update('Product', ['amount' => $newAmount], [
+                'id' => $productId,
+                'warehouse_id' => $warehouseId
+            ]);
         }
 
-        // 6. Создаем одну запись в Transaction на всю сумму
+        // Итоговая транзакция
         $this->getDatabase()->insert('Transaction', [
             'sum' => $grandTotal,
-            'transaction_type_id' => 2,  // допустим, 2 = продажа товара
-            'created_at' => date('Y-m-d H:i:s')
+            'transaction_type_id' => 2,  // допустим, 2 = продажа
         ]);
 
-        // 7. Редирект
         $this->redirect('/admin/dashboard/service_sales');
     }
+
+
 
 
     public function addNewServiceSale()
