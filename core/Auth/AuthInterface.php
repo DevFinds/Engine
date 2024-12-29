@@ -3,6 +3,8 @@
 
 namespace Core\Auth;
 
+use Source\Models\User;
+
 interface AuthInterface
 {
 

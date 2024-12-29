@@ -8,6 +8,7 @@ use Core\Config\ConfigInterface;
 use Core\Database\DatabaseInterface;
 use Core\http\Router\Route;
 use Core\Session\SessionInterface;
+use Source\Models\User;
 
 class Auth implements AuthInterface
 {
