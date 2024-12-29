@@ -618,6 +618,11 @@ li {
   color: var(--white);
   overflow-y: scroll;
   scrollbar-width: none;
+  gap: 8px;
+}
+
+.developer-container{
+  margin-top: auto;
 }
 
 .brand-logo {
@@ -664,8 +669,15 @@ li {
   justify-content: flex-start;
   align-content: center;
   align-items: center;
-  color: var(--dark-inactive);
+  color: #8F97B2;
+  font-weight: 500;
   font-family: var(--font-family);
+}
+
+.menu-list-item-link.active{
+  background-color: #353B4A;
+  border-radius: 6px;
+  color: var(--white);
 }
 
 .menu-list-item-icon {
@@ -2436,6 +2448,7 @@ input[type="number"]::-webkit-outer-spin-button {
   padding: 16px;
   justify-content: space-between;
   border-radius: 12px;
+  color: var(--white);
 }
 
 .big-widget-list tr:nth-child(odd){
@@ -2628,7 +2641,7 @@ input[type="number"]::-webkit-outer-spin-button {
   background-color: var(--purple-accent);
 }
 
-.product-line{
+.product-line, .service-line{
   width: min-content;
   display: flex;
   flex-direction: row;
@@ -2637,11 +2650,15 @@ input[type="number"]::-webkit-outer-spin-button {
   margin-bottom: 16px;
 }
 
-.product-line-good{
+.product-line-good, .service-line-service{
   display: flex;
   flex-direction: column;
   gap: 8px;
   width: max-content;
+}
+
+.service-line-service{
+  width: 520px;
 }
 
 .product-line-count{
@@ -2655,14 +2672,21 @@ input[type="number"]::-webkit-outer-spin-button {
   margin-bottom: 0px;
 }
 
-.product-line-btn{
+.product-line-btn, .service-line-btn{
   display: flex;
   flex-direction: column;
   gap: 8px;
   width: max-content;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
 }
 
-.removeLineBtn{
+
+.removeLineBtn, .removeServiceBtn{
   background-color: var(--purple-accent);
   color: var(--white);
   border-radius: 8px;
@@ -2673,7 +2697,7 @@ input[type="number"]::-webkit-outer-spin-button {
   width: max-content;
 }
 
-#addLineBtn, #saveLineBtn{
+#addLineBtn, #saveLineBtn, #addServiceBtn{
   background-color: var(--purple-accent);
   color: var(--white);
   border-radius: 8px;
@@ -2682,6 +2706,10 @@ input[type="number"]::-webkit-outer-spin-button {
   line-height: 24px;
   height: 100%;
   width: max-content;
+}
+
+#addServiceBtn{
+  margin-bottom: 24px;
 }
 
 #saveLineBtn{
@@ -2697,7 +2725,7 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0px;
   width: min-content;
 }
-.payment-options label{
+.payment-options label, .payment-buttons{
   display: flex;
   align-items: center;
   gap: 8px;
