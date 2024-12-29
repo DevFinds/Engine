@@ -45,7 +45,7 @@ $suppliers = $data['suppliers']->getAllFromDB();
                             <li><label class="warehouse-list-label">Список товаров</label></li>
                             <li>
                                 <div class="warehouse-list">
-                                    <table>
+                                    <table id="warehouse-table-OOO">
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
@@ -110,7 +110,7 @@ $suppliers = $data['suppliers']->getAllFromDB();
                             <li>
                                 <!-- Таьблица склада ИП -->
                                 <div class="warehouse-list">
-                                    <table>
+                                    <table id="warehouse-table-IP">
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
@@ -164,6 +164,16 @@ $suppliers = $data['suppliers']->getAllFromDB();
                 </div>
             </div>
         </div>
+            <div id="warehouse-move-popup" class="hidden">
+            <div class="warehouse-popup-content">
+            <h3>Перемещение товаров</h3>
+                <ul id="warehouse-selected-items">
+                    <!-- Список выбранных товаров -->
+                </ul>
+            <button id="warehouse-confirm-move">Подтвердить</button>
+            <button id="warehouse-close-popup">Закрыть</button>
+        </div>
+</div>
     </div>
 </div>
 </div>

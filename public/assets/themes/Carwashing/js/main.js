@@ -27,6 +27,110 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
+document.addEventListener('DOMContentLoaded', () => {
+    const moveButtons = document.querySelectorAll('.warehouse-button'); // Получаем все кнопки "Переместить"
+    const popup = document.getElementById('warehouse-move-popup');
+    const selectedItemsList = document.getElementById('warehouse-selected-items');
+    const closePopupButton = document.getElementById('warehouse-close-popup');
+    const confirmMoveButton = document.getElementById('warehouse-confirm-move');
+    const tabs = document.querySelectorAll('.tab'); // Все вкладки
+
+    let selectedItems = {}; // Хранить выбранные товары по вкладкам
+    let currentTab = 'warehouseOOO'; // По умолчанию первая вкладка
+
+    // Установить начальную структуру для хранения товаров
+    tabs.forEach(tab => {
+        const tabName = tab.getAttribute('data-tab');
+        selectedItems[tabName] = [];
+    });
+
+    // Обновить текущую вкладку при переключении
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            currentTab = tab.getAttribute('data-tab');
+        });
+    });
+
+    // Выделение строки при клике
+    document.querySelectorAll('[id^="warehouse-table"]').forEach(table => {
+        table.addEventListener('click', (event) => {
+            const row = event.target.closest('tr');
+            if (!row) return;
+
+            const rowId = row.querySelector('td:first-child').innerText; // ID товара
+            const rowName = row.querySelector('td:nth-child(2)').innerText; // Имя товара
+            const rowAmount = row.querySelector('td:nth-child(3)').innerText; // Количество
+
+            const tabItems = selectedItems[currentTab]; // Товары текущей вкладки
+
+            // Если строка уже выбрана
+            if (row.classList.contains('selected')) {
+                row.classList.remove('selected'); // Убираем подсветку
+                selectedItems[currentTab] = tabItems.filter(item => item.id !== rowId);
+            } else {
+                // Добавляем подсветку
+                row.classList.add('selected');
+                tabItems.push({ id: rowId, name: rowName, amount: rowAmount });
+            }
+        });
+    });
+
+    // Показать попап с выбранными товарами
+    moveButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            selectedItemsList.innerHTML = ''; // Очистить предыдущие данные
+            const tabItems = selectedItems[currentTab]; // Только товары текущей вкладки
+
+            tabItems.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    ${item.name} - ${item.amount} шт.
+                    <input type="number" min="1" max="${item.amount}" value="1" data-id="${item.id}" style="width: 60px;">
+                `;
+                selectedItemsList.appendChild(listItem);
+            });
+
+            if (tabItems.length > 0) {
+                popup.classList.remove('hidden');
+            } else {
+                alert('Выберите товары для перемещения.');
+            }
+        });
+    });
+
+    // Закрыть попап
+    closePopupButton.addEventListener('click', () => {
+        popup.classList.add('hidden');
+    });
+
+    // Подтвердить перемещение
+    confirmMoveButton.addEventListener('click', () => {
+        const updatedItems = [];
+        const inputs = selectedItemsList.querySelectorAll('input');
+
+        inputs.forEach(input => {
+            const itemId = input.getAttribute('data-id');
+            const newAmount = input.value;
+
+            const item = selectedItems[currentTab].find(i => i.id === itemId);
+            if (item) {
+                updatedItems.push({ ...item, newAmount });
+            }
+        });
+
+        console.log('Перемещаемые товары:', updatedItems);
+        popup.classList.add('hidden');
+    });
+});
+
+
+
+
+
+
+
+
+
 
 
 

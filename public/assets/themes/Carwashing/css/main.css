@@ -1639,14 +1639,8 @@ input[type="text"]:focus,
   font-family: var(--font-family);
 }
 
-.warehouse-list tbody tr:nth-child(odd) {
-  background-color: var(--dark-middle-bg);
-  /* Чередование цветов строк */
-}
 
-.warehouse-list tbody tr:nth-child(odd):hover{
-  background-color: var(--dark-hover);
-}
+
 
 /* Закругление для первой и последней ячейки строки */
 
@@ -1761,6 +1755,34 @@ input[type="text"]:focus,
 .warehouse-form-button.cancel:hover {
   background-color: var(--dark-hover);
   color: var(--white);
+}
+
+#warehouse-move-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #2d2f3a;
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 1000;
+  color: white;
+}
+.warehouse-popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Подсветка выбранной строки */
+tr.selected {
+  background-color: var(--dark-hover); 
+}
+
+
+#warehouse-selected-items {
+  list-style: none;
+  padding: 0;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
