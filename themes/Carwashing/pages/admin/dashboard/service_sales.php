@@ -58,7 +58,23 @@ $services_array = $data['service']->getAllFromDBAsArray();
             </script>
 
             <form id="carWashContainer" action="/admin/dashboard/service_sales/addNewServiceSale" method="post" class="tab-content" style="display: block;">
+                <!-- Блок с множеством услуг -->
+                <div id="servicesLinesContainer">
+                    <!-- Одна строка (пример) -->
+                    <div class="service-line" data-index="0">
+                        <div class="service-line-service">
+                            <label>Услуга</label>
+                            <select name="services[0][service_id]" class="serviceSelect" style="width: auto;"></select>
+                        </div>
+                        <div class="service-line-btn">
+                            <label for="">ㅤ</label>
+                            <button type="button" class="removeServiceBtn"><img src="/assets/themes/Carwashing/img/trash-icon.svg" alt=""></button>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Кнопка добавления новой строки (ещё одна услуга) -->
+                <button type="button" id="addServiceBtn">Добавить услугу</button>
                 <!-- Общие поля: сотрудник, номер машины, модель, марка, payment_type -->
                 <div class="about-service-forms">
                     <ul class="about-service-forms-first-column">
@@ -97,18 +113,7 @@ $services_array = $data['service']->getAllFromDBAsArray();
                     </ul>
                 </div>
 
-                <!-- Блок с множеством услуг -->
-                <div id="servicesLinesContainer">
-                    <!-- Одна строка (пример) -->
-                    <div class="service-line" data-index="0">
-                        <label>Услуга:</label>
-                        <select name="services[0][service_id]" class="serviceSelect" style="width: 300px;"></select>
-                        <button type="button" class="removeServiceBtn">X</button>
-                    </div>
-                </div>
 
-                <!-- Кнопка добавления новой строки (ещё одна услуга) -->
-                <button type="button" id="addServiceBtn">Добавить услугу</button>
 
                 <div class="payment-section">
                     <div class="payment-options">
@@ -121,7 +126,7 @@ $services_array = $data['service']->getAllFromDBAsArray();
                                 <input value="card" name="payment_type" type="radio" class="payment-button">Безналичный
                             </label>
                         </fieldset>
-                        <button type="submit" class="save-button">Сохранить</button>
+                        
                     </div>
                     <div class="total-amount">
                         <label class="total-amount-label">Итоговая сумма</label>
@@ -362,9 +367,14 @@ $services_array = $data['service']->getAllFromDBAsArray();
             lineDiv.setAttribute('data-index', serviceIndex);
 
             lineDiv.innerHTML = `
-            <label>Услуга:</label>
-            <select name="services[${serviceIndex}][service_id]" class="serviceSelect" style="width: 300px;"></select>
-            <button type="button" class="removeServiceBtn">X</button>
+            <div class="service-line-service">
+                <label>Услуга</label>
+                <select name="services[${serviceIndex}][service_id]" class="serviceSelect" style="width: auto;"></select>
+            </div>
+            <div class="service-line-btn">
+                <label for="">ㅤ</label>
+                <button type="button" class="removeServiceBtn"><img src="/assets/themes/Carwashing/img/trash-icon.svg" alt=""></button>
+            </div>
         `;
             servicesLinesContainer.appendChild(lineDiv);
             initializeServiceLine(lineDiv, serviceIndex);
