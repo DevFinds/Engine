@@ -71,6 +71,7 @@ $services_array = $data['service']->getAllFromDBAsArray();
                             <label for="">ㅤ</label>
                             <button type="button" class="removeServiceBtn"><img src="/assets/themes/Carwashing/img/trash-icon.svg" alt=""></button>
                         </div>
+                        
                     </div>
                 </div>
 
@@ -135,6 +136,7 @@ $services_array = $data['service']->getAllFromDBAsArray();
                         <div class="total-amount-value" id="productTotal">0 руб</div>
                     </div>
                 </div>
+                <button type="submit" class="save-button">Сохранить</button>
             </form>
 
             <script>
