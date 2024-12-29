@@ -5,6 +5,7 @@ namespace Source\Controllers;
 
 use Core\Controller\Controller;
 use Exception;
+use FPDF;
 use Source\Services\CompanyService;
 use Source\Services\ProductService;
 use Source\Services\ServiceService;
@@ -161,8 +162,13 @@ class GoodsAndServicesController extends Controller
         }
 
         $paymentType = $this->request()->input('payment_type');
-        $operatorName = $this->getAuth()->getUser()->username();
+        $operatorName = $this->getAuth()->getUser()->username(); // Получаем имя текущего оператора
         $grandTotal = 0;
+
+        // Инициализация чека
+        $checkNumber = 'CHK' . time();
+        $cash = 0;
+        $card = 0;
         $items = [];
 
         foreach ($lines as $line) {
@@ -188,6 +194,7 @@ class GoodsAndServicesController extends Controller
             $lineTotal = $price * $amount;
             $grandTotal += $lineTotal;
 
+            // Уменьшаем остаток товара
             $newAmount = max(0, $productRow['amount'] - $amount);
             $this->getDatabase()->update('Product', ['amount' => $newAmount], [
                 'id' => $productId,
@@ -205,24 +212,29 @@ class GoodsAndServicesController extends Controller
         $cash = $paymentType === 'cash' ? $grandTotal : 0;
         $card = $paymentType === 'card' ? $grandTotal : 0;
 
-        $checkId = $this->createCheck([
-            'check_number' => 'CHK' . time(),
-            'total' => $grandTotal,
-            'cash' => $cash,
-            'card' => $card,
-            'discount' => 0,
-            'operator_name' => $operatorName,
-            'license_plate' => null,
-            'change_amount' => 0,
-            'report_type' => 'product'
-        ]);
+        try {
+            $checkId = $this->createCheck([
+                'check_number' => $checkNumber,
+                'date' => date('Y-m-d H:i:s'),
+                'total' => $grandTotal,
+                'cash' => $cash,
+                'card' => $card,
+                'discount' => 0,
+                'operator_name' => $operatorName,
+                'license_plate' => null,
+                'change_amount' => 0,
+                'report_type' => 'product'
+            ]);
 
-        $this->addCheckItems($checkId, $items);
+            $this->addCheckItems($checkId, $items);
 
-        $this->redirect('/admin/dashboard/service_sales');
+            // Печать чека
+            $this->redirect('/admin/dashboard/check/preview/' . $checkId);
+        } catch (Exception $e) {
+            $this->session()->set('error', 'Ошибка при создании чека: ' . $e->getMessage());
+            $this->redirect('/admin/dashboard/service_sales');
+        }
     }
-
-
 
     public function addNewServiceSale()
     {
@@ -258,8 +270,9 @@ class GoodsAndServicesController extends Controller
         $carModel = $this->request()->input('car_model');
         $carBrand = $this->request()->input('car_brand');
         $paymentType = $this->request()->input('payment_type');
-        $operatorName = $this->getAuth()->getUser()->username();
+        $operatorName = $this->getAuth()->getUser()->username(); // Имя текущего оператора
         $grandTotal = 0;
+
         $items = [];
 
         foreach ($serviceLines as $line) {
@@ -277,6 +290,13 @@ class GoodsAndServicesController extends Controller
             $price = (float)$serviceRow['price'];
             $grandTotal += $price;
 
+            $items[] = [
+                'name' => $serviceRow['name'],
+                'quantity' => 1,
+                'price' => $price,
+                'total' => $price
+            ];
+
             $this->getDatabase()->insert('Service_Sale', [
                 'service_id' => $servId,
                 'employee_id' => $employeeId,
@@ -285,34 +305,120 @@ class GoodsAndServicesController extends Controller
                 'car_brand' => $carBrand,
                 'payment_method' => $paymentType
             ]);
-
-            $items[] = [
-                'name' => $serviceRow['name'],
-                'quantity' => 1,
-                'price' => $price,
-                'total' => $price
-            ];
         }
 
         $cash = $paymentType === 'cash' ? $grandTotal : 0;
         $card = $paymentType === 'card' ? $grandTotal : 0;
 
-        $checkId = $this->createCheck([
-            'check_number' => 'CHK' . time(),
-            'date' => date('Y-m-d H:i:s'),
-            'total' => $grandTotal,
-            'cash' => $cash,
-            'card' => $card,
-            'discount' => 0,
-            'operator_name' => $operatorName,
-            'license_plate' => $carNumber,
-            'change_amount' => 0,
-            'report_type' => 'service'
-        ]);
+        try {
+            $checkId = $this->createCheck([
+                'check_number' => 'CHK' . time(),
+                'date' => date('Y-m-d H:i:s'),
+                'total' => $grandTotal,
+                'cash' => $cash,
+                'card' => $card,
+                'discount' => 0,
+                'operator_name' => $operatorName,
+                'license_plate' => $carNumber,
+                'change_amount' => 0,
+                'report_type' => 'service'
+            ]);
 
-        $this->addCheckItems($checkId, $items);
+            $this->addCheckItems($checkId, $items);
 
-        $this->redirect('/admin/dashboard/service_sales');
+            // Печать чека
+            $this->redirect('/admin/dashboard/check/preview/' . $checkId);
+        } catch (Exception $e) {
+            $this->session()->set('error', 'Ошибка при создании чека: ' . $e->getMessage());
+            $this->redirect('/admin/dashboard/service_sales');
+        }
+    }
+
+
+
+    public function printCheck($checkId)
+    {
+        // Получаем данные чека
+        $check = $this->getDatabase()->first_found_in_db('checks', ['id' => $checkId]);
+        $checkItems = $this->getDatabase()->first_found_in_db('check_items', ['check_id' => $checkId]);
+
+        if (!$check || !$checkItems) {
+            $this->session()->set('error', 'Чек не найден.');
+            $this->redirect('/admin/dashboard/service_sales');
+            return;
+        }
+
+        // Генерация PDF с использованием FPDF
+        $pdf = new FPDF();
+        $pdf->AddPage();
+        $pdf->SetFont('Arial', 'B', 12);
+
+        // Заголовок чека
+        $pdf->Cell(0, 10, 'Чек #' . $check['check_number'], 0, 1, 'C');
+        $pdf->Cell(0, 10, 'Дата: ' . $check['date'], 0, 1, 'C');
+        $pdf->Ln(10);
+
+        // Таблица с товарами/услугами
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->Cell(60, 8, 'Наименование', 1);
+        $pdf->Cell(20, 8, 'Кол-во', 1);
+        $pdf->Cell(30, 8, 'Цена', 1);
+        $pdf->Cell(30, 8, 'Сумма', 1);
+        $pdf->Ln();
+
+        foreach ($checkItems as $item) {
+            $pdf->Cell(60, 8, $item['name'], 1);
+            $pdf->Cell(20, 8, $item['quantity'], 1, 0, 'C');
+            $pdf->Cell(30, 8, number_format($item['price'], 2), 1, 0, 'R');
+            $pdf->Cell(30, 8, number_format($item['total'], 2), 1, 0, 'R');
+            $pdf->Ln();
+        }
+
+        // Итоговая сумма
+        $pdf->Ln(5);
+        $pdf->SetFont('Arial', 'B', 12);
+        $pdf->Cell(0, 10, 'Итого: ' . number_format($check['total'], 2) . ' руб.', 0, 1, 'R');
+        $pdf->Ln(5);
+
+        // Оплата
+        $pdf->SetFont('Arial', '', 10);
+        $pdf->Cell(0, 10, 'Оплачено наличными: ' . number_format($check['cash'], 2) . ' руб.', 0, 1);
+        $pdf->Cell(0, 10, 'Оплачено картой: ' . number_format($check['card'], 2) . ' руб.', 0, 1);
+        $pdf->Ln(10);
+
+        // Закрытие PDF
+        $fileName = 'check_' . $checkId . '.pdf';
+        $filePath = '/path/to/save/' . $fileName;
+
+        $pdf->Output('F', $filePath);
+
+        // Перенаправление на страницу с возможностью скачивания PDF
+        $this->redirect('/admin/dashboard/check/preview/' . $checkId);
+    }
+
+    public function previewCheck($checkId)
+    {
+        try {
+            // Получаем данные чека из таблицы checks
+            $check = $this->getDatabase()->first_found_in_db('checks', ['id' => $checkId]);
+            if (!$check) {
+                $this->session()->set('error', 'Чек не найден.');
+                dd($this->session()->get('error'));
+                return;
+            }
+
+            // Получаем данные позиций из таблицы check_items
+            $checkItems = $this->getDatabase()->get('check_items', ['check_id' => $checkId]);
+
+            // Передаем данные чека и позиций в вид
+            $this->render('/admin/preview_check', [
+                'check' => $check,
+                'items' => $checkItems
+            ]);
+        } catch (Exception $e) {
+            $this->session()->set('error', 'Ошибка при загрузке чека: ' . $e->getMessage());
+            dd($this->session()->get('error'));
+        }
     }
 
 

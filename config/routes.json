@@ -431,7 +431,23 @@
                 "Source\\Middleware\\AuthMiddleware"
             ],
             "access_level": 2
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/check/preview/{checkId}",
+            "action": {
+                "controller": "Source\\Controllers\\GoodsAndServicesController",
+                "method": "previewCheck"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "parameters": {
+                "check_id": "[0-9]+"
+            },
+            "access_level": 2
         }
+        
         
         
 ]
