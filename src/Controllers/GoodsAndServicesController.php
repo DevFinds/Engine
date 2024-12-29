@@ -4,6 +4,7 @@
 namespace Source\Controllers;
 
 use Core\Controller\Controller;
+use Exception;
 use Source\Services\CompanyService;
 use Source\Services\ProductService;
 use Source\Services\ServiceService;
@@ -140,7 +141,6 @@ class GoodsAndServicesController extends Controller
 
     public function addNewProductSale()
     {
-        // Валидация, e.g. payment_type required
         $validation = $this->request()->validate([
             'payment_type' => ['required']
         ], [
@@ -148,23 +148,25 @@ class GoodsAndServicesController extends Controller
         ]);
 
         if (!$validation) {
-            // ...
+            $this->session()->set('error', 'Не выбран тип оплаты.');
+            $this->redirect('/admin/dashboard/service_sales');
             return;
         }
 
-        // Получаем массив products
         $lines = $this->request()->input('products');
         if (!is_array($lines) || empty($lines)) {
-            $this->session()->set('error', 'Не выбраны товары');
+            $this->session()->set('error', 'Не выбраны товары.');
             $this->redirect('/admin/dashboard/service_sales');
             return;
         }
 
         $paymentType = $this->request()->input('payment_type');
+        $operatorName = $this->getAuth()->getUser()->username();
         $grandTotal = 0;
+        $items = [];
 
-        foreach ($lines as $idx => $line) {
-            $productWarehouseVal = $line['product_warehouse'] ?? null; // e.g. "4_1"
+        foreach ($lines as $line) {
+            $productWarehouseVal = $line['product_warehouse'] ?? null;
             $amount = (int)($line['amount'] ?? 0);
 
             if (!$productWarehouseVal || $amount < 1) {
@@ -173,13 +175,12 @@ class GoodsAndServicesController extends Controller
 
             list($productId, $warehouseId) = explode('_', $productWarehouseVal);
 
-            // Ищем в DB
             $productRow = $this->getDatabase()->first_found_in_db('Product', [
                 'id' => $productId,
                 'warehouse_id' => $warehouseId
             ]);
+
             if (!$productRow) {
-                // Неверное значение, пропускаем
                 continue;
             }
 
@@ -187,76 +188,159 @@ class GoodsAndServicesController extends Controller
             $lineTotal = $price * $amount;
             $grandTotal += $lineTotal;
 
-            // Запись в Product_Sale
-            $this->getDatabase()->insert('Product_Sale', [
-                'product_id' => $productRow['id'],  // или product_id => $productId
-                'total_amount' => $grandTotal,
-                'payment_method' => $paymentType
-            ]);
-
-            //Можно уменьшить остаток
             $newAmount = max(0, $productRow['amount'] - $amount);
             $this->getDatabase()->update('Product', ['amount' => $newAmount], [
                 'id' => $productId,
                 'warehouse_id' => $warehouseId
             ]);
+
+            $items[] = [
+                'name' => $productRow['name'],
+                'quantity' => $amount,
+                'price' => $price,
+                'total' => $lineTotal
+            ];
         }
 
-        // Итоговая транзакция
-        $this->getDatabase()->insert('Transaction', [
-            'sum' => $grandTotal,
-            'transaction_type_id' => 2,  // допустим, 2 = продажа
+        $cash = $paymentType === 'cash' ? $grandTotal : 0;
+        $card = $paymentType === 'card' ? $grandTotal : 0;
+
+        $checkId = $this->createCheck([
+            'check_number' => 'CHK' . time(),
+            'total' => $grandTotal,
+            'cash' => $cash,
+            'card' => $card,
+            'discount' => 0,
+            'operator_name' => $operatorName,
+            'license_plate' => null,
+            'change_amount' => 0,
+            'report_type' => 'product'
         ]);
+
+        $this->addCheckItems($checkId, $items);
 
         $this->redirect('/admin/dashboard/service_sales');
     }
 
 
 
-
     public function addNewServiceSale()
     {
-        $labels = [
-            'service_id' => 'Услуга',
-            'employee_id' => 'Сотрудник',
-            'car_number' => 'Номер машины',
-            'car_model' => 'Модель машины',
-            'car_brand' => 'Марка машины',
-            'payment_type' => 'Тип оплаты'
-        ];
-
         $validation = $this->request()->validate([
-            'service_id' => ['required'],
             'employee_id' => ['required'],
             'car_number' => ['required'],
             'car_model' => ['required'],
             'car_brand' => ['required'],
             'payment_type' => ['required']
-        ], $labels);
+        ], [
+            'employee_id' => 'Сотрудник',
+            'car_number' => 'Номер машины',
+            'car_model' => 'Модель машины',
+            'car_brand' => 'Марка машины',
+            'payment_type' => 'Тип оплаты'
+        ]);
 
         if (!$validation) {
-            foreach ($this->request()->errors() as $field => $errors) {
-                $this->session()->set($field, $errors);
-            }
-            $this->redirect('/admin/dashboard/goods_and_services');
+            $this->session()->set('error', 'Не заполнены обязательные поля.');
+            $this->redirect('/admin/dashboard/service_sales');
             return;
         }
 
-        $this->getDatabase()->insert('Service_Sale', [
-            'service_id' => $this->request()->input('service_id'),
-            'employee_id' => $this->request()->input('employee_id'),
-            'car_number' => $this->request()->input('car_number'),
-            'car_model' => $this->request()->input('car_model'),
-            'car_brand' => $this->request()->input('car_brand'),
-            'payment_method' => $this->request()->input('payment_type')
+        $serviceLines = $this->request()->input('services');
+        if (!is_array($serviceLines) || empty($serviceLines)) {
+            $this->session()->set('error', 'Не выбрано ни одной услуги.');
+            $this->redirect('/admin/dashboard/service_sales');
+            return;
+        }
+
+        $employeeId = $this->request()->input('employee_id');
+        $carNumber = $this->request()->input('car_number');
+        $carModel = $this->request()->input('car_model');
+        $carBrand = $this->request()->input('car_brand');
+        $paymentType = $this->request()->input('payment_type');
+        $operatorName = $this->getAuth()->getUser()->username();
+        $grandTotal = 0;
+        $items = [];
+
+        foreach ($serviceLines as $line) {
+            $servId = $line['service_id'] ?? null;
+
+            if (!$servId) {
+                continue;
+            }
+
+            $serviceRow = $this->getDatabase()->first_found_in_db('Service', ['id' => $servId]);
+            if (!$serviceRow) {
+                continue;
+            }
+
+            $price = (float)$serviceRow['price'];
+            $grandTotal += $price;
+
+            $this->getDatabase()->insert('Service_Sale', [
+                'service_id' => $servId,
+                'employee_id' => $employeeId,
+                'car_number' => $carNumber,
+                'car_model' => $carModel,
+                'car_brand' => $carBrand,
+                'payment_method' => $paymentType
+            ]);
+
+            $items[] = [
+                'name' => $serviceRow['name'],
+                'quantity' => 1,
+                'price' => $price,
+                'total' => $price
+            ];
+        }
+
+        $cash = $paymentType === 'cash' ? $grandTotal : 0;
+        $card = $paymentType === 'card' ? $grandTotal : 0;
+
+        $checkId = $this->createCheck([
+            'check_number' => 'CHK' . time(),
+            'date' => date('Y-m-d H:i:s'),
+            'total' => $grandTotal,
+            'cash' => $cash,
+            'card' => $card,
+            'discount' => 0,
+            'operator_name' => $operatorName,
+            'license_plate' => $carNumber,
+            'change_amount' => 0,
+            'report_type' => 'service'
         ]);
 
-        $service = $this->getDatabase()->first_found_in_db('Service', ['id' => $this->request()->input('service_id')]);
-        $this->getDatabase()->insert('Transaction', [
-            'sum' => $service['price'],
-            'transaction_type_id' => 3
-        ]);
+        $this->addCheckItems($checkId, $items);
 
         $this->redirect('/admin/dashboard/service_sales');
+    }
+
+
+    private function createCheck(array $data): int
+    {
+        try {
+            return $this->getDatabase()->insert('checks', $data);
+        } catch (Exception $e) {
+            $this->session()->set('error', 'Ошибка создания чека: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function addCheckItems(int $checkId, array $items): void
+    {
+        foreach ($items as $item) {
+            try {
+                $this->getDatabase()->insert('check_items', [
+                    'check_id' => $checkId,
+                    'name' => $item['name'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'total' => $item['total']
+                ]);
+            } catch (Exception $e) {
+                $this->session()->set('error', 'Ошибка добавления позиции в чек: ' . $e->getMessage());
+                throw $e;
+            }
+        }
     }
 }

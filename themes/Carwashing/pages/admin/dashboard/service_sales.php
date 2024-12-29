@@ -21,6 +21,8 @@ $products = $product_service->getAllFromDBAllSuppliers();
 $warehouse_service = $data['warehouses'];
 $warehouses = $warehouse_service->getAllFromDB();
 
+$services_array = $data['service']->getAllFromDBAsArray();
+
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -46,23 +48,25 @@ $warehouses = $warehouse_service->getAllFromDB();
                 </div>
             </div>
 
-            <form id="carWashContainer" action="/admin/dashboard/service_sales/addNewServiceSale" method="post" class="tab-content">
+            <script>
+                // Пример: servicesJS = [
+                //   { id:1, name:"Мойка кузова", price:500 },
+                //   { id:2, name:"Химчистка салона", price:2000 },
+                //   ...
+                // ]
+                const servicesJS = <?php echo json_encode($services_array, JSON_UNESCAPED_UNICODE); ?>;
+            </script>
+
+            <form id="carWashContainer" action="/admin/dashboard/service_sales/addNewServiceSale" method="post" class="tab-content" style="display: block;">
+
+                <!-- Общие поля: сотрудник, номер машины, модель, марка, payment_type -->
                 <div class="about-service-forms">
                     <ul class="about-service-forms-first-column">
                         <li>
-                            <label class="about-service-form-label">Услуга</label>
-                            <select class="about-service-form" name="service_id">
-                                <option disabled selected>Выбрать услугу</option>
-                                <?php foreach ($services as $service => $service_model) : ?>
-                                    <option value="<?= $service_model->id() ?>"><?= $service_model->name() ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </li>
-                        <li>
                             <label class="about-service-form-label">Сотрудник</label>
-                            <select class="about-service-form" name="employee_id">
+                            <select class="about-service-form" name="employee_id" required>
                                 <option disabled selected>Выбрать сотрудника</option>
-                                <?php foreach ($employees as $employee => $employee_model) : ?>
+                                <?php foreach ($employees as $employee_model) : ?>
                                     <option value="<?= $employee_model->id() ?>"><?= $employee_model->name() ?></option>
                                 <?php endforeach; ?>
                             </select>
@@ -93,21 +97,37 @@ $warehouses = $warehouse_service->getAllFromDB();
                     </ul>
                 </div>
 
+                <!-- Блок с множеством услуг -->
+                <div id="servicesLinesContainer">
+                    <!-- Одна строка (пример) -->
+                    <div class="service-line" data-index="0">
+                        <label>Услуга:</label>
+                        <select name="services[0][service_id]" class="serviceSelect" style="width: 300px;"></select>
+                        <button type="button" class="removeServiceBtn">X</button>
+                    </div>
+                </div>
+
+                <!-- Кнопка добавления новой строки (ещё одна услуга) -->
+                <button type="button" id="addServiceBtn">Добавить услугу</button>
+
                 <div class="payment-section">
                     <div class="payment-options">
-                        <label class="payment-options-label"> Выбрать рассчет</label>
+                        <label class="payment-options-label">Выбрать расчет</label>
                         <fieldset class="payment-buttons">
-                            <input value="cash" name="payment_type" type="radio" class="payment-button active" onclick="togglePayment('cash')">Наличный</input>
-                            <input value="card" name="payment_type" type="radio" class="payment-button" onclick="togglePayment('card')">Безналичный</input>
+                            <label>
+                                <input value="cash" name="payment_type" type="radio" class="payment-button" checked>Наличный
+                            </label>
+                            <label>
+                                <input value="card" name="payment_type" type="radio" class="payment-button">Безналичный
+                            </label>
                         </fieldset>
                         <button type="submit" class="save-button">Сохранить</button>
                     </div>
                     <div class="total-amount">
                         <label class="total-amount-label">Итоговая сумма</label>
-                        <div class="total-amount-value"> 500 руб</div>
+                        <div class="total-amount-value" id="serviceTotal">0 руб</div>
                     </div>
                 </div>
-
             </form>
 
             <script>
@@ -117,7 +137,8 @@ $warehouses = $warehouse_service->getAllFromDB();
             <form id="cafeContainer"
                 action="/admin/dashboard/service_sales/addNewProductSale"
                 method="post"
-                style="display: block;">
+                style="display: block;"
+                class="tab-content">
 
                 <div id="productLinesContainer">
                     <!-- Одна строка (изначальная) -->
@@ -322,6 +343,90 @@ $warehouses = $warehouse_service->getAllFromDB();
     });
 </script>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const servicesLinesContainer = document.getElementById('servicesLinesContainer');
+        const addServiceBtn = document.getElementById('addServiceBtn');
+        const totalAmountElem = document.getElementById('serviceTotal');
 
+        // Инициализируем первую (существующую) строку (index=0)
+        initializeServiceLine(servicesLinesContainer.querySelector('.service-line'), 0);
+
+        let serviceIndex = 1;
+
+        // Кнопка "Добавить услугу"
+        addServiceBtn.addEventListener('click', function() {
+            const lineDiv = document.createElement('div');
+            lineDiv.className = 'service-line';
+            lineDiv.setAttribute('data-index', serviceIndex);
+
+            lineDiv.innerHTML = `
+            <label>Услуга:</label>
+            <select name="services[${serviceIndex}][service_id]" class="serviceSelect" style="width: 300px;"></select>
+            <button type="button" class="removeServiceBtn">X</button>
+        `;
+            servicesLinesContainer.appendChild(lineDiv);
+            initializeServiceLine(lineDiv, serviceIndex);
+            serviceIndex++;
+        });
+
+        // Функция инициализации строки
+        function initializeServiceLine(lineDiv, idx) {
+            const serviceSelect = lineDiv.querySelector('.serviceSelect');
+            const removeBtn = lineDiv.querySelector('.removeServiceBtn');
+
+            // Заполним <select> опциями
+            fillServiceSelect(serviceSelect);
+
+            // Подключаем Select2
+            $(serviceSelect).select2({
+                placeholder: 'Выбрать услугу',
+                allowClear: true,
+                language: {
+                    noResults: function() {
+                        return 'Услуга не найдена';
+                    }
+                }
+            }).on('change', function() {
+                updateTotalPrice();
+            });
+
+            // Кнопка удаления строки
+            removeBtn.addEventListener('click', function() {
+                lineDiv.remove();
+                updateTotalPrice();
+            });
+        }
+
+        // Заполняем <select> опциями (из servicesJS)
+        function fillServiceSelect(selectEl) {
+            selectEl.innerHTML = '<option disabled selected>Выбрать услугу</option>';
+            servicesJS.forEach(srv => {
+                const opt = document.createElement('option');
+                opt.value = srv.id; // service_id
+                opt.textContent = srv.name;
+                // сохраним price для пересчёта
+                opt.setAttribute('data-price', srv.price);
+                selectEl.appendChild(opt);
+            });
+        }
+
+        // Пересчёт общей суммы
+        function updateTotalPrice() {
+            let total = 0;
+            document.querySelectorAll('.service-line').forEach(line => {
+                const serviceSelect = line.querySelector('.serviceSelect');
+                const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
+                if (!selectedOption) return;
+
+                const price = parseFloat(selectedOption.getAttribute('data-price')) || 0;
+                total += price;
+            });
+            totalAmountElem.textContent = `${total} руб`;
+        }
+
+        updateTotalPrice();
+    });
+</script>
 
 <?php $render->component('dashboard_footer'); ?>

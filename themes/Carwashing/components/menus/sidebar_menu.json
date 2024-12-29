@@ -17,7 +17,7 @@
             "url": "/admin/dashboard/goods_and_services"
         },
         {
-            "name": "Продажа услуг",
+            "name": "Продажи",
             "icon": "icon-settings",
             "url": "/admin/dashboard/service_sales"
         },
