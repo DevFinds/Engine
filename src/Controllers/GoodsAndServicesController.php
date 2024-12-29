@@ -216,8 +216,9 @@ class GoodsAndServicesController extends Controller
 
     public function addNewServiceSale()
     {
+        // 1. Валидация общих полей
         $labels = [
-            'service_id' => 'Услуга',
+            // 'service_id' => 'Услуга', // убираем
             'employee_id' => 'Сотрудник',
             'car_number' => 'Номер машины',
             'car_model' => 'Модель машины',
@@ -226,35 +227,74 @@ class GoodsAndServicesController extends Controller
         ];
 
         $validation = $this->request()->validate([
-            'service_id' => ['required'],
+            // убираем 'service_id' => ['required']
             'employee_id' => ['required'],
-            'car_number' => ['required'],
-            'car_model' => ['required'],
-            'car_brand' => ['required'],
+            'car_number'  => ['required'],
+            'car_model'   => ['required'],
+            'car_brand'   => ['required'],
             'payment_type' => ['required']
+            // 'services' => ['required_array'] // опционально, если доработан валидатор
         ], $labels);
 
         if (!$validation) {
             foreach ($this->request()->errors() as $field => $errors) {
                 $this->session()->set($field, $errors);
             }
-            $this->redirect('/admin/dashboard/goods_and_services');
+            dd($this->request()->errors());
             return;
         }
 
-        $this->getDatabase()->insert('Service_Sale', [
-            'service_id' => $this->request()->input('service_id'),
-            'employee_id' => $this->request()->input('employee_id'),
-            'car_number' => $this->request()->input('car_number'),
-            'car_model' => $this->request()->input('car_model'),
-            'car_brand' => $this->request()->input('car_brand'),
-            'payment_method' => $this->request()->input('payment_type')
-        ]);
+        // 2. Получаем массив услуг
+        $serviceLines = $this->request()->input('services');
+        if (!is_array($serviceLines) || empty($serviceLines)) {
+            $this->session()->set('error', 'Не выбрано ни одной услуги');
+            $this->redirect('/admin/dashboard/service_sales');
+            return;
+        }
 
-        $service = $this->getDatabase()->first_found_in_db('Service', ['id' => $this->request()->input('service_id')]);
+        // 3. Получаем общие поля
+        $employeeId = $this->request()->input('employee_id');
+        $carNumber  = $this->request()->input('car_number');
+        $carModel   = $this->request()->input('car_model');
+        $carBrand   = $this->request()->input('car_brand');
+        $paymentType = $this->request()->input('payment_type');
+
+        $grandTotal = 0;
+
+        // 4. Перебираем все выбранные услуги
+        foreach ($serviceLines as $idx => $line) {
+            $servId = $line['service_id'] ?? null;
+            if (!$servId) {
+                // пропускаем
+                continue;
+            }
+
+            // Находим услугу в таблице Service (ID = $servId)
+            $serviceRow = $this->getDatabase()->first_found_in_db('Service', ['id' => $servId]);
+            if (!$serviceRow) {
+                // услуга не найдена, пропускаем
+                continue;
+            }
+
+            $price = (float)$serviceRow['price'];
+            $grandTotal += $price;
+
+            // Записываем отдельную продажу в Service_Sale
+            $this->getDatabase()->insert('Service_Sale', [
+                'service_id'    => $servId,
+                'employee_id'   => $employeeId,
+                'total_amount'  => $grandTotal,
+                'car_number'    => $carNumber,
+                'car_model'     => $carModel,
+                'car_brand'     => $carBrand,
+                'payment_method' => $paymentType
+            ]);
+        }
+
+        // 5. Вставляем в Transaction общую сумму
         $this->getDatabase()->insert('Transaction', [
-            'sum' => $service['price'],
-            'transaction_type_id' => 3
+            'sum' => $grandTotal,
+            'transaction_type_id' => 3, // 3 = продажа услуги
         ]);
 
         $this->redirect('/admin/dashboard/service_sales');

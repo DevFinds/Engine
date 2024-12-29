@@ -242,6 +242,12 @@ class Validator implements ValidatorInterface
                     return "Поле \"$label\" обязательно для заполнения, когда \"$otherField\" равно \"$otherValue\".";
                 }
                 break;
+            case 'required_array':
+                if (!isset($this->data[$key]) || !is_array($this->data[$key]) || empty($this->data[$key])) {
+                    return "Поле \"$label\" обязательно (нужен не пустой массив).";
+                }
+                break;
+
 
                 // Добавьте другие правила валидации по необходимости
 
