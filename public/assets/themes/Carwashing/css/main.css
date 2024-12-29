@@ -2610,7 +2610,7 @@ input[type="number"]::-webkit-outer-spin-button {
   background-color: var(--dark-bg);
   border: none;
   padding: 2px 0px;
-  color: #000;
+  color: var(--white);
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {

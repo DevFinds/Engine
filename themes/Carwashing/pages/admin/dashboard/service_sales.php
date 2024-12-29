@@ -117,16 +117,15 @@ $services_array = $data['service']->getAllFromDBAsArray();
 
                 <div class="payment-section">
                     <div class="payment-options">
-                        <label class="payment-options-label">Выбрать расчет</label>
-                        <fieldset class="payment-buttons">
+                        <label>Выбрать расчет</label>
+                        <fieldset>
                             <label>
-                                <input value="cash" name="payment_type" type="radio" class="payment-button" checked>Наличный
+                                <input value="cash" name="payment_type" type="radio" checked> Наличный
                             </label>
                             <label>
-                                <input value="card" name="payment_type" type="radio" class="payment-button">Безналичный
+                                <input value="card" name="payment_type" type="radio"> Безналичный
                             </label>
                         </fieldset>
-                        
                     </div>
                     <div class="total-amount">
                         <label class="total-amount-label">Итоговая сумма</label>
