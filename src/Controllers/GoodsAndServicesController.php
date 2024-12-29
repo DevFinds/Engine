@@ -166,7 +166,7 @@ class GoodsAndServicesController extends Controller
         $grandTotal = 0;
 
         // Инициализация чека
-        $checkNumber = 'CHK' . time();
+        $checkNumber = date('YmdHis');
         $cash = 0;
         $card = 0;
         $items = [];
@@ -319,9 +319,11 @@ class GoodsAndServicesController extends Controller
                 'card' => $card,
                 'discount' => 0,
                 'operator_name' => $operatorName,
-                'license_plate' => $carNumber,
+                'car_number' => $carNumber,
                 'change_amount' => 0,
-                'report_type' => 'service'
+                'report_type' => 'service',
+                'car_model' => $this->request()->input('car_model'),
+                'car_brand' => $this->request()->input('car_brand')
             ]);
 
             $this->addCheckItems($checkId, $items);
@@ -332,68 +334,6 @@ class GoodsAndServicesController extends Controller
             $this->session()->set('error', 'Ошибка при создании чека: ' . $e->getMessage());
             $this->redirect('/admin/dashboard/service_sales');
         }
-    }
-
-
-
-    public function printCheck($checkId)
-    {
-        // Получаем данные чека
-        $check = $this->getDatabase()->first_found_in_db('checks', ['id' => $checkId]);
-        $checkItems = $this->getDatabase()->first_found_in_db('check_items', ['check_id' => $checkId]);
-
-        if (!$check || !$checkItems) {
-            $this->session()->set('error', 'Чек не найден.');
-            $this->redirect('/admin/dashboard/service_sales');
-            return;
-        }
-
-        // Генерация PDF с использованием FPDF
-        $pdf = new FPDF();
-        $pdf->AddPage();
-        $pdf->SetFont('Arial', 'B', 12);
-
-        // Заголовок чека
-        $pdf->Cell(0, 10, 'Чек #' . $check['check_number'], 0, 1, 'C');
-        $pdf->Cell(0, 10, 'Дата: ' . $check['date'], 0, 1, 'C');
-        $pdf->Ln(10);
-
-        // Таблица с товарами/услугами
-        $pdf->SetFont('Arial', '', 10);
-        $pdf->Cell(60, 8, 'Наименование', 1);
-        $pdf->Cell(20, 8, 'Кол-во', 1);
-        $pdf->Cell(30, 8, 'Цена', 1);
-        $pdf->Cell(30, 8, 'Сумма', 1);
-        $pdf->Ln();
-
-        foreach ($checkItems as $item) {
-            $pdf->Cell(60, 8, $item['name'], 1);
-            $pdf->Cell(20, 8, $item['quantity'], 1, 0, 'C');
-            $pdf->Cell(30, 8, number_format($item['price'], 2), 1, 0, 'R');
-            $pdf->Cell(30, 8, number_format($item['total'], 2), 1, 0, 'R');
-            $pdf->Ln();
-        }
-
-        // Итоговая сумма
-        $pdf->Ln(5);
-        $pdf->SetFont('Arial', 'B', 12);
-        $pdf->Cell(0, 10, 'Итого: ' . number_format($check['total'], 2) . ' руб.', 0, 1, 'R');
-        $pdf->Ln(5);
-
-        // Оплата
-        $pdf->SetFont('Arial', '', 10);
-        $pdf->Cell(0, 10, 'Оплачено наличными: ' . number_format($check['cash'], 2) . ' руб.', 0, 1);
-        $pdf->Cell(0, 10, 'Оплачено картой: ' . number_format($check['card'], 2) . ' руб.', 0, 1);
-        $pdf->Ln(10);
-
-        // Закрытие PDF
-        $fileName = 'check_' . $checkId . '.pdf';
-        $filePath = '/path/to/save/' . $fileName;
-
-        $pdf->Output('F', $filePath);
-
-        // Перенаправление на страницу с возможностью скачивания PDF
-        $this->redirect('/admin/dashboard/check/preview/' . $checkId);
     }
 
     public function previewCheck($checkId)

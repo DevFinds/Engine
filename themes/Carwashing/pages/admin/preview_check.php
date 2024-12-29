@@ -21,7 +21,7 @@
         }
 
         .check-header {
-            text-align: center;
+            text-align: left;
             font-size: 14px;
         }
 
@@ -50,10 +50,8 @@
         }
 
         @page {
-            size: 80mm 160mm;
-            /* Размер бумаги: ширина x высота */
+            size: 80mm 200mm;
             margin: 0;
-            /* Убираем отступы */
         }
 
         @media print {
@@ -70,15 +68,10 @@
 
             @page {
                 size: 80mm 200mm;
-                /* Указываем размеры страницы */
                 margin: 0;
-                /* Убираем поля */
             }
 
-            h2 {
-                text-align: left;
-            }
-
+            h2,
             p {
                 text-align: left;
             }
@@ -89,9 +82,20 @@
 <body>
     <div class="check-container">
         <div class="check-header">
+            <h2>АКВА</h2>
+            <p>ИНН: 165002083718</p>
+            <p>Тел: +79027180705</p>
             <p>ТОВАРНЫЙ ЧЕК №<?= htmlspecialchars($check['check_number']) ?></p>
             <p>Дата: <?= htmlspecialchars($check['date']) ?></p>
-            <p>Кассир: <?= htmlspecialchars($check['operator_name']) ?></p>
+            <?php if ($check['car_number'] > 0): ?>
+                <p>Гос. номер: <?= htmlspecialchars($check['car_number']) ?></p>
+            <?php endif; ?>
+            <?php if ($check['car_model'] > 0): ?>
+                <p>Модель: <?= htmlspecialchars($check['car_model']) ?></p>
+            <?php endif; ?>
+            <?php if ($check['car_brand'] > 0): ?>
+                <p>Марка: <?= htmlspecialchars($check['car_brand']) ?></p>
+            <?php endif; ?>
         </div>
 
         <div class="check-body">
@@ -118,14 +122,17 @@
         </div>
 
         <div class="check-footer">
-            <p>Итого: <?= number_format($check['total'], 2, '.', ' ') ?> руб.</p>
+            <p>Скидка: <?= number_format($check['discount'], 2, '.', ' ') ?> руб.</p>
             <p>Наличные: <?= number_format($check['cash'], 2, '.', ' ') ?> руб.</p>
             <p>Карта: <?= number_format($check['card'], 2, '.', ' ') ?> руб.</p>
+            <p>Сдача: <?= number_format($check['change_amount'], 2, '.', ' ') ?> руб.</p>
+            <p>Оператор: <?= htmlspecialchars($check['operator_name']) ?></p>
+            <p>Итого: <?= number_format($check['total'], 2, '.', ' ') ?> руб.</p>
         </div>
     </div>
 
     <script>
-        // Открываем окно печати автоматически
+        // Автоматически открываем окно печати
         window.onload = function() {
             window.print();
         };

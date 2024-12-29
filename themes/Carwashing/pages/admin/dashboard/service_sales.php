@@ -97,8 +97,8 @@ $services_array = $data['service']->getAllFromDBAsArray();
                             <label class="about-service-form-label">Гос. номер автомобиля</label>
                             <input type="text"
                                 name="car_number"
+                                id="carNumberInput"
                                 placeholder="A000AA00"
-                                pattern="[АВЕКМНОРСТУХ]{1}\d{3}[АВЕКМНОРСТУХ]{2}\d{2,3}"
                                 title="Введите номер в формате A111AA111 или A111AA111R"
                                 required>
                         </li>
@@ -345,6 +345,38 @@ $services_array = $data['service']->getAllFromDBAsArray();
         // Инициализация строки [0]
         updateLineStockAndPrice(productLinesContainer.querySelector('.product-line'));
         updateTotalPrice();
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const carNumberInput = document.getElementById('carNumberInput');
+
+        carNumberInput.addEventListener('input', function(event) {
+            let value = carNumberInput.value.toUpperCase(); // Приводим к верхнему регистру
+
+            // Удаляем недопустимые символы
+            value = value.replace(/[^АВЕКМНОРСТУХ0-9]/g, '');
+
+            // Применяем маску
+            if (value.length > 1 && !/^[АВЕКМНОРСТУХ]$/.test(value[0])) {
+                value = value.slice(0, -1); // Убираем неверный первый символ
+            }
+
+            // Ограничиваем длину и позицию
+            const maskedValue = [];
+            for (let i = 0; i < value.length; i++) {
+                if (i === 0) {
+                    maskedValue.push(value[i]); // Первая буква
+                } else if (i >= 1 && i <= 3 && /\d/.test(value[i])) {
+                    maskedValue.push(value[i]); // Цифры
+                } else if (i >= 4 && i <= 5 && /^[АВЕКМНОРСТУХ]$/.test(value[i])) {
+                    maskedValue.push(value[i]); // Буквы после цифр
+                } else if (i >= 6 && i <= 8 && /\d/.test(value[i])) {
+                    maskedValue.push(value[i]); // Последние цифры
+                }
+            }
+
+            carNumberInput.value = maskedValue.join('');
+        });
     });
 </script>
 
