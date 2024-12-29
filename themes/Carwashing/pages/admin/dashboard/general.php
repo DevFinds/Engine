@@ -173,7 +173,7 @@ $user = $this->auth->getUser();
                 </div>
 
                 <div class="analitics-grid-rightside">
-                    <p>Аналитика</p>
+                    <p></p>
                 </div>
             </div>
 
@@ -183,5 +183,5 @@ $user = $this->auth->getUser();
 </div>
 
 <?php $render->component('dashboard_footer'); ?>
-<?php $render->component('modals/attention_popup'); ?>
-<?php $render->component('modals/error_popup'); ?>
+<!-- <?php $render->component('modals/attention_popup'); ?> -->
+<!-- <?php $render->component('modals/error_popup'); ?> -->

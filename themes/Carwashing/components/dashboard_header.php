@@ -20,7 +20,7 @@
 </head>
 <style>
     * {
-        color: #FFF !important
+        
     }
 </style>
 
