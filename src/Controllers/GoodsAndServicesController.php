@@ -4,6 +4,8 @@
 namespace Source\Controllers;
 
 use Core\Controller\Controller;
+use Exception;
+use FPDF;
 use Source\Services\CompanyService;
 use Source\Services\ProductService;
 use Source\Services\ServiceService;
@@ -140,7 +142,6 @@ class GoodsAndServicesController extends Controller
 
     public function addNewProductSale()
     {
-        // Валидация, e.g. payment_type required
         $validation = $this->request()->validate([
             'payment_type' => ['required']
         ], [
@@ -148,23 +149,30 @@ class GoodsAndServicesController extends Controller
         ]);
 
         if (!$validation) {
-            // ...
+            $this->session()->set('error', 'Не выбран тип оплаты.');
+            $this->redirect('/admin/dashboard/service_sales');
             return;
         }
 
-        // Получаем массив products
         $lines = $this->request()->input('products');
         if (!is_array($lines) || empty($lines)) {
-            $this->session()->set('error', 'Не выбраны товары');
+            $this->session()->set('error', 'Не выбраны товары.');
             $this->redirect('/admin/dashboard/service_sales');
             return;
         }
 
         $paymentType = $this->request()->input('payment_type');
+        $operatorName = $this->getAuth()->getUser()->username(); // Получаем имя текущего оператора
         $grandTotal = 0;
 
-        foreach ($lines as $idx => $line) {
-            $productWarehouseVal = $line['product_warehouse'] ?? null; // e.g. "4_1"
+        // Инициализация чека
+        $checkNumber = date('YmdHis');
+        $cash = 0;
+        $card = 0;
+        $items = [];
+
+        foreach ($lines as $line) {
+            $productWarehouseVal = $line['product_warehouse'] ?? null;
             $amount = (int)($line['amount'] ?? 0);
 
             if (!$productWarehouseVal || $amount < 1) {
@@ -173,13 +181,12 @@ class GoodsAndServicesController extends Controller
 
             list($productId, $warehouseId) = explode('_', $productWarehouseVal);
 
-            // Ищем в DB
             $productRow = $this->getDatabase()->first_found_in_db('Product', [
                 'id' => $productId,
                 'warehouse_id' => $warehouseId
             ]);
+
             if (!$productRow) {
-                // Неверное значение, пропускаем
                 continue;
             }
 
@@ -187,116 +194,199 @@ class GoodsAndServicesController extends Controller
             $lineTotal = $price * $amount;
             $grandTotal += $lineTotal;
 
-            // Запись в Product_Sale
-            $this->getDatabase()->insert('Product_Sale', [
-                'product_id' => $productRow['id'],  // или product_id => $productId
-                'total_amount' => $grandTotal,
-                'payment_method' => $paymentType
-            ]);
-
-            //Можно уменьшить остаток
+            // Уменьшаем остаток товара
             $newAmount = max(0, $productRow['amount'] - $amount);
             $this->getDatabase()->update('Product', ['amount' => $newAmount], [
                 'id' => $productId,
                 'warehouse_id' => $warehouseId
             ]);
+
+            $items[] = [
+                'name' => $productRow['name'],
+                'quantity' => $amount,
+                'price' => $price,
+                'total' => $lineTotal
+            ];
         }
 
-        // Итоговая транзакция
-        $this->getDatabase()->insert('Transaction', [
-            'sum' => $grandTotal,
-            'transaction_type_id' => 2,  // допустим, 2 = продажа
-        ]);
+        $cash = $paymentType === 'cash' ? $grandTotal : 0;
+        $card = $paymentType === 'card' ? $grandTotal : 0;
 
-        $this->redirect('/admin/dashboard/service_sales');
+        try {
+            $checkId = $this->createCheck([
+                'check_number' => $checkNumber,
+                'date' => date('Y-m-d H:i:s'),
+                'total' => $grandTotal,
+                'cash' => $cash,
+                'card' => $card,
+                'discount' => 0,
+                'operator_name' => $operatorName,
+                'license_plate' => null,
+                'change_amount' => 0,
+                'report_type' => 'product'
+            ]);
+
+            $this->addCheckItems($checkId, $items);
+
+            // Печать чека
+            $this->redirect('/admin/dashboard/check/preview/' . $checkId);
+        } catch (Exception $e) {
+            $this->session()->set('error', 'Ошибка при создании чека: ' . $e->getMessage());
+            $this->redirect('/admin/dashboard/service_sales');
+        }
     }
-
-
-
 
     public function addNewServiceSale()
     {
-        // 1. Валидация общих полей
-        $labels = [
-            // 'service_id' => 'Услуга', // убираем
+        $validation = $this->request()->validate([
+            'employee_id' => ['required'],
+            'car_number' => ['required'],
+            'car_model' => ['required'],
+            'car_brand' => ['required'],
+            'payment_type' => ['required']
+        ], [
             'employee_id' => 'Сотрудник',
             'car_number' => 'Номер машины',
             'car_model' => 'Модель машины',
             'car_brand' => 'Марка машины',
             'payment_type' => 'Тип оплаты'
-        ];
-
-        $validation = $this->request()->validate([
-            // убираем 'service_id' => ['required']
-            'employee_id' => ['required'],
-            'car_number'  => ['required'],
-            'car_model'   => ['required'],
-            'car_brand'   => ['required'],
-            'payment_type' => ['required']
-            // 'services' => ['required_array'] // опционально, если доработан валидатор
-        ], $labels);
+        ]);
 
         if (!$validation) {
-            foreach ($this->request()->errors() as $field => $errors) {
-                $this->session()->set($field, $errors);
-            }
-            dd($this->request()->errors());
-            return;
-        }
-
-        // 2. Получаем массив услуг
-        $serviceLines = $this->request()->input('services');
-        if (!is_array($serviceLines) || empty($serviceLines)) {
-            $this->session()->set('error', 'Не выбрано ни одной услуги');
+            $this->session()->set('error', 'Не заполнены обязательные поля.');
             $this->redirect('/admin/dashboard/service_sales');
             return;
         }
 
-        // 3. Получаем общие поля
-        $employeeId = $this->request()->input('employee_id');
-        $carNumber  = $this->request()->input('car_number');
-        $carModel   = $this->request()->input('car_model');
-        $carBrand   = $this->request()->input('car_brand');
-        $paymentType = $this->request()->input('payment_type');
+        $serviceLines = $this->request()->input('services');
+        if (!is_array($serviceLines) || empty($serviceLines)) {
+            $this->session()->set('error', 'Не выбрано ни одной услуги.');
+            $this->redirect('/admin/dashboard/service_sales');
+            return;
+        }
 
+        $employeeId = $this->request()->input('employee_id');
+        $carNumber = $this->request()->input('car_number');
+        $carModel = $this->request()->input('car_model');
+        $carBrand = $this->request()->input('car_brand');
+        $paymentType = $this->request()->input('payment_type');
+        $operatorName = $this->getAuth()->getUser()->username(); // Имя текущего оператора
         $grandTotal = 0;
 
-        // 4. Перебираем все выбранные услуги
-        foreach ($serviceLines as $idx => $line) {
+        $items = [];
+
+        foreach ($serviceLines as $line) {
             $servId = $line['service_id'] ?? null;
+
             if (!$servId) {
-                // пропускаем
                 continue;
             }
 
-            // Находим услугу в таблице Service (ID = $servId)
             $serviceRow = $this->getDatabase()->first_found_in_db('Service', ['id' => $servId]);
             if (!$serviceRow) {
-                // услуга не найдена, пропускаем
                 continue;
             }
 
             $price = (float)$serviceRow['price'];
             $grandTotal += $price;
 
-            // Записываем отдельную продажу в Service_Sale
+            $items[] = [
+                'name' => $serviceRow['name'],
+                'quantity' => 1,
+                'price' => $price,
+                'total' => $price
+            ];
+
             $this->getDatabase()->insert('Service_Sale', [
-                'service_id'    => $servId,
-                'employee_id'   => $employeeId,
-                'total_amount'  => $grandTotal,
-                'car_number'    => $carNumber,
-                'car_model'     => $carModel,
-                'car_brand'     => $carBrand,
+                'service_id' => $servId,
+                'employee_id' => $employeeId,
+                'car_number' => $carNumber,
+                'car_model' => $carModel,
+                'car_brand' => $carBrand,
                 'payment_method' => $paymentType
             ]);
         }
 
-        // 5. Вставляем в Transaction общую сумму
-        $this->getDatabase()->insert('Transaction', [
-            'sum' => $grandTotal,
-            'transaction_type_id' => 3, // 3 = продажа услуги
-        ]);
+        $cash = $paymentType === 'cash' ? $grandTotal : 0;
+        $card = $paymentType === 'card' ? $grandTotal : 0;
 
-        $this->redirect('/admin/dashboard/service_sales');
+        try {
+            $checkId = $this->createCheck([
+                'check_number' => 'CHK' . time(),
+                'date' => date('Y-m-d H:i:s'),
+                'total' => $grandTotal,
+                'cash' => $cash,
+                'card' => $card,
+                'discount' => 0,
+                'operator_name' => $operatorName,
+                'car_number' => $carNumber,
+                'change_amount' => 0,
+                'report_type' => 'service',
+                'car_model' => $this->request()->input('car_model'),
+                'car_brand' => $this->request()->input('car_brand')
+            ]);
+
+            $this->addCheckItems($checkId, $items);
+
+            // Печать чека
+            $this->redirect('/admin/dashboard/check/preview/' . $checkId);
+        } catch (Exception $e) {
+            $this->session()->set('error', 'Ошибка при создании чека: ' . $e->getMessage());
+            $this->redirect('/admin/dashboard/service_sales');
+        }
+    }
+
+    public function previewCheck($checkId)
+    {
+        try {
+            // Получаем данные чека из таблицы checks
+            $check = $this->getDatabase()->first_found_in_db('checks', ['id' => $checkId]);
+            if (!$check) {
+                $this->session()->set('error', 'Чек не найден.');
+                dd($this->session()->get('error'));
+                return;
+            }
+
+            // Получаем данные позиций из таблицы check_items
+            $checkItems = $this->getDatabase()->get('check_items', ['check_id' => $checkId]);
+
+            // Передаем данные чека и позиций в вид
+            $this->render('/admin/preview_check', [
+                'check' => $check,
+                'items' => $checkItems
+            ]);
+        } catch (Exception $e) {
+            $this->session()->set('error', 'Ошибка при загрузке чека: ' . $e->getMessage());
+            dd($this->session()->get('error'));
+        }
+    }
+
+
+    private function createCheck(array $data): int
+    {
+        try {
+            return $this->getDatabase()->insert('checks', $data);
+        } catch (Exception $e) {
+            $this->session()->set('error', 'Ошибка создания чека: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function addCheckItems(int $checkId, array $items): void
+    {
+        foreach ($items as $item) {
+            try {
+                $this->getDatabase()->insert('check_items', [
+                    'check_id' => $checkId,
+                    'name' => $item['name'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'total' => $item['total']
+                ]);
+            } catch (Exception $e) {
+                $this->session()->set('error', 'Ошибка добавления позиции в чек: ' . $e->getMessage());
+                throw $e;
+            }
+        }
     }
 }

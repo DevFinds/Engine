@@ -58,7 +58,23 @@ $services_array = $data['service']->getAllFromDBAsArray();
             </script>
 
             <form id="carWashContainer" action="/admin/dashboard/service_sales/addNewServiceSale" method="post" class="tab-content" style="display: block;">
+                <!-- Блок с множеством услуг -->
+                <div id="servicesLinesContainer">
+                    <!-- Одна строка (пример) -->
+                    <div class="service-line" data-index="0">
+                        <div class="service-line-service">
+                            <label>Услуга</label>
+                            <select name="services[0][service_id]" class="serviceSelect" style="width: auto;"></select>
+                        </div>
+                        <div class="service-line-btn">
+                            <label for="">ㅤ</label>
+                            <button type="button" class="removeServiceBtn"><img src="/assets/themes/Carwashing/img/trash-icon.svg" alt=""></button>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Кнопка добавления новой строки (ещё одна услуга) -->
+                <button type="button" id="addServiceBtn">Добавить услугу</button>
                 <!-- Общие поля: сотрудник, номер машины, модель, марка, payment_type -->
                 <div class="about-service-forms">
                     <ul class="about-service-forms-first-column">
@@ -81,8 +97,8 @@ $services_array = $data['service']->getAllFromDBAsArray();
                             <label class="about-service-form-label">Гос. номер автомобиля</label>
                             <input type="text"
                                 name="car_number"
+                                id="carNumberInput"
                                 placeholder="A000AA00"
-                                pattern="[АВЕКМНОРСТУХ]{1}\d{3}[АВЕКМНОРСТУХ]{2}\d{2,3}"
                                 title="Введите номер в формате A111AA111 или A111AA111R"
                                 required>
                         </li>
@@ -97,37 +113,26 @@ $services_array = $data['service']->getAllFromDBAsArray();
                     </ul>
                 </div>
 
-                <!-- Блок с множеством услуг -->
-                <div id="servicesLinesContainer">
-                    <!-- Одна строка (пример) -->
-                    <div class="service-line" data-index="0">
-                        <label>Услуга:</label>
-                        <select name="services[0][service_id]" class="serviceSelect" style="width: 300px;"></select>
-                        <button type="button" class="removeServiceBtn">X</button>
-                    </div>
-                </div>
 
-                <!-- Кнопка добавления новой строки (ещё одна услуга) -->
-                <button type="button" id="addServiceBtn">Добавить услугу</button>
 
                 <div class="payment-section">
                     <div class="payment-options">
-                        <label class="payment-options-label">Выбрать расчет</label>
-                        <fieldset class="payment-buttons">
+                        <label>Выбрать расчет</label>
+                        <fieldset>
                             <label>
-                                <input value="cash" name="payment_type" type="radio" class="payment-button" checked>Наличный
+                                <input value="cash" name="payment_type" type="radio" checked> Наличный
                             </label>
                             <label>
-                                <input value="card" name="payment_type" type="radio" class="payment-button">Безналичный
+                                <input value="card" name="payment_type" type="radio"> Безналичный
                             </label>
                         </fieldset>
-                        <button type="submit" class="save-button">Сохранить</button>
                     </div>
                     <div class="total-amount">
                         <label class="total-amount-label">Итоговая сумма</label>
                         <div class="total-amount-value" id="serviceTotal">0 руб</div>
                     </div>
                 </div>
+                <button type="submit" class="save-button">Сохранить</button>
             </form>
 
             <script>
@@ -341,6 +346,38 @@ $services_array = $data['service']->getAllFromDBAsArray();
         updateLineStockAndPrice(productLinesContainer.querySelector('.product-line'));
         updateTotalPrice();
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const carNumberInput = document.getElementById('carNumberInput');
+
+        carNumberInput.addEventListener('input', function(event) {
+            let value = carNumberInput.value.toUpperCase(); // Приводим к верхнему регистру
+
+            // Удаляем недопустимые символы
+            value = value.replace(/[^АВЕКМНОРСТУХ0-9]/g, '');
+
+            // Применяем маску
+            if (value.length > 1 && !/^[АВЕКМНОРСТУХ]$/.test(value[0])) {
+                value = value.slice(0, -1); // Убираем неверный первый символ
+            }
+
+            // Ограничиваем длину и позицию
+            const maskedValue = [];
+            for (let i = 0; i < value.length; i++) {
+                if (i === 0) {
+                    maskedValue.push(value[i]); // Первая буква
+                } else if (i >= 1 && i <= 3 && /\d/.test(value[i])) {
+                    maskedValue.push(value[i]); // Цифры
+                } else if (i >= 4 && i <= 5 && /^[АВЕКМНОРСТУХ]$/.test(value[i])) {
+                    maskedValue.push(value[i]); // Буквы после цифр
+                } else if (i >= 6 && i <= 8 && /\d/.test(value[i])) {
+                    maskedValue.push(value[i]); // Последние цифры
+                }
+            }
+
+            carNumberInput.value = maskedValue.join('');
+        });
+    });
 </script>
 
 <script>
@@ -361,9 +398,14 @@ $services_array = $data['service']->getAllFromDBAsArray();
             lineDiv.setAttribute('data-index', serviceIndex);
 
             lineDiv.innerHTML = `
-            <label>Услуга:</label>
-            <select name="services[${serviceIndex}][service_id]" class="serviceSelect" style="width: 300px;"></select>
-            <button type="button" class="removeServiceBtn">X</button>
+            <div class="service-line-service">
+                <label>Услуга</label>
+                <select name="services[${serviceIndex}][service_id]" class="serviceSelect" style="width: auto;"></select>
+            </div>
+            <div class="service-line-btn">
+                <label for="">ㅤ</label>
+                <button type="button" class="removeServiceBtn"><img src="/assets/themes/Carwashing/img/trash-icon.svg" alt=""></button>
+            </div>
         `;
             servicesLinesContainer.appendChild(lineDiv);
             initializeServiceLine(lineDiv, serviceIndex);
