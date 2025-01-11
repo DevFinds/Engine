@@ -1,22 +1,22 @@
 <?php return array(
     'root' => array(
-        'pretty_version' => '1.0.0+no-version-set',
-        'version' => '1.0.0.0',
+        'pretty_version' => 'dev-main',
+        'version' => 'dev-main',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => NULL,
+        'reference' => '74aaf8fbdcb47b82e21a85e6dd3077825620342b',
         'name' => '__root__',
         'dev' => true,
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => '1.0.0+no-version-set',
-            'version' => '1.0.0.0',
+            'pretty_version' => 'dev-main',
+            'version' => 'dev-main',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => NULL,
+            'reference' => '74aaf8fbdcb47b82e21a85e6dd3077825620342b',
             'dev_requirement' => false,
         ),
         'laravel/pint' => array(
@@ -27,6 +27,15 @@
             'aliases' => array(),
             'reference' => 'e2b5060885694ca30ac008c05dc9d47f10ed1abf',
             'dev_requirement' => true,
+        ),
+        'setasign/fpdf' => array(
+            'pretty_version' => '1.8.6',
+            'version' => '1.8.6.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../setasign/fpdf',
+            'aliases' => array(),
+            'reference' => '0838e0ee4925716fcbbc50ad9e1799b5edfae0a0',
+            'dev_requirement' => false,
         ),
         'symfony/polyfill-mbstring' => array(
             'pretty_version' => 'v1.28.0',

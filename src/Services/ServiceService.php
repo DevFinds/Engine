@@ -28,6 +28,12 @@ class ServiceService
         return $services;
     }
 
+    public function getAllFromDBAsArray(): array
+    {
+        $services = $this->db->get('Service');
+        return $services;
+    }
+
     public function getServiceById(int $id): ?Service
     {
         $role = $this->db->first_found_in_db('roles', ['id' => $id]);

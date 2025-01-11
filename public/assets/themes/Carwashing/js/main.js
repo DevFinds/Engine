@@ -1,3 +1,139 @@
+document.addEventListener("DOMContentLoaded", () => {
+    const userMenuToggler = document.getElementById("user-menu-toggler");
+    const accountPopup = document.querySelector(".account-popup");
+
+    if (!userMenuToggler || !accountPopup) {
+        return; // Если элементы не найдены, ничего не делаем
+    }
+
+    // Функция для скрытия попапа при клике вне его области
+    function hidePopupOnOutsideClick(event) {
+        if (!accountPopup.contains(event.target) && !userMenuToggler.contains(event.target)) {
+            accountPopup.classList.add("hidden");
+            document.removeEventListener("click", hidePopupOnOutsideClick);
+        }
+    }
+
+    // Обработчик клика по кнопке
+    userMenuToggler.addEventListener("click", (event) => {
+        event.stopPropagation(); // Предотвращаем всплытие события
+        accountPopup.classList.toggle("hidden");
+
+        // Добавляем обработчик для скрытия попапа при клике вне его
+        if (!accountPopup.classList.contains("hidden")) {
+            document.addEventListener("click", hidePopupOnOutsideClick);
+        }
+    });
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const moveButtons = document.querySelectorAll('.warehouse-button'); // Получаем все кнопки "Переместить"
+    const popup = document.getElementById('warehouse-move-popup');
+    const selectedItemsList = document.getElementById('warehouse-selected-items');
+    const closePopupButton = document.getElementById('warehouse-close-popup');
+    const confirmMoveButton = document.getElementById('warehouse-confirm-move');
+    const tabs = document.querySelectorAll('.tab'); // Все вкладки
+
+    let selectedItems = {}; // Хранить выбранные товары по вкладкам
+    let currentTab = 'warehouseOOO'; // По умолчанию первая вкладка
+
+    // Установить начальную структуру для хранения товаров
+    tabs.forEach(tab => {
+        const tabName = tab.getAttribute('data-tab');
+        selectedItems[tabName] = [];
+    });
+
+    // Обновить текущую вкладку при переключении
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            currentTab = tab.getAttribute('data-tab');
+        });
+    });
+
+    // Выделение строки при клике
+    document.querySelectorAll('[id^="warehouse-table"]').forEach(table => {
+        table.addEventListener('click', (event) => {
+            const row = event.target.closest('tr');
+            if (!row) return;
+
+            const rowId = row.querySelector('td:first-child').innerText; // ID товара
+            const rowName = row.querySelector('td:nth-child(2)').innerText; // Имя товара
+            const rowAmount = row.querySelector('td:nth-child(3)').innerText; // Количество
+
+            const tabItems = selectedItems[currentTab]; // Товары текущей вкладки
+
+            // Если строка уже выбрана
+            if (row.classList.contains('selected')) {
+                row.classList.remove('selected'); // Убираем подсветку
+                selectedItems[currentTab] = tabItems.filter(item => item.id !== rowId);
+            } else {
+                // Добавляем подсветку
+                row.classList.add('selected');
+                tabItems.push({ id: rowId, name: rowName, amount: rowAmount });
+            }
+        });
+    });
+
+    // Показать попап с выбранными товарами
+    moveButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            selectedItemsList.innerHTML = ''; // Очистить предыдущие данные
+            const tabItems = selectedItems[currentTab]; // Только товары текущей вкладки
+
+            tabItems.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    ${item.name} - ${item.amount} шт.
+                    <input type="number" min="1" max="${item.amount}" value="1" data-id="${item.id}" style="width: 60px;">
+                `;
+                selectedItemsList.appendChild(listItem);
+            });
+
+            if (tabItems.length > 0) {
+                popup.classList.remove('hidden');
+            } else {
+                alert('Выберите товары для перемещения.');
+            }
+        });
+    });
+
+    // Закрыть попап
+    closePopupButton.addEventListener('click', () => {
+        popup.classList.add('hidden');
+    });
+
+    // Подтвердить перемещение
+    confirmMoveButton.addEventListener('click', () => {
+        const updatedItems = [];
+        const inputs = selectedItemsList.querySelectorAll('input');
+
+        inputs.forEach(input => {
+            const itemId = input.getAttribute('data-id');
+            const newAmount = input.value;
+
+            const item = selectedItems[currentTab].find(i => i.id === itemId);
+            if (item) {
+                updatedItems.push({ ...item, newAmount });
+            }
+        });
+
+        console.log('Перемещаемые товары:', updatedItems);
+        popup.classList.add('hidden');
+    });
+});
+
+
+
+
+
+
+
+
+
+
+
+
 document.addEventListener('DOMContentLoaded', () => {
     // Находим первую вкладку на странице
     const firstTab = document.querySelector('.tab[data-tab]');
@@ -8,6 +144,13 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+/*************  ✨ Codeium Command ⭐  *************/
+/**
+ * Switches the active tab to the specified tab name.
+ * 
+
+
+/******  39462a2d-d07b-4da3-a716-cbb40e1482a8  *******/
 function switchTab(tabName) {
     console.log(`Переключение на вкладку: ${tabName}`); // Проверяем вызов функции
 
@@ -45,6 +188,43 @@ function switchTab(tabName) {
 }
 
 
+function switchTab_group(group, tabName) {
+    console.log(`Переключение на вкладку: ${tabName} в группе: ${group}`); 
+
+    // Убираем активный класс со всех вкладок в группе
+    const tabs = document.querySelectorAll(`.analitics-tab[data-group="${group}"]`);
+    tabs.forEach(tab => tab.classList.remove("active"));
+
+    // Добавляем активный класс к текущей вкладке
+    const activeTab = document.querySelector(`.analitics-tab[data-group="${group}"][data-tab="${tabName}"]`);
+    if (activeTab) {
+        activeTab.classList.add("active");
+    } else {
+        console.warn(`Вкладка с data-tab="${tabName}" в группе "${group}" не найдена.`);
+    }
+
+    // Прячем все контейнеры вкладок в группе
+    const tabContents = document.querySelectorAll(`.tab-content[data-group="${group}"]`);
+    tabContents.forEach(content => {
+        content.style.display = "none";
+        content.style.opacity = "0";
+        content.style.visibility = "hidden";
+    });
+
+    // Показываем активный контейнер
+    const activeContent = document.querySelector(`#${tabName}Container${group === 'services' ? '-services' : ''}`);
+    if (activeContent) {
+        activeContent.style.display = "flex";
+        activeContent.style.opacity = "1";
+        activeContent.style.visibility = "visible";
+    } else {
+        console.error(`Контейнер с ID '${tabName}Container' для группы '${group}' не найден.`);
+    }
+}
+
+
+
+
 function togglePayment(paymentType) {
     // Получаем кнопки
     const cashButton = document.querySelector('.payment-buttons .payment-button:nth-child(1)');
@@ -74,4 +254,8 @@ function toggleNoteField(noteFieldId) {
         console.error(`Элемент с id "${noteFieldId}" не найден.`);
     }
 }
+
+
+
+
 

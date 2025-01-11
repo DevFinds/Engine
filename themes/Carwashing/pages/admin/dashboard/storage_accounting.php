@@ -41,12 +41,11 @@ $suppliers = $data['suppliers']->getAllFromDB();
                     <div class="warehouse-forms-container">
                         <ul class="warehouse-first-column">
 
-                            <div class="warehouse-move-label"><label>Переместить из склада</label></div>
-                            <button class="warehouse-button">Переместить на склад ИП</button>
+                            
                             <li><label class="warehouse-list-label">Список товаров</label></li>
                             <li>
                                 <div class="warehouse-list">
-                                    <table>
+                                    <table id="warehouse-table-OOO">
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
@@ -67,6 +66,8 @@ $suppliers = $data['suppliers']->getAllFromDB();
                                     </table>
                                 </div>
                             </li>
+                            <div class="warehouse-move-label"><label>Переместить из склада</label></div>
+                            <button class="warehouse-button">Переместить на склад ИП</button>
                         </ul>
 
 
@@ -105,13 +106,11 @@ $suppliers = $data['suppliers']->getAllFromDB();
                 <div class="warehouseIP-tab-container">
                     <div class="warehouse-forms-container">
                         <ul class="warehouse-first-column">
-                            <div class="warehouse-move-label"><label>Переместить из склада</label></div>
-                            <button class="warehouse-button">Переместить на склад ИП</button>
                             <li><label class="warehouse-list-label">Список товаров</label></li>
                             <li>
                                 <!-- Таьблица склада ИП -->
                                 <div class="warehouse-list">
-                                    <table>
+                                    <table id="warehouse-table-IP">
                                         <thead>
                                             <tr>
                                                 <th>ID</th>
@@ -131,6 +130,8 @@ $suppliers = $data['suppliers']->getAllFromDB();
                                     </table>
                                 </div>
                             </li>
+                            <div class="warehouse-move-label"><label>Переместить из склада</label></div>
+                            <button class="warehouse-button">Переместить на склад ООО</button>
                         </ul>
 
                         <ul class="warehouse-second-column">
@@ -163,6 +164,16 @@ $suppliers = $data['suppliers']->getAllFromDB();
                 </div>
             </div>
         </div>
+            <div id="warehouse-move-popup" class="hidden">
+            <div class="warehouse-popup-content">
+            <h3>Перемещение товаров</h3>
+                <ul id="warehouse-selected-items">
+                    <!-- Список выбранных товаров -->
+                </ul>
+            <button id="warehouse-confirm-move">Подтвердить</button>
+            <button id="warehouse-close-popup">Закрыть</button>
+        </div>
+</div>
     </div>
 </div>
 </div>

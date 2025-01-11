@@ -618,6 +618,11 @@ li {
   color: var(--white);
   overflow-y: scroll;
   scrollbar-width: none;
+  gap: 8px;
+}
+
+.developer-container{
+  margin-top: auto;
 }
 
 .brand-logo {
@@ -664,8 +669,15 @@ li {
   justify-content: flex-start;
   align-content: center;
   align-items: center;
-  color: var(--dark-inactive);
+  color: #8F97B2;
+  font-weight: 500;
   font-family: var(--font-family);
+}
+
+.menu-list-item-link.active{
+  background-color: #353B4A;
+  border-radius: 6px;
+  color: var(--white);
 }
 
 .menu-list-item-icon {
@@ -1571,7 +1583,7 @@ input[type="text"]:focus,
   padding: 12px 16px;
   align-items: center;
   justify-content: center;
-  max-width:240px;
+  max-width: max-content;
   font-family: var(--font-family);
   font-size: 16px;
   color: var(--white);
@@ -1639,14 +1651,8 @@ input[type="text"]:focus,
   font-family: var(--font-family);
 }
 
-.warehouse-list tbody tr:nth-child(odd) {
-  background-color: var(--dark-middle-bg);
-  /* Чередование цветов строк */
-}
 
-.warehouse-list tbody tr:nth-child(odd):hover{
-  background-color: var(--dark-hover);
-}
+
 
 /* Закругление для первой и последней ячейки строки */
 
@@ -1761,6 +1767,34 @@ input[type="text"]:focus,
 .warehouse-form-button.cancel:hover {
   background-color: var(--dark-hover);
   color: var(--white);
+}
+
+#warehouse-move-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #2d2f3a;
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 1000;
+  color: white;
+}
+.warehouse-popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Подсветка выбранной строки */
+tr.selected {
+  background-color: var(--dark-hover); 
+}
+
+
+#warehouse-selected-items {
+  list-style: none;
+  padding: 0;
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -2436,6 +2470,7 @@ input[type="number"]::-webkit-outer-spin-button {
   padding: 16px;
   justify-content: space-between;
   border-radius: 12px;
+  color: var(--white);
 }
 
 .big-widget-list tr:nth-child(odd){
@@ -2464,11 +2499,16 @@ input[type="number"]::-webkit-outer-spin-button {
   align-items: center;
   color: var(--dark-inactive);
   padding: 0px 16px;
+  cursor: pointer;
 }
 
-.analitics-tab:active{
+.analitics-tab.active{
   color: var(--white);
   border-bottom: 3px solid var(--purple-accent);
+}
+
+.hidden {
+  display: none;
 }
 
 .account-popup{
@@ -2487,6 +2527,7 @@ input[type="number"]::-webkit-outer-spin-button {
   background: var(--middle-bg);
   color: var(--white);
   padding: 12px 0px;
+  cursor: pointer;
 }
 
 .account-popup-point:hover{
@@ -2580,4 +2621,135 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .user-menu-toggler {
   width: 24px;
+}
+
+
+/* Стилизация селектов для библитеки select2 */
+
+.select2-dropdown {
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: var(--dark-bg);
+  border: none;
+  padding: 2px 0px;
+  color: var(--white);
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: var(--dark-inactive);
+}
+
+.select2-container--default .select2-selection--single .select2-selection__clear span{
+  color: var(--dark-inactive);
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+  background-color: var(--dark-hover);
+  color: white;
+  border: none;
+}
+
+.select2-container--default .select2-selection--single{
+  background-color: var(--dark-bg);
+  color: #000;
+  border-radius: 12px;
+  border: none;
+  padding: 8px 16px;
+  height: auto;
+  width: auto;
+}
+
+.select2-container--default .select2-results__option--selected {
+  background-color: var(--purple-accent);
+}
+
+.product-line, .service-line{
+  width: min-content;
+  display: flex;
+  flex-direction: row;
+  align-items: bottom;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.product-line-good, .service-line-service{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: max-content;
+}
+
+.service-line-service{
+  width: 520px;
+}
+
+.product-line-count{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: max-content;
+}
+
+.product-line-count input{
+  margin-bottom: 0px;
+}
+
+.product-line-btn, .service-line-btn{
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: max-content;
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none;
+}
+
+
+.removeLineBtn, .removeServiceBtn{
+  background-color: var(--purple-accent);
+  color: var(--white);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 16px;
+  line-height: 24px;
+  height: 100%;
+  width: max-content;
+}
+
+#addLineBtn, #saveLineBtn, #addServiceBtn{
+  background-color: var(--purple-accent);
+  color: var(--white);
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 16px;
+  line-height: 24px;
+  height: 100%;
+  width: max-content;
+}
+
+#addServiceBtn{
+  margin-bottom: 24px;
+}
+
+#saveLineBtn{
+  margin-top: 16px;
+}
+
+.payment-section {
+  width: 100%;
+  margin-top: 32px;
+}
+
+.payment-options input{
+  margin: 0px;
+  width: min-content;
+}
+.payment-options label, .payment-buttons{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
 }

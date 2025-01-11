@@ -33,26 +33,24 @@ $user = $this->auth->getUser();
                                 <span class="small-widget-title">Общая сумма продаж</span>
                                 <a href="#" class="small-widget-button">Отчет</a>
                             </div>
-                            <div class="analitics-tabs-container" data-group="sales">
-
+                            <div class="analitics-tabs-container">
                                 <div class="analitics-tabs">
-                                    <div class="analitics-tab active" data-tab="days" onclick="switchTabGeneral('days')">День</div>
-                                    <div class="analitics-tab" data-tab="weeks" onclick="switchTabGeneral('weeks')">Неделя</div>
-                                    <div class="analitics-tab" data-tab="mounths" onclick="switchTabGeneral('mounths')">Месяц</div>
+                                    <div class="analitics-tab active" data-group="sales" data-tab="days" onclick="switchTab_group('sales', 'days')">День</div>
+                                    <div class="analitics-tab" data-group="sales" data-tab="weeks" onclick="switchTab_group('sales', 'weeks')">Неделя</div>
+                                    <div class="analitics-tab" data-group="sales" data-tab="mounths" onclick="switchTab_group('sales', 'mounths')">Месяц</div>
                                 </div>
                             </div>
-
-                            <div class="tab-content" id="daysContainer" data-group="services">
+                            <div class="tab-content active" data-group="sales" id="daysContainer">
                                 <div class="analitics-price-container">
                                     <h2>12 000₽</h2>
                                 </div>
                             </div>
-                            <div class="tab-content" id="weeksContainer" data-group="services">
+                            <div class="tab-content" data-group="sales" id="weeksContainer">
                                 <div class="analitics-price-container">
                                     <h2>28 000₽</h2>
                                 </div>
                             </div>
-                            <div class="tab-content" id="mounthsContainer" data-group="services">
+                            <div class="tab-content" data-group="sales" id="mounthsContainer">
                                 <div class="analitics-price-container">
                                     <h2>64 000₽</h2>
                                 </div>
@@ -64,26 +62,24 @@ $user = $this->auth->getUser();
                                 <span class="small-widget-title">Кол-во выполненных услуг</span>
                                 <a href="#" class="small-widget-button">Отчет</aclass=>
                             </div>
-                            <div class="analitics-tabs-container" data-group="warehouse">
-
+                            <div class="analitics-tabs-container">
                                 <div class="analitics-tabs">
-                                    <div class="analitics-tab active" data-tab="days" onclick="switchTabGeneral('days')">День</div>
-                                    <div class="analitics-tab" data-tab="weeks" onclick="switchTabGeneral('weeks')">Неделя</div>
-                                    <div class="analitics-tab" data-tab="mounths" onclick="switchTabGeneral('mounths')">Месяц</div>
+                                    <div class="analitics-tab active" data-group="services" data-tab="days" onclick="switchTab_group('services', 'days')">День</div>
+                                    <div class="analitics-tab" data-group="services" data-tab="weeks" onclick="switchTab_group('services', 'weeks')">Неделя</div>
+                                    <div class="analitics-tab" data-group="services" data-tab="mounths" onclick="switchTab_group('services', 'mounths')">Месяц</div>
                                 </div>
                             </div>
-
-                            <div class="tab-content" id="daysContainer">
+                            <div class="tab-content active" data-group="services" id="daysContainer-services">
                                 <div class="analitics-price-container">
                                     <h2>36 услуг</h2>
                                 </div>
                             </div>
-                            <div class="tab-content" id="weeksContainer">
+                            <div class="tab-content" data-group="services" id="weeksContainer-services">
                                 <div class="analitics-price-container">
                                     <h2>121 услуга</h2>
                                 </div>
                             </div>
-                            <div class="tab-content" id="mounthsContainer">
+                            <div class="tab-content" data-group="services" id="mounthsContainer-services">
                                 <div class="analitics-price-container">
                                     <h2>457 услуг</h2>
                                 </div>
@@ -96,19 +92,19 @@ $user = $this->auth->getUser();
                         <div class="big-widget">
                             <div class="big-widget-header">
                                 <span class="big-widget-title">Критические остатки на складе</span>
-                                <a href="#" class="big-widget-button">Подробнее</aclass=>
+                                <a href="#" class="big-widget-button">Подробнее</a>
                             </div>
 
-                            <div class="analitics-tabs-container">
+                            <div class="analitics-tabs-container" data-group="warehouse">
 
                                 <div class="analitics-tabs">
-                                    <div class="analitics-tab active" data-tab="OOO" onclick="switchTabGeneral('OOO')">Склад ООО</div>
-                                    <div class="analitics-tab" data-tab="IP" onclick="switchTabGeneral('IP')">Склад ИП</div>
+                                    <div class="analitics-tab active" data-group="warehouse" data-tab="OOO" onclick="switchTab_group('warehouse', 'OOO')">Склад ООО</div>
+                                    <div class="analitics-tab" data-group="warehouse" data-tab="IP" onclick="switchTab_group('warehouse', 'IP')">Склад ИП</div>
 
                                 </div>
                             </div>
 
-                            <div class="tab-content" id="OOOContainer" data-group="warehouse">
+                            <div class="tab-content active" id="OOOContainer" data-group="warehouse">
 
                                 <div class="big-widget-list">
                                     <table>
@@ -177,14 +173,15 @@ $user = $this->auth->getUser();
                 </div>
 
                 <div class="analitics-grid-rightside">
-                    <p>Аналитика</p>
+                    <p></p>
                 </div>
             </div>
+
 
         </div>
     </div>
 </div>
 
 <?php $render->component('dashboard_footer'); ?>
-<?php $render->component('modals/attention_popup'); ?>
-<?php $render->component('modals/error_popup'); ?>
+<!-- <?php $render->component('modals/attention_popup'); ?> -->
+<!-- <?php $render->component('modals/error_popup'); ?> -->

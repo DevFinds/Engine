@@ -4,6 +4,8 @@
 namespace Source\Controllers;
 
 use Core\Controller\Controller;
+use Exception;
+use FPDF;
 use Source\Services\CompanyService;
 use Source\Services\ProductService;
 use Source\Services\ServiceService;
@@ -22,7 +24,7 @@ class GoodsAndServicesController extends Controller
         $product_service = new ProductService($this->getDatabase());
         $service_service = new ServiceService($this->getDatabase());
 
-        
+
         $field_error_event = $this->FieldErrorEventDispath('error', 'error', 'error');
         $error_array = $field_error_event->getPayload();
 
@@ -38,7 +40,6 @@ class GoodsAndServicesController extends Controller
 
     public function addNewGood()
     {
-
         $labels = [
             'name' => 'Наименование',
             'amount' => 'Количество',
@@ -47,7 +48,7 @@ class GoodsAndServicesController extends Controller
             'purchase_price' => 'Цена закупки',
             'sale_price' => 'Цена продажи',
             'supplier_id' => 'Поставщик',
-            'warehouse_id' => 'Склад'
+            'warehouse_id' => 'Склад',
         ];
 
         $validation = $this->request()->validate([
@@ -62,20 +63,26 @@ class GoodsAndServicesController extends Controller
         ], $labels);
 
         if (!$validation) {
-
-
             foreach ($this->request()->errors() as $field => $errors) {
                 $this->session()->set($field, $errors);
             }
-
             $this->redirect('/admin/dashboard/goods_and_services');
-            dd('Проверка не пройдена', $this->request()->errors());
+            return;
         }
 
-        if ($this->getDatabase()->first_found_in_db('Product', ['name' => $this->request()->input('name')])) {
-            dd('Таблица уже существует');
+        $existingProduct = $this->getDatabase()->first_found_in_db('Product', [
+            'name' => $this->request()->input('name'),
+            'warehouse_id' => $this->request()->input('warehouse_id')
+        ]);
+
+        if ($existingProduct) {
+            $this->getDatabase()->update('Product', [
+                'amount' => $existingProduct['amount'] + $this->request()->input('amount')
+            ], [
+                'id' => $existingProduct['id']
+            ]);
         } else {
-            $Product = $this->getDatabase()->insert('Product', [
+            $this->getDatabase()->insert('Product', [
                 'name' => $this->request()->input('name'),
                 'amount' => $this->request()->input('amount'),
                 'created_at' => $this->request()->input('created_at'),
@@ -88,11 +95,9 @@ class GoodsAndServicesController extends Controller
             ]);
         }
 
-
-
-
         $this->redirect('/admin/dashboard/goods_and_services');
     }
+
 
     public function addNewService()
     {
@@ -109,60 +114,279 @@ class GoodsAndServicesController extends Controller
         ], $labels);
 
         if (!$validation) {
-
-
             foreach ($this->request()->errors() as $field => $errors) {
                 $this->session()->set($field, $errors);
             }
-
             $this->redirect('/admin/dashboard/goods_and_services');
-            //dd('Validation failed', $this->request()->errors());
+            return;
         }
 
-        if ($this->getDatabase()->first_found_in_db('Service', ['name' => $this->request()->input('name')])) {
-            dd('Таблица уже существует');
-        } else {
-            $Service = $this->getDatabase()->insert('Service', [
-                'name' => $this->request()->input('name'),
-                'description' => $this->request()->input('description'),
-                'price' => $this->request()->input('price'),
-                'category' => $this->request()->input('category')
-            ]);
+        $existingService = $this->getDatabase()->first_found_in_db('Service', ['name' => $this->request()->input('name')]);
+
+        if ($existingService) {
+            $this->session()->set('error', 'Такая услуга уже существует');
+            $this->redirect('/admin/dashboard/goods_and_services');
+            return;
         }
+
+        $this->getDatabase()->insert('Service', [
+            'name' => $this->request()->input('name'),
+            'description' => $this->request()->input('description'),
+            'price' => $this->request()->input('price'),
+            'category' => $this->request()->input('category')
+        ]);
 
         $this->redirect('/admin/dashboard/goods_and_services');
     }
 
+
     public function addNewProductSale()
     {
-        $labels = [
-            'product_name' => 'Товар',
-            'product_amount' => 'Кол-во товара'
-        ];
-
         $validation = $this->request()->validate([
-            'product_name' => ['required'],
-            'product_amount' => ['required']
-        ], $labels);
+            'payment_type' => ['required']
+        ], [
+            'payment_type' => 'Тип оплаты'
+        ]);
 
         if (!$validation) {
-            foreach ($this->request()->errors() as $field => $errors) {
-                $this->session()->set($field, $errors);
-            }
-
-            $this->redirect('/admin/dashboard/sale_service');
-            dd('Проверка не пройдена', $this->request()->errors());
+            $this->session()->set('error', 'Не выбран тип оплаты.');
+            $this->redirect('/admin/dashboard/service_sales');
+            return;
         }
 
-        if ($this->getDatabase()->first_found_in_db('Product', ['name' => $this->request()->input('product_name')])) {
-            dd('Таблица уже существует');
-        } else {
-            $Product_sale = $this->getDatabase()->insert('Product_Sale', [
-                'product_name' => $this->request()->input('product_name'),
-                'product_amount' => $this->request()->input('product_amount'),
+        $lines = $this->request()->input('products');
+        if (!is_array($lines) || empty($lines)) {
+            $this->session()->set('error', 'Не выбраны товары.');
+            $this->redirect('/admin/dashboard/service_sales');
+            return;
+        }
+
+        $paymentType = $this->request()->input('payment_type');
+        $operatorName = $this->getAuth()->getUser()->username(); // Получаем имя текущего оператора
+        $grandTotal = 0;
+
+        // Инициализация чека
+        $checkNumber = date('YmdHis');
+        $cash = 0;
+        $card = 0;
+        $items = [];
+
+        foreach ($lines as $line) {
+            $productWarehouseVal = $line['product_warehouse'] ?? null;
+            $amount = (int)($line['amount'] ?? 0);
+
+            if (!$productWarehouseVal || $amount < 1) {
+                continue;
+            }
+
+            list($productId, $warehouseId) = explode('_', $productWarehouseVal);
+
+            $productRow = $this->getDatabase()->first_found_in_db('Product', [
+                'id' => $productId,
+                'warehouse_id' => $warehouseId
+            ]);
+
+            if (!$productRow) {
+                continue;
+            }
+
+            $price = (float)$productRow['sale_price'];
+            $lineTotal = $price * $amount;
+            $grandTotal += $lineTotal;
+
+            // Уменьшаем остаток товара
+            $newAmount = max(0, $productRow['amount'] - $amount);
+            $this->getDatabase()->update('Product', ['amount' => $newAmount], [
+                'id' => $productId,
+                'warehouse_id' => $warehouseId
+            ]);
+
+            $items[] = [
+                'name' => $productRow['name'],
+                'quantity' => $amount,
+                'price' => $price,
+                'total' => $lineTotal
+            ];
+        }
+
+        $cash = $paymentType === 'cash' ? $grandTotal : 0;
+        $card = $paymentType === 'card' ? $grandTotal : 0;
+
+        try {
+            $checkId = $this->createCheck([
+                'check_number' => $checkNumber,
+                'date' => date('Y-m-d H:i:s'),
+                'total' => $grandTotal,
+                'cash' => $cash,
+                'card' => $card,
+                'discount' => 0,
+                'operator_name' => $operatorName,
+                'license_plate' => null,
+                'change_amount' => 0,
+                'report_type' => 'product'
+            ]);
+
+            $this->addCheckItems($checkId, $items);
+
+            // Печать чека
+            $this->redirect('/admin/dashboard/check/preview/' . $checkId);
+        } catch (Exception $e) {
+            $this->session()->set('error', 'Ошибка при создании чека: ' . $e->getMessage());
+            $this->redirect('/admin/dashboard/service_sales');
+        }
+    }
+
+    public function addNewServiceSale()
+    {
+        $validation = $this->request()->validate([
+            'employee_id' => ['required'],
+            'car_number' => ['required'],
+            'car_model' => ['required'],
+            'car_brand' => ['required'],
+            'payment_type' => ['required']
+        ], [
+            'employee_id' => 'Сотрудник',
+            'car_number' => 'Номер машины',
+            'car_model' => 'Модель машины',
+            'car_brand' => 'Марка машины',
+            'payment_type' => 'Тип оплаты'
+        ]);
+
+        if (!$validation) {
+            $this->session()->set('error', 'Не заполнены обязательные поля.');
+            $this->redirect('/admin/dashboard/service_sales');
+            return;
+        }
+
+        $serviceLines = $this->request()->input('services');
+        if (!is_array($serviceLines) || empty($serviceLines)) {
+            $this->session()->set('error', 'Не выбрано ни одной услуги.');
+            $this->redirect('/admin/dashboard/service_sales');
+            return;
+        }
+
+        $employeeId = $this->request()->input('employee_id');
+        $carNumber = $this->request()->input('car_number');
+        $carModel = $this->request()->input('car_model');
+        $carBrand = $this->request()->input('car_brand');
+        $paymentType = $this->request()->input('payment_type');
+        $operatorName = $this->getAuth()->getUser()->username(); // Имя текущего оператора
+        $grandTotal = 0;
+
+        $items = [];
+
+        foreach ($serviceLines as $line) {
+            $servId = $line['service_id'] ?? null;
+
+            if (!$servId) {
+                continue;
+            }
+
+            $serviceRow = $this->getDatabase()->first_found_in_db('Service', ['id' => $servId]);
+            if (!$serviceRow) {
+                continue;
+            }
+
+            $price = (float)$serviceRow['price'];
+            $grandTotal += $price;
+
+            $items[] = [
+                'name' => $serviceRow['name'],
+                'quantity' => 1,
+                'price' => $price,
+                'total' => $price
+            ];
+
+            $this->getDatabase()->insert('Service_Sale', [
+                'service_id' => $servId,
+                'employee_id' => $employeeId,
+                'car_number' => $carNumber,
+                'car_model' => $carModel,
+                'car_brand' => $carBrand,
+                'payment_method' => $paymentType
             ]);
         }
 
-        $this->redirect('/admin/dashboard/service_sales');
+        $cash = $paymentType === 'cash' ? $grandTotal : 0;
+        $card = $paymentType === 'card' ? $grandTotal : 0;
+
+        try {
+            $checkId = $this->createCheck([
+                'check_number' => 'CHK' . time(),
+                'date' => date('Y-m-d H:i:s'),
+                'total' => $grandTotal,
+                'cash' => $cash,
+                'card' => $card,
+                'discount' => 0,
+                'operator_name' => $operatorName,
+                'car_number' => $carNumber,
+                'change_amount' => 0,
+                'report_type' => 'service',
+                'car_model' => $this->request()->input('car_model'),
+                'car_brand' => $this->request()->input('car_brand')
+            ]);
+
+            $this->addCheckItems($checkId, $items);
+
+            // Печать чека
+            $this->redirect('/admin/dashboard/check/preview/' . $checkId);
+        } catch (Exception $e) {
+            $this->session()->set('error', 'Ошибка при создании чека: ' . $e->getMessage());
+            $this->redirect('/admin/dashboard/service_sales');
+        }
+    }
+
+    public function previewCheck($checkId)
+    {
+        try {
+            // Получаем данные чека из таблицы checks
+            $check = $this->getDatabase()->first_found_in_db('checks', ['id' => $checkId]);
+            if (!$check) {
+                $this->session()->set('error', 'Чек не найден.');
+                dd($this->session()->get('error'));
+                return;
+            }
+
+            // Получаем данные позиций из таблицы check_items
+            $checkItems = $this->getDatabase()->get('check_items', ['check_id' => $checkId]);
+
+            // Передаем данные чека и позиций в вид
+            $this->render('/admin/preview_check', [
+                'check' => $check,
+                'items' => $checkItems
+            ]);
+        } catch (Exception $e) {
+            $this->session()->set('error', 'Ошибка при загрузке чека: ' . $e->getMessage());
+            dd($this->session()->get('error'));
+        }
+    }
+
+
+    private function createCheck(array $data): int
+    {
+        try {
+            return $this->getDatabase()->insert('checks', $data);
+        } catch (Exception $e) {
+            $this->session()->set('error', 'Ошибка создания чека: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
+    private function addCheckItems(int $checkId, array $items): void
+    {
+        foreach ($items as $item) {
+            try {
+                $this->getDatabase()->insert('check_items', [
+                    'check_id' => $checkId,
+                    'name' => $item['name'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'total' => $item['total']
+                ]);
+            } catch (Exception $e) {
+                $this->session()->set('error', 'Ошибка добавления позиции в чек: ' . $e->getMessage());
+                throw $e;
+            }
+        }
     }
 }
