@@ -137,14 +137,12 @@ class GoodsAndServicesController extends Controller
     {
         $labels = [
             'product_name' => 'Товар',
-            'product_amount' => 'Кол-во товара',
-            'payment_type' => 'Тип оплаты'
+            'product_amount' => 'Кол-во товара'
         ];
 
         $validation = $this->request()->validate([
             'product_name' => ['required'],
-            'product_amount' => ['required'],
-            'payment_type' => ['required']
+            'product_amount' => ['required']
         ], $labels);
 
         if (!$validation) {
@@ -162,7 +160,6 @@ class GoodsAndServicesController extends Controller
             $Product_sale = $this->getDatabase()->insert('Product_Sale', [
                 'product_name' => $this->request()->input('product_name'),
                 'product_amount' => $this->request()->input('product_amount'),
-                'payment_method' => $this->request()->input('payment_type')
             ]);
         }
 
