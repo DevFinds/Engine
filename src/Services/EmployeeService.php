@@ -32,7 +32,6 @@ class EmployeeService
                 $employee['salary'],
                 $employee['notes'],
                 $employee['organization_id'],
-                $employee['start_date'],
                 $employee['user_id']
             );
         }, $employees);

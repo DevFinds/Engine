@@ -19,7 +19,6 @@ class Employee
         private $salary,
         private $notes,
         private $organization_id,
-        private $start_date,
         private $user_id
     ) {
     }
@@ -92,11 +91,6 @@ class Employee
     public function organization_id()
     {
         return $this->organization_id;
-    }
-
-    public function start_date()
-    {
-        return $this->start_date;
     }
 
     public function user_id()
