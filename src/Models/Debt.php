@@ -10,7 +10,7 @@ class Debt
         private $sum,
         private $start_date,
         private $end_date,
-        private $supplier_id
+        private $company_id,
     ) {
     }
 
@@ -24,6 +24,14 @@ class Debt
         return $this->status;
     }
 
+/*************  ✨ Codeium Command ⭐  *************/
+    /**
+     * Get the sum associated with this debt.
+     *
+     * @return float The sum value.
+     */
+
+/******  9a3c5fec-562e-4892-9cf4-068a2a3dec46  *******/
     public function sum()
     {
         return $this->sum;
@@ -41,6 +49,6 @@ class Debt
 
     public function supplier_id()
     {
-        return $this->supplier_id;
+        return $this->company_id;
     }
 }

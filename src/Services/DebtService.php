@@ -21,7 +21,7 @@ class DebtService
                 $debt['sum'],
                 $debt['start_date'],
                 $debt['end_date'],
-                $debt['supplier_id']
+                $debt['company_id']
             );
         }, $debts);
     }

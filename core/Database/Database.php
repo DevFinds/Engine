@@ -256,4 +256,15 @@ class Database implements DatabaseInterface
             return false;
         }
     }
+    public function query(string $sql, array $params = []): array
+    {
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($params);
+            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            exit("Error executing query: " . $e->getMessage());
+            return [];
+        }
+    }
 }
