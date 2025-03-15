@@ -4,11 +4,11 @@ config:
   via: nginx
   config:
     vhosts: .lando/nginx.conf
-  php: "8.2"
+  php: "8.4"
   webroot: public
   services:
     mariadb:
-      type: mariadb:10.5
+      type: mariadb:11.5
     phpmyadmin:
       type: phpmyadmin
     appserver:
