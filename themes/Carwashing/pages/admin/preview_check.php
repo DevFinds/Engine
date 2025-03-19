@@ -87,13 +87,13 @@
             <p>Тел: +79027180705</p>
             <p>ТОВАРНЫЙ ЧЕК №<?= htmlspecialchars($check['check_number']) ?></p>
             <p>Дата: <?= htmlspecialchars($check['date']) ?></p>
-            <?php if ($check['car_number'] > 0): ?>
+            <?php if (isset($check['car_number'])): ?>
                 <p>Гос. номер: <?= htmlspecialchars($check['car_number']) ?></p>
             <?php endif; ?>
-            <?php if ($check['car_model'] > 0): ?>
+            <?php if (isset($check['car_model'])): ?>
                 <p>Модель: <?= htmlspecialchars($check['car_model']) ?></p>
             <?php endif; ?>
-            <?php if ($check['car_brand'] > 0): ?>
+            <?php if (isset($check['car_brand'])): ?>
                 <p>Марка: <?= htmlspecialchars($check['car_brand']) ?></p>
             <?php endif; ?>
         </div>

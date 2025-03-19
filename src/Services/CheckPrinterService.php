@@ -86,7 +86,7 @@ class CheckPrinterService
         } else {
             exec("lp -d \"$printerName\" \"$tmpFile\"");
         }
-        
+
         // Удаляем временный файл
         unlink($tmpFile);
     }

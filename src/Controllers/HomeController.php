@@ -12,6 +12,6 @@ class HomeController extends Controller
     {
         // Получаем имя данного контроллера
         //$controller_name = substr(get_class($this), -14, -10);
-        $this->render('home');
+        $this->render('admin/dashboard/general');
     }
 }
