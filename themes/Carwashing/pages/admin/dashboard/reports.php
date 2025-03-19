@@ -37,12 +37,12 @@ $employees = $data['employees']->getAllFromDB();
 
                     <div class="create-report-container" id="createReport">
                         <div class="financial-accounting-first__create">
-                            <form class="financial-accounting-first__create-forms">
+                            <form class="financial-accounting-first__create-forms" method="POST" action="/admin/dashboard/reports">
                                 <ul class="financial-accounting-first__create-first-column">
                                     <li>
                                         <select class="financial-accounting-first__create-select">
-                                            <option disabled selected>Отчет по сотрудникам</option>
-                                            
+                                            <option disabled selected value="employee">Отчет по сотрудникам</option>
+                                            <option value="product">Отчет по продуткам</option>
                                         </select>
                                     </li>
                                     <li>
