@@ -8,11 +8,9 @@ use Source\Models\Employee;
 
 class EmployeeService
 {
-	public function __construct(
+    public function __construct(
         private DatabaseInterface $db
-    )
-    {
-    }
+    ) {}
     public function getAllFromDB(): array
     {
         $employees = $this->db->get('Employee');

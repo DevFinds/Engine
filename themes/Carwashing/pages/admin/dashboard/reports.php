@@ -6,7 +6,7 @@
  * @var \Core\Auth\AuthInterface $auth
  * @var \Source\Models\Employee $employee
  */
-$employees = $data['employees']->getAllFromDB();
+$employees = $data['employees'];
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -53,7 +53,7 @@ $employees = $data['employees']->getAllFromDB();
                                     <li>
                                         <select class="financial-accounting-first__create-select">
                                             <option disabled selected>Сотрудник</option>
-                                            <?php foreach ($employees as $employee=> $employee_model) : ?>
+                                            <?php foreach ($employees as $employee => $employee_model) : ?>
                                                 <option value="<?= $employee_model->id() ?>"><?= $employee_model->name() ?></option>
                                             <?php endforeach; ?>
                                         </select>
@@ -138,7 +138,7 @@ $employees = $data['employees']->getAllFromDB();
                                         <td>Петропавлов И.С.</td>
                                         <td>29</td>
                                         <td>34</td>
-                                        <td>28 500 ₽</td>
+                                        <td>28 ₽</td>
                                         <td>13.09.2024</td>
                                         <td>28.09.2024</td>
                                         <td>

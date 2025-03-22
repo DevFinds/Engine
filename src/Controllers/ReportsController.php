@@ -1,4 +1,5 @@
 <?php
+
 namespace Source\Controllers;
 
 use Core\Controller\Controller;
@@ -10,11 +11,10 @@ class ReportsController extends Controller
     {
         $employeeService = new EmployeeService($this->getDatabase());
         $employees = $employeeService->getAllFromDB();
-        $employeeReports = $employeeService->generateEmployeeReport();
-        var_dump($employeeReports);
+        // $employeeReports = $employeeService->generateEmployeeReport();
+        // var_dump($employeeReports);
         $this->render('/admin/dashboard/reports', [
-            'employees' => $employees,
-            'employeeReports' => $employeeReports
+            'employees' => $employees
         ]);
     }
 }
