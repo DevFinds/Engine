@@ -73,47 +73,31 @@ $employeeRawData = $data['employeeRawData'];
                     <div class="financial-accounting-first__list-container">
                         <label class="financial-accounting-first__list-label">Создан отчет</label></label>
                         <div class="financial-accounting-first__list">
-                        <table>
+                        <table id="employeeReportTable">
                                 <thead>
                                     <tr>
-                                        <th>Фамилия</th>
-                                        <th>Имя</th>
-                                        <th>Отчество</th>
-                                        <th>Должность</th>
-                                        <th>График работы</th>
-                                        <th>Статус</th>
-                                        <th>Дата найма</th>
-                                        <th>Телефон</th>
-                                        <th>Email</th>
-                                        <th>Часовая ставка</th>
-                                        <th>Зарплата</th>
-                                        <th>Организация</th>
-                                        <th>Дата начала</th>
-                                        <th>User ID</th>
+                                        <th>Сотрудник</th>
+                                        <th>Отработанные часы</th>
+                                        <th>Количество услуг</th>
+                                        <th>Сумма зарплаты</th>
+                                        <th>Средняя стоимость услуги</th>
+                                        <th>Средние часы в день</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <?php if (empty($employeeRawData)): ?>
+                                <tbody id="employeeReportBody">
+                                    <?php if (empty($employeeReports)): ?>
                                         <tr>
-                                            <td colspan="16">Нет данных для отображения</td>
+                                            <td colspan="6">Нет данных для отображения</td>
                                         </tr>
                                     <?php else: ?>
-                                        <?php foreach ($employeeRawData as $employee): ?>
+                                        <?php foreach ($employeeReports as $report): ?>
                                             <tr>
-                                                <td><?= htmlspecialchars($employee['last_name']) ?></td>
-                                                <td><?= htmlspecialchars($employee['name']) ?></td>
-                                                <td><?= htmlspecialchars($employee['surname'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($employee['position'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($employee['work_schedule_id'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($employee['status']) ?></td>
-                                                <td><?= htmlspecialchars($employee['hire_date'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($employee['phone'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($employee['email'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($employee['hourly_rate'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($employee['salary'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($employee['organization_id'] ?? '') ?></td>
-                                                <td><?= htmlspecialchars($employee['start_date']) ?></td>
-                                                <td><?= htmlspecialchars($employee['user_id'] ?? '') ?></td>
+                                                <td><?= htmlspecialchars($report['employee_name'] ?? 'Не указано') ?></td>
+                                                <td><?= htmlspecialchars($report['total_hours'] ?? 0) ?></td>
+                                                <td><?= htmlspecialchars($report['total_services'] ?? 0) ?></td>
+                                                <td><?= htmlspecialchars(number_format($report['total_salary'] ?? 0, 2)) ?> ₽</td>
+                                                <td><?= htmlspecialchars(number_format($report['avg_service_price'] ?? 0, 2)) ?> ₽</td>
+                                                <td><?= htmlspecialchars(number_format($report['avg_hours_per_day'] ?? 0, 2)) ?></td>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
@@ -220,3 +204,61 @@ $employeeRawData = $data['employeeRawData'];
 </div>
 
 <?php $render->component('dashboard_footer'); ?>
+<script>
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.style.display = 'none';
+        });
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.classList.remove('active');
+        });
+        document.getElementById(tabId + 'Container').style.display = 'block';
+        document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+    }
+
+    function clearForm() {
+        document.getElementById('reportForm').reset();
+        document.getElementById('employeeReportBody').innerHTML = '<tr><td colspan="6">Выберите параметры и нажмите "Сохранить" для формирования отчета</td></tr>';
+    }
+
+    function updateReport() {
+        const form = document.getElementById('reportForm');
+        const formData = new FormData(form);
+        fetch('/admin/dashboard/reports/get', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            const tbody = document.getElementById('employeeReportBody');
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6">Нет данных для отображения</td></tr>';
+                return;
+            }
+
+            data.forEach(report => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${report.employee_name ?? 'Не указано'}</td>
+                    <td>${report.total_hours ?? 0}</td>
+                    <td>${report.total_services ?? 0}</td>
+                    <td>${(report.total_salary ?? 0).toFixed(2)} ₽</td>
+                    <td>${(report.avg_service_price ?? 0).toFixed(2)} ₽</td>
+                    <td>${(report.avg_hours_per_day ?? 0).toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('employeeReportBody').innerHTML = '<tr><td colspan="6">Ошибка при загрузке данных</td></tr>';
+        });
+    }
+
+    document.getElementById('reportForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        updateReport();
+    });
+</script>
