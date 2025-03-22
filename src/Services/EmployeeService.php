@@ -43,11 +43,26 @@ class EmployeeService
 
     public function generateEmployeeReport(): array
     {
-        $query = "SELECT e.name, SUM(es.hours_worked) as total_hours, COUNT(s.id) as total_services, SUM(s.price) as total_salary
-                  FROM Employee e
-                  LEFT JOIN employee_schedule_days es ON e.id = es.employee_id
-                  LEFT JOIN Service s ON e.id = s.employee_id
-                  GROUP BY e.id, e.name";
+        $query = "SELECT CONCAT(Employee.last_name, ' ', Employee.name, ' ', COALESCE(Employee.surname, '')) AS employee_name,
+                         SUM(employee_schedule_days.hours_worked) AS total_hours,
+                         COUNT(Service_Sale.id) AS total_services,
+                         SUM(Service.price) AS total_salary
+                  FROM Employee
+                  LEFT JOIN employee_schedule_days ON Employee.id = employee_schedule_days.id
+                  LEFT JOIN Service_Sale ON Employee.id = Service_Sale.employee_id
+                  LEFT JOIN Service ON Service_Sale.service_id = Service.id
+                  GROUP BY Employee.id";
+        return $this->db->query($query);
+    }
+
+    /**
+     * Возвращает все записи из таблицы Employee в виде массива.
+     *
+     * @return array Массив записей из таблицы Employee.
+     */
+    public function getAllEmployeesRaw(): array
+    {
+        $query = "SELECT * FROM Employee";
         return $this->db->query($query);
     }
 }

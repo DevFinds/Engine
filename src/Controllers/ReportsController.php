@@ -11,10 +11,13 @@ class ReportsController extends Controller
     {
         $employeeService = new EmployeeService($this->getDatabase());
         $employees = $employeeService->getAllFromDB();
-        // $employeeReports = $employeeService->generateEmployeeReport();
+        $employeeReports = $employeeService->generateEmployeeReport();
+        $employeeRawData = $employeeService->getAllEmployeesRaw();
         // var_dump($employeeReports);
         $this->render('/admin/dashboard/reports', [
-            'employees' => $employees
+            'employees' => $employees,
+            'employeeReports' => $employeeReports,
+            'employeeRawData' => $employeeRawData
         ]);
     }
 }
