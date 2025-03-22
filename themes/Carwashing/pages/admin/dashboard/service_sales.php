@@ -307,6 +307,7 @@ $services_array = $data['service']->getAllFromDBAsArray();
         function updateLineStockAndPrice(lineDiv) {
             const productSelect = lineDiv.querySelector('.productSelect');
             const warehouseStockLabel = lineDiv.querySelector('.warehouseStockLabel');
+            const quantityToSale = lineDiv.querySelector('.productAmountInput');
 
             const selectedOption = productSelect.options[productSelect.selectedIndex];
             if (!selectedOption) {
@@ -317,7 +318,37 @@ $services_array = $data['service']->getAllFromDBAsArray();
             const wAmount = selectedOption.getAttribute('data-amount') || '0';
             const wUnit = selectedOption.getAttribute('data-unit') || '';
             warehouseStockLabel.textContent = `Всего на складе: ${wAmount} (${wUnit})`;
+            if (wAmount == 0) {
+                document.getElementById('saveLineBtn').textContent = 'Товар закончился';
+                document.getElementById('saveLineBtn').disabled = true;
+                document.getElementById('saveLineBtn').style.cursor = 'not-allowed';
+                document.getElementById('saveLineBtn').style.backgroundColor = '#D33B4C';
+            } else {
+                document.getElementById('saveLineBtn').textContent = 'Сохранить';
+                document.getElementById('saveLineBtn').disabled = false;
+                document.getElementById('saveLineBtn').style.cursor = 'pointer';
+                document.getElementById('saveLineBtn').style.backgroundColor = '#707FDD';
+            }
+            if (quantityToSale.value > wAmount) {
+                document.getElementById('saveLineBtn').textContent = 'Недостаточно товара';
+                document.getElementById('saveLineBtn').disabled = true;
+                document.getElementById('saveLineBtn').style.cursor = 'not-allowed';
+                document.getElementById('saveLineBtn').style.backgroundColor = '#D33B4C';
+                document.getElementById('productAmountInput').value = wAmount;
+            } else {
+                document.getElementById('saveLineBtn').textContent = 'Сохранить';
+                document.getElementById('saveLineBtn').disabled = false;
+                document.getElementById('saveLineBtn').style.cursor = 'pointer';
+                document.getElementById('saveLineBtn').style.backgroundColor = '#707FDD';
+            }
         }
+
+        document.addEventListener('keydown', function(event) {
+            const productLines = document.querySelectorAll('.product-line');
+            productLines.forEach(line => {
+                updateLineStockAndPrice(line);
+            });
+        });
 
         /**
          * Считает общую сумму по всем строкам
