@@ -86,7 +86,7 @@ $employees = $data['employees']->getAllFromDB();
                                     <tr>
                                         <td>Петропавлов И.С.</td>
                                         <td>29</td>
-                                        <td>34</td>
+                                        <td>2</td>
                                         <td>28 500 ₽</td>
                                         <td>13.09.2024</td>
                                         <td>28.09.2024</td>

@@ -42,4 +42,14 @@ class EmployeeService
         $employee = $this->db->first_found_in_db('Employee', ['id' => $id]);
         return $employee;
     }
+
+    public function generateEmployeeReport(): array
+    {
+        $query = "SELECT e.name, SUM(es.hours_worked) as total_hours, COUNT(s.id) as total_services, SUM(s.price) as total_salary
+                  FROM Employee e
+                  LEFT JOIN employee_schedule_days es ON e.id = es.employee_id
+                  LEFT JOIN Service s ON e.id = s.employee_id
+                  GROUP BY e.id, e.name";
+        return $this->db->query($query);
+    }
 }
