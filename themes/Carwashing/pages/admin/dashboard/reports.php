@@ -7,7 +7,6 @@
  * @var \Source\Models\Employee $employee
  */
 $employees = $data['employees'];
-$employeeReports = $data['employeeReports'];
 $employeeRawData = $data['employeeRawData'];
 ?>
 

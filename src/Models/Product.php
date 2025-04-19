@@ -7,15 +7,13 @@ class Product
     public function __construct(
         private $id,
         private $name,
-        private $category,
         private $unit_measurement,
         private $purchase_price,
         private $sale_price,
-        private $supplier_id,
-        private $warehouse_id,
-        private $created_at,
-        private $description,
-        private $amount
+        private $product_quantity,
+        private $product_description,
+        private $contractor_id,
+        private $warehouse_id
     ) {
     }
 
@@ -29,10 +27,6 @@ class Product
         return $this->name;
     }
 
-    public function category()
-    {
-        return $this->category;
-    }
 
     public function unit_measurement()
     {
@@ -49,28 +43,10 @@ class Product
         return $this->sale_price;
     }
 
-    public function supplier_id()
-    {
-        return $this->supplier_id;
-    }
-
     public function warehouse_id()
     {
         return $this->warehouse_id;
     }
 
-    public function created_at()
-    {
-        return $this->created_at;
-    }
 
-    public function description()
-    {
-        return $this->description;
-    }
-
-    public function amount()
-    {
-        return $this->amount;
-    }
 }

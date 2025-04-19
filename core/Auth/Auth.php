@@ -45,11 +45,10 @@ class Auth implements AuthInterface
                 $user[$this->login_field_type()],
                 $user['email'],
                 $user[$this->password()],
-                $user['role'],
+                $user['role_id'],
                 $user['avatar'],
                 $user['created_at'],
-                $user['updated_at'],
-                $user['phone_number']
+                $user['updated_at']
             );
         }
 
@@ -59,7 +58,7 @@ class Auth implements AuthInterface
 
     public function getRole(): ?Role
     {
-        $role = $this->database->get('roles', ['role_id' => $this->getUser()->Role()]);
+        $role = $this->database->get('Role', ['role_id' => $this->getUser()->Role()]);
         $role_instance = new Role(
             $role[0]['role_id'],
             $role[0]['role_name'],
@@ -71,7 +70,7 @@ class Auth implements AuthInterface
 
     public function getRoleList(): array
     {
-        return $this->database->get('roles');
+        return $this->database->get('Role');
     }
 
     public function is_user_exist_with_value(string $table, string $value, string $field): bool
@@ -105,7 +104,7 @@ class Auth implements AuthInterface
 
     public function table(): string
     {
-        return $this->config->getJson('auth.table', 'users');
+        return $this->config->getJson('auth.table', 'User');
     }
 
     public function login_field_type(): string
@@ -120,7 +119,7 @@ class Auth implements AuthInterface
 
     public function session_field(): string
     {
-        return $this->config->getJson('auth.session_field', 'user_id');
+        return $this->config->getJson('auth.session_field', 'id');
     }
 
     public function get_from_session(string $key)
