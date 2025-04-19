@@ -221,7 +221,7 @@ class GoodsAndServicesController extends Controller
                 'card' => $card,
                 'discount' => 0,
                 'operator_name' => $operatorName,
-                'license_plate' => null,
+                'car_number' => null,
                 'change_amount' => 0,
                 'report_type' => 'product'
             ]);
