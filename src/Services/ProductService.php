@@ -43,14 +43,16 @@ class ProductService
         $products = array_map(fn($product) => 
         new Product(
             $product['id'],
-            $product['product_name'],
+            $product['name'],
+            $product['category'],
             $product['unit_measurement'],
             $product['purchase_price'],
             $product['sale_price'],
-            $product['product_quantity'],
-            $product['product_description'],
-            $product['contractor_id'],
-            $product['warehouse_id']
+            $product['supplier_id'],
+            $product['warehouse_id'],
+            $product['created_at'],
+            $product['description'],
+            $product['amount']
         ), $products);
 
         return $products;

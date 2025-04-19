@@ -23,14 +23,16 @@ class CompanyService
         $companies = array_map(fn($company) =>
         new Company(
             $company['id'],
-            $company['company_name'],
+            $company['name'],
             $company['inn'],
             $company['ogrn'],
-            $company['company_address'],
+            $company['legal_address'],
+            $company['actual_address'],
             $company['company_email'],
             $company['company_phone'],
-            $company['company_type'],
-            $company['kpp']
+            $company['contact_info'],
+            $company['tax_id'],
+            $company['type']
         ), $companies);
 
         return $companies;
@@ -46,7 +48,7 @@ class CompanyService
      */
     public function getCompanyByType(int $type): array
     {
-        return $this->database->get('Company', ['company_type' => $type]) ? : [];
+        return $this->database->get('Company', ['type' => $type]);
     }
 
     /**

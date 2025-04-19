@@ -10,11 +10,12 @@ class RoleService
 {
     public function __construct(
         private DatabaseInterface $db,
-    ) {}
+    ) {
+    }
 
     public function getAllFromDB(): array
     {
-        $roles = $this->db->get('Role');
+        $roles = $this->db->get('roles');
         $roles = array_map(function ($role) {
             return new Role(
                 $role['role_id'],
@@ -27,7 +28,7 @@ class RoleService
 
     public function getRoleById(int $id): ?Role
     {
-        $role = $this->db->first_found_in_db('Roles', ['id' => $id]);
+        $role = $this->db->first_found_in_db('roles', ['id' => $id]);
         return $role;
     }
 }

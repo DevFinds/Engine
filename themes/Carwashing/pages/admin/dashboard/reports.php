@@ -7,7 +7,6 @@
  * @var \Source\Models\Employee $employee
  */
 $employees = $data['employees'];
-$employeeRawData = $data['employeeRawData'];
 ?>
 
 <?php $render->component('dashboard_header'); ?>

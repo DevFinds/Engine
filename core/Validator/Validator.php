@@ -3,11 +3,7 @@
 namespace Core\Validator;
 
 use Core\Auth\AuthInterface;
-use Core\Config\Config as ConfigConfig;
 use Core\Database\DatabaseInterface;
-use PSpell\Config;
-
-use function PHPSTORM_META\type;
 
 /**
  * Class Validator
@@ -253,7 +249,7 @@ class Validator implements ValidatorInterface
                 break;
 
 
-            // Добавьте другие правила валидации по необходимости
+                // Добавьте другие правила валидации по необходимости
 
             default:
                 // Если правило не распознано, игнорируем его или выбрасываем исключение
@@ -296,11 +292,7 @@ class Validator implements ValidatorInterface
      */
     private function isNumeric(mixed $value): bool
     {
-        if (!is_int($value) || !is_float($value) || !is_double($value)) {
-            return false;
-        } else {
-            return true;
-        }
+        return is_numeric($value);
     }
 
     /**
@@ -352,7 +344,7 @@ class Validator implements ValidatorInterface
         }
 
         // По умолчанию возвращаем 'users'
-        return 'User';
+        return 'users';
     }
 
     /**

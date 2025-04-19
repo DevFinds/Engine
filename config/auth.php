@@ -4,7 +4,7 @@
 
 return [
 
-    'table' => 'User',
+    'table' => 'users',
     'login_field_type' => 'login',
     'password' => 'password',
     'session_field' => 'user_id'

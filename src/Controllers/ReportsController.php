@@ -12,20 +12,13 @@ class ReportsController extends Controller
         $employees = $employeeService->getAllFromDB();
         $employeeRawData = $employeeService->getAllEmployeesRaw();
 
+        // Изначально формируем отчет без фильтров (по всем сотрудникам, без ограничения по датам)
+       
+
         $this->render('/admin/dashboard/reports', [
             'employees' => $employees,
-            'employeeRawData' => $employeeRawData
+            
         ]);
     }
 
-    public function getEmployeeReport()
-    {
-        $employeeService = new EmployeeService($this->getDatabase());
-
-        $employeeId = isset($_POST['employee_id']) && $_POST['employee_id'] !== 'all' ? (int)$_POST['employee_id'] : null;
-        $startDate = isset($_POST['start_date']) && !empty($_POST['start_date']) ? $_POST['start_date'] : null;
-        $endDate = isset($_POST['end_date']) && !empty($_POST['end_date']) ? $_POST['end_date'] : null;
-
-       
-    }
 }

@@ -10,7 +10,8 @@ class UserService
 {
     public function __construct(
         private DatabaseInterface $db,
-    ) {}
+    ) {
+    }
 
     /**
      * @return array<User>
@@ -18,7 +19,7 @@ class UserService
 
     public function getAllFromDB(): array
     {
-        $users = $this->db->get('User');
+        $users = $this->db->get('users');
         $users = array_map(function ($user) {
             return new User(
                 $user['id'],

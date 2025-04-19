@@ -10,10 +10,12 @@ class Company
         private $inn,
         private $ogrn,
         private $legal_address,
+        private $actual_address,
         private $company_email,
         private $company_phone,
-        private $company_type,
-        private $kpp
+        private $contact_info,
+        private $tax_id,
+        private $type
     ) {}
 
     public function id()
@@ -41,6 +43,11 @@ class Company
         return $this->legal_address;
     }
 
+    public function actual_address()
+    {
+        return $this->actual_address;
+    }
+
     public function company_email()
     {
         return $this->company_email;
@@ -51,13 +58,18 @@ class Company
         return $this->company_phone;
     }
 
-    public function kpp()
+    public function contact_info()
     {
-        return $this->kpp;
+        return $this->contact_info;
+    }
+
+    public function tax_id()
+    {
+        return $this->tax_id;
     }
 
     public function type()
     {
-        return $this->company_type;
+        return $this->type;
     }
 }
