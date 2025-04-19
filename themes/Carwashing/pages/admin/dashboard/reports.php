@@ -7,8 +7,6 @@
  * @var \Source\Models\Employee $employee
  */
 $employees = $data['employees'];
-$employeeReports = $data['employeeReports'];
-$employeeRawData = $data['employeeRawData'];
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -77,11 +75,11 @@ $employeeRawData = $data['employeeRawData'];
                                 <thead>
                                     <tr>
                                         <th>Сотрудник</th>
-                                        <th>Отработанные часы</th>
-                                        <th>Количество услуг</th>
-                                        <th>Сумма зарплаты</th>
-                                        <th>Средняя стоимость услуги</th>
-                                        <th>Средние часы в день</th>
+                                        <th>Статус</th>
+                                        <th>Время начала</th>
+                                        <th>Время окончания</th>
+                                        <th>Часов отработано</th>
+                                        <th>Дата</th>
                                     </tr>
                                 </thead>
                                 <tbody id="employeeReportBody">
