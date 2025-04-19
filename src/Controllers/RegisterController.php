@@ -19,6 +19,15 @@ class RegisterController extends Controller
 
     public function register()
     {
+        $labels = [
+            'email' => 'Email',
+            'login' => 'Login',
+            'password' => 'Password',
+            'user_name' => 'Name',
+            'user_lastname' => 'Lastname',
+            'user_phone' => 'Phone',
+        ];
+
         $validation = $this->request()->validate([
             'email' => ['required', 'email', 'already_exist'],
             'login' => ['required', 'min:3', 'max:25', 'already_exist'],
@@ -26,7 +35,7 @@ class RegisterController extends Controller
             'user_name' => ['required'],
             'user_lastname' => ['required'],
             'user_phone' => ['required'],
-        ]);
+        ], $labels);
 
         if (!$validation) {
 
@@ -35,18 +44,26 @@ class RegisterController extends Controller
                 $this->session()->set($field, $errors);
             }
 
-            $this->redirect('/register');
-            //dd('Validation failed', $this->request()->errors());
+            //$this->redirect('/register');
+            dd('Validation failed', $this->request()->errors());
         }
 
-        $userID = $this->getDatabase()->insert('users', [
+        try {
+
+        $userID = $this->getDatabase()->insert('User', [
             'username' => $this->request()->input('user_name'),
             'lastname' => $this->request()->input('user_lastname'),
             'login' => $this->request()->input('login'),
             'email' => $this->request()->input('email'),
             'password' => password_hash($this->request()->input('password'), PASSWORD_DEFAULT),
-            'role' => '1',
+            'role_id' => '1',
         ]);
+
+        }
+
+        catch (\Exception $e) {
+            dd($e->getMessage());
+        }
 
         //$this->redirect('/');
     }

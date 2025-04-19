@@ -15,10 +15,8 @@ class User
         private string $role,
         private string $avatar,
         private string $created_at,
-        private string $updated_at,
-        private string $phone_number
-    ) {
-    }
+        private mixed $updated_at
+    ) {}
 
     public function id()
     {
@@ -68,10 +66,5 @@ class User
     public function updated_at()
     {
         return $this->updated_at;
-    }
-
-    public function phone_number()
-    {
-        return $this->phone_number;
     }
 }

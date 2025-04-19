@@ -92,7 +92,7 @@ class Router implements RouterInterface
             try {
                 call_user_func_array([$controller, $action], $this->extractParams($uri, $route));
             } catch (\Throwable $th) {
-                $this->render->page('404', ['error' => $th->getMessage()]);
+                $this->render->page('404', ['error' => $th]);
             }
         } else {
             // Или выполняем анонимную функцию, переданную в routes.php
