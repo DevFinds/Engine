@@ -1,10 +1,14 @@
 <?php
+
 namespace Source\Controllers;
 
 use Core\Controller\Controller;
 use Source\Services\ReportService;
 use Source\Services\EmployeeService;
 use Source\Services\ProductService;
+use Source\Services\ExcelExporter;
+use Source\Services\FinancialReportService;
+use ZipArchive;
 
 class ReportsController extends Controller
 {
@@ -18,7 +22,7 @@ class ReportsController extends Controller
 
         $this->render('/admin/dashboard/reports', [
             'employees' => $employees,
-            'products' => $products,
+'products' => $products,
             'productReports' => [],
         ]);
     }

@@ -91,6 +91,29 @@
                         </div>
                     </div>
                 </div>
+
+
+                <div>
+                    <h1>Финансовый отчёт</h1>
+                    <table border="1">
+                        <tr>
+                            <th>Account</th>
+                            <th>Amount</th>
+                        </tr>
+                        <?php foreach ($data as $row): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($row['account']) ?></td>
+                                <td><?= number_format($row['amount'], 0, '.', ' ') ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                    <form method="post" action="/admin/dashboard/reports/generate-financial-report">
+                        <button type="submit" name="export">Сгенерировать Excel</button>
+                    </form>
+                </div>
+
+
+
             </div>
 
             <div class="tab-content" id="reportsContainer" style="display: none;">
@@ -147,6 +170,11 @@
         </div>
     </div>
 </div>
+
+
+
+
+
 
 <?php $render->component('dashboard_footer'); ?>
 
@@ -247,24 +275,15 @@
                 `;
                 tbody.appendChild(row);
             });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('employeeReportBody').innerHTML = '<tr><td colspan="6">Ошибка при загрузке данных</td></tr>';
+        });
+    }
 
-        } catch (error) {
-            console.error('Ошибка:', error);
-            messageDiv.style.display = 'block';
-            messageDiv.textContent = `Ошибка: ${error.message}`;
-            tbody.innerHTML = '<tr><td colspan="6">Ошибка при загрузке данных</td></tr>';
-        }
+    document.getElementById('reportForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        updateReport();
     });
-});
-
-// Функция экранирования HTML
-function escapeHTML(str) {
-    return str?.toString()
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;') 
-        || 'N/A';
-}
 </script>

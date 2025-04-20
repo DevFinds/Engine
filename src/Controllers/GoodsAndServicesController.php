@@ -194,6 +194,8 @@ class GoodsAndServicesController extends Controller
             $lineTotal = $price * $amount;
             $grandTotal += $lineTotal;
 
+            
+
             // Уменьшаем остаток товара
             $newAmount = max(0, $productRow['amount'] - $amount);
             $this->getDatabase()->update('Product', ['amount' => $newAmount], [
