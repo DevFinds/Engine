@@ -447,13 +447,12 @@
             },
             "access_level": 2
         },
-
         {
             "method": "POST",
-            "uri": "/admin/dashboard/reports/generate-financial-report",
+            "uri": "/admin/dashboard/reports/getReport",
             "action": {
                 "controller": "Source\\Controllers\\ReportsController",
-                "method": "generateFinancialReport"
+                "method": "getReport"
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"
