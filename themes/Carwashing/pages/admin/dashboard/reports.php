@@ -91,29 +91,6 @@
                         </div>
                     </div>
                 </div>
-
-
-                <div>
-                    <h1>Финансовый отчёт</h1>
-                    <table border="1">
-                        <tr>
-                            <th>Account</th>
-                            <th>Amount</th>
-                        </tr>
-                        <?php foreach ($data as $row): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($row['account']) ?></td>
-                                <td><?= number_format($row['amount'], 0, '.', ' ') ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </table>
-                    <form method="post" action="/admin/dashboard/reports/generate-financial-report">
-                        <button type="submit" name="export">Сгенерировать Excel</button>
-                    </form>
-                </div>
-
-
-
             </div>
 
             <div class="tab-content" id="reportsContainer" style="display: none;">
@@ -171,11 +148,6 @@
     </div>
 </div>
 
-
-
-
-
-
 <?php $render->component('dashboard_footer'); ?>
 
 <script>
@@ -206,84 +178,74 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('reportForm');
-    const messageDiv = document.getElementById('formMessage');
-    const tbody = document.getElementById('productReportBody');
+        const form = document.getElementById('reportForm');
+        if (!form) {
+            console.error('Форма с ID reportForm не найдена');
+            return;
+        }
 
-    // Проверка элементов при загрузке
-    if (!form || !messageDiv || !tbody) {
-        console.error('Один из элементов не найден:', {form, messageDiv, tbody});
-        return;
-    }
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
 
-    form.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        
-        // Сброс состояния
-        messageDiv.style.display = 'none';
-        messageDiv.innerHTML = '';
-        tbody.innerHTML = '<tr><td colspan="6">Загрузка данных...</td></tr>';
+            const formData = new FormData(form);
+            const messageDiv = document.getElementById('formMessage');
+            const tbody = document.getElementById('productReportBody');
 
-        try {
-            const response = await fetch('/admin/dashboard/reports/getReport', {
-                method: 'POST',
-                body: new URLSearchParams(new FormData(form)) // Более предсказуемая сериализация
-            });
-
-            // Проверка типа контента
-            const contentType = response.headers.get('content-type');
-            const isJson = contentType && contentType.includes('application/json');
-
-            // Обработка HTTP ошибок
-            if (!response.ok) {
-                const errorData = isJson ? await response.json() : await response.text();
-                throw new Error(
-                    isJson 
-                    ? errorData.error || 'Неизвестная ошибка'
-                    : `HTTP ${response.status}: ${errorData.slice(0, 100)}`
-                );
-            }
-
-            // Парсинг JSON только если подтвержден content-type
-            if (!isJson) throw new Error('Некорректный формат ответа сервера');
-            const data = await response.json();
-
-            // Обработка данных
-            tbody.innerHTML = '';
-            
-            if (!data || data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6">Нет данных для отображения</td></tr>';
+            if (!messageDiv || !tbody) {
+                console.error('Элементы formMessage или productReportBody не найдены');
                 return;
             }
 
-            // Форматирование чисел на клиенте
-            const formatter = new Intl.NumberFormat('ru-RU', {
-                style: 'currency',
-                currency: 'RUB',
-                minimumFractionDigits: 2
-            });
+            messageDiv.style.display = 'none';
+            messageDiv.innerHTML = '';
 
-            data.forEach(report => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${escapeHTML(report.product_name)}</td>
-                    <td>${report.quantity || 0}</td>
-                    <td>${formatter.format(report.price || 0)}</td>
-                    <td>${formatter.format(report.total || 0)}</td>
-                    <td>${escapeHTML(report.employee_name)}</td>
-                    <td>${escapeHTML(report.sale_date)}</td>
-                `;
-                tbody.appendChild(row);
+            fetch('/admin/dashboard/reports/getReport', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`HTTP ${response.status}: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Полученные данные:', data); // Для отладки
+                tbody.innerHTML = '';
+
+                if (data.error) {
+                    messageDiv.style.display = 'block';
+                    messageDiv.innerHTML = data.error;
+                    tbody.innerHTML = '<tr><td colspan="6">Нет данных для отображения</td></tr>';
+                    return;
+                }
+
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6">Нет данных для отображения</td></tr>';
+                    return;
+                }
+
+                data.forEach(report => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${report.product_name || 'N/A'}</td>
+                        <td>${report.quantity || 0}</td>
+                        <td>${report.price || '0.00'} ₽</td>
+                        <td>${report.total || '0.00'} ₽</td>
+                        <td>${report.employee_name || 'N/A'}</td>
+                        <td>${report.sale_date || 'N/A'}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+                messageDiv.style.display = 'block';
+                messageDiv.innerHTML = `Ошибка при загрузке данных: ${error.message}`;
+                tbody.innerHTML = '<tr><td colspan="6">Ошибка при загрузке данных</td></tr>';
             });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('employeeReportBody').innerHTML = '<tr><td colspan="6">Ошибка при загрузке данных</td></tr>';
         });
-    }
-
-    document.getElementById('reportForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        updateReport();
     });
 </script>
