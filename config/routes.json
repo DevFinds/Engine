@@ -458,7 +458,19 @@
                 "Source\\Middleware\\AuthMiddleware"
             ],
             "access_level": 2
-        }
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/reports/export",
+            "action": {
+                "controller": "Source\\Controllers\\ReportsController",
+                "method": "exportReport"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+                "access_level": 2
+            }
         
         
         

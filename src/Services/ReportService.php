@@ -1,4 +1,5 @@
 <?php
+
 namespace Source\Services;
 
 use Core\Database\DatabaseInterface;
@@ -15,32 +16,35 @@ class ReportService
         $endDate = $filters['end_date'] ?? null;
 
         $query = "
-            SELECT 
-                check_items.name AS product_name,
-                check_items.quantity AS quantity,
-                check_items.price AS price,
-                check_items.total AS total,
-                users.username AS employee_name,
-                checks.date AS sale_date
-            FROM checks
-            JOIN check_items ON checks.id = check_items.check_id
-            JOIN users ON checks.operator_name = users.username
-            JOIN Product ON check_items.name = Product.name
-            WHERE checks.report_type = 'product'
-        ";
+        SELECT 
+            ci.name          AS product_name,
+            ci.quantity      AS quantity,
+            ci.price         AS price,
+            ci.total         AS total,
+            u.username       AS employee_name,
+            c.date           AS sale_date
+        FROM checks AS c
+        JOIN check_items AS ci 
+          ON ci.check_id = c.id
+        JOIN users AS u 
+          ON c.operator_name COLLATE utf8mb4_unicode_ci = u.username COLLATE utf8mb4_unicode_ci
+        JOIN Product AS p 
+          ON ci.name COLLATE utf8mb4_unicode_ci = p.name COLLATE utf8mb4_unicode_ci
+        WHERE c.report_type = 'product'
+    ";
 
         $params = [];
-        if ($productId) {
-            $query .= " AND Product.id = :product_id";
-            $params['product_id'] = $productId;
+        if ($filters['product_id'] ?? null) {
+            $query   .= " AND p.id = :product_id";
+            $params['product_id'] = $filters['product_id'];
         }
-        if ($startDate && $endDate) {
-            $query .= " AND checks.date BETWEEN :start_date AND :end_date";
-            $params['start_date'] = $startDate;
-            $params['end_date'] = $endDate;
+        if (($filters['start_date'] ?? null) && ($filters['end_date'] ?? null)) {
+            $query   .= " AND c.date BETWEEN :start_date AND :end_date";
+            $params['start_date'] = $filters['start_date'];
+            $params['end_date']   = $filters['end_date'];
         }
 
-        $query .= " ORDER BY checks.date DESC";
+        $query .= " ORDER BY c.date DESC";
 
         try {
             $reports = $this->db->query($query, $params);

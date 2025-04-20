@@ -32,7 +32,7 @@
 
                     <div class="create-report-container" id="createReport">
                         <div class="financial-accounting-first__create">
-                            <form class="financial-accounting-first__create-forms" id="reportForm">
+                            <form class="financial-accounting-first__create-forms" id="reportForm" method="POST" action="/admin/dashboard/reports/getReport">
                                 <ul class="financial-accounting-first__create-first-column">
                                     <li>
                                         <select class="financial-accounting-first__create-select" name="report_type">
@@ -62,6 +62,26 @@
                                     <button type="button" class="financial-accounting-first__button-clear" onclick="clearForm()">Очистить</button>
                                 </div>
                             </form>
+                            <?php if (!empty($productReports)): ?>
+                                <form action="/admin/dashboard/reports/export" method="POST" id="exportForm" style="margin-top:1em;">
+                                    <!-- Заполняем скрытые поля теми же фильтрами -->
+                                    <input type="hidden" name="product_id" value="<?= htmlspecialchars($selectedProductId) ?>">
+                                    <input type="hidden" name="start_date" value="<?= htmlspecialchars($selectedStartDate) ?>">
+                                    <input type="hidden" name="end_date" value="<?= htmlspecialchars($selectedEndDate) ?>">
+                                    <button type="submit" class="financial-accounting-first__button-export">
+                                        Экспортировать в Excel
+                                    </button>
+                                </form>
+                            <?php endif; ?>
+
+                            <form action="/admin/dashboard/reports/export" method="POST">
+                                <input type="hidden" name="product_id" value="<?= htmlspecialchars($selectedProductId) ?>">
+                                <input type="hidden" name="start_date" value="<?= htmlspecialchars($selectedStartDate) ?>">
+                                <input type="hidden" name="end_date" value="<?= htmlspecialchars($selectedEndDate) ?>">
+                                <button type="submit">
+                                    Тест Excel
+                                </button>
+                            </form>
                         </div>
                     </div>
 
@@ -81,45 +101,36 @@
                                 </thead>
                                 <tbody id="productReportBody">
 
-                                    <?php foreach ($productReports as $productReport): ?>
-                                        <tr>
-                                            <td><?= $productReport['name'] ?></td>
-                                            <td><?= $productReport['quantity'] ?></td>
-                                            <td><?= $productReport['price'] ?></td>
-                                            <td><?= $productReport['total'] ?></td>
-                                            <td><?= $productReport['first_name'] . ' ' . $productReport['last_name'] . ' ' . $productReport['middle_name'] ?></td>
-                                            <td><?= $productReport['date'] ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
+                                    <?php
 
-                                    <tr>
-                                        <td colspan="6">Выберите параметры и нажмите "Сформировать" для отображения отчета</td>
-                                    </tr>
+                                    if (empty($productReports)) {
+                                    ?>
+                                        <tr>
+                                            <td colspan="6">Выберите параметры и нажмите "Сформировать" для отображения отчета</td>
+                                        </tr>
+                                        <?php
+                                    } else {
+                                        foreach ($productReports as $productReport) {
+                                        ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($productReport['product_name']) ?></td>
+                                                <td><?= htmlspecialchars($productReport['quantity']) ?></td>
+                                                <td><?= htmlspecialchars($productReport['price']) ?></td>
+                                                <td><?= htmlspecialchars($productReport['total']) ?></td>
+                                                <td><?= htmlspecialchars($productReport['employee_name']) ?></td>
+                                                <td><?= htmlspecialchars($productReport['sale_date']) ?></td>
+                                            </tr>
+                                    <?php
+                                        }
+                                    }
+                                    ?>
+
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
 
-
-                <div>
-                    <h1>Финансовый отчёт</h1>
-                    <table border="1">
-                        <tr>
-                            <th>Account</th>
-                            <th>Amount</th>
-                        </tr>
-                        <?php foreach ($data as $row): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($row['account']) ?></td>
-                                <td><?= number_format($row['amount'], 0, '.', ' ') ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </table>
-                    <form method="post" action="/admin/dashboard/reports/generate-financial-report">
-                        <button type="submit" name="export">Сгенерировать Excel</button>
-                    </form>
-                </div>
 
 
 
@@ -179,8 +190,6 @@
         </div>
     </div>
 </div>
-
-
 
 
 
