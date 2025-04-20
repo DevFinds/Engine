@@ -1,6 +1,4 @@
 <?php
-
-
 namespace Source\Services;
 
 use Core\Database\DatabaseInterface;
@@ -8,11 +6,9 @@ use Source\Models\Product;
 
 class ProductService
 {
-	public function __construct(
+    public function __construct(
         private DatabaseInterface $database
-    )
-    {
-
+    ) {
     }
 
     public function getAllFromDB(int $warehouse_id): array

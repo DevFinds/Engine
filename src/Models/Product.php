@@ -1,5 +1,4 @@
 <?php
-
 namespace Source\Models;
 
 class Product
@@ -14,7 +13,8 @@ class Product
         private $warehouse_id,
         private $created_at,
         private $description,
-        private $amount) {
+        private $amount
+    ) {
     }
 
     public function id()
