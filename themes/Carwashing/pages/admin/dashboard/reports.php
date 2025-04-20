@@ -71,7 +71,7 @@ $employees = $data['employees'];
                     <div class="financial-accounting-first__list-container">
                         <label class="financial-accounting-first__list-label">Создан отчет</label></label>
                         <div class="financial-accounting-first__list">
-                        <table id="employeeReportTable">
+                            <table id="employeeReportTable">
                                 <thead>
                                     <tr>
                                         <th>Сотрудник</th>
@@ -104,6 +104,29 @@ $employees = $data['employees'];
                         </div>
                     </div>
                 </div>
+
+
+                <div>
+                    <h1>Финансовый отчёт</h1>
+                    <table border="1">
+                        <tr>
+                            <th>Account</th>
+                            <th>Amount</th>
+                        </tr>
+                        <?php foreach ($data as $row): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($row['account']) ?></td>
+                                <td><?= number_format($row['amount'], 0, '.', ' ') ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </table>
+                    <form method="post" action="/admin/dashboard/reports/generate-financial-report">
+                        <button type="submit" name="export">Сгенерировать Excel</button>
+                    </form>
+                </div>
+
+
+
             </div>
             <div class="tab-content" id="reportsContainer">
                 <div class="reports-tab-container">
@@ -201,6 +224,11 @@ $employees = $data['employees'];
     </div>
 </div>
 
+
+
+
+
+
 <?php $render->component('dashboard_footer'); ?>
 <script>
     function switchTab(tabId) {
@@ -223,22 +251,22 @@ $employees = $data['employees'];
         const form = document.getElementById('reportForm');
         const formData = new FormData(form);
         fetch('/admin/dashboard/reports/get', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            const tbody = document.getElementById('employeeReportBody');
-            tbody.innerHTML = '';
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('employeeReportBody');
+                tbody.innerHTML = '';
 
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6">Нет данных для отображения</td></tr>';
-                return;
-            }
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6">Нет данных для отображения</td></tr>';
+                    return;
+                }
 
-            data.forEach(report => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
+                data.forEach(report => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
                     <td>${report.employee_name ?? 'Не указано'}</td>
                     <td>${report.total_hours ?? 0}</td>
                     <td>${report.total_services ?? 0}</td>
@@ -246,13 +274,13 @@ $employees = $data['employees'];
                     <td>${(report.avg_service_price ?? 0).toFixed(2)} ₽</td>
                     <td>${(report.avg_hours_per_day ?? 0).toFixed(2)}</td>
                 `;
-                tbody.appendChild(row);
+                    tbody.appendChild(row);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('employeeReportBody').innerHTML = '<tr><td colspan="6">Ошибка при загрузке данных</td></tr>';
             });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            document.getElementById('employeeReportBody').innerHTML = '<tr><td colspan="6">Ошибка при загрузке данных</td></tr>';
-        });
     }
 
     document.getElementById('reportForm').addEventListener('submit', function(e) {

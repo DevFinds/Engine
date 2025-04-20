@@ -446,6 +446,19 @@
                 "check_id": "[0-9]+"
             },
             "access_level": 2
+        },
+
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/reports/generate-financial-report",
+            "action": {
+                "controller": "Source\\Controllers\\ReportsController",
+                "method": "generateFinancialReport"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 2
         }
         
         
