@@ -22,7 +22,7 @@ class ReportsController extends Controller
 
         $this->render('/admin/dashboard/reports', [
             'employees' => $employees,
-'products' => $products,
+            'products' => $products,
             'productReports' => [],
         ]);
     }
@@ -38,8 +38,6 @@ class ReportsController extends Controller
                 'end_date' => $_POST['end_date'] ?? null,
             ];
 
-            error_log('Filters: ' . print_r($filters, true));
-
             $productReports = $reportService->generateProductReport($filters);
 
             $reports = array_map(function ($report) {
@@ -53,14 +51,23 @@ class ReportsController extends Controller
                 ];
             }, $productReports);
 
-            error_log('Reports: ' . print_r($reports, true));
-            
-            return json_encode($reports);
-        } catch (\Exception $e) {
-            error_log('Error in getReport: ' . $e->getMessage());
-            header('Content-Type: application/json');
-            echo json_encode(['error' => 'Ошибка сервера: ' . $e->getMessage()]);
+
+            $employeeService = new EmployeeService($this->getDatabase());
+            $productService = new ProductService($this->getDatabase());
+
+            $employees = $employeeService->getAllFromDB();
+            $products = $productService->getAllFromDBAllSuppliers();
+
+            $this->render('/admin/dashboard/reports', [
+                'employees' => $employees,
+                'products' => $products,
+                'productReports' => $reports
+            ]);
+
+
+        } 
+        catch (\Exception $e) {
+            $this->redirect('404');
         }
-        
     }
 }

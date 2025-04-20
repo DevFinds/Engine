@@ -7,7 +7,6 @@ class Product
     public function __construct(
         private $id,
         private $name,
-        private $category,
         private $unit_measurement,
         private $purchase_price,
         private $sale_price,
@@ -26,11 +25,6 @@ class Product
     public function name()
     {
         return $this->name;
-    }
-
-    public function category()
-    {
-        return $this->category;
     }
 
     public function unit_measurement()

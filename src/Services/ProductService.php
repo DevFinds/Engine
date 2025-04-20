@@ -22,7 +22,6 @@ class ProductService
         new Product(
             $product['id'],
             $product['name'],
-            $product['category'],
             $product['unit_measurement'],
             $product['purchase_price'],
             $product['sale_price'],
@@ -44,7 +43,6 @@ class ProductService
         new Product(
             $product['id'],
             $product['name'],
-            $product['category'],
             $product['unit_measurement'],
             $product['purchase_price'],
             $product['sale_price'],
