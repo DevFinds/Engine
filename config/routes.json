@@ -446,6 +446,18 @@
                 "check_id": "[0-9]+"
             },
             "access_level": 2
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/reports/getReport",
+            "action": {
+                "controller": "Source\\Controllers\\ReportsController",
+                "method": "getReport"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 2
         }
         
         
