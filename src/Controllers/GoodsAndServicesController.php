@@ -23,6 +23,7 @@ class GoodsAndServicesController extends Controller
         $warehouse_service = new WarehouseService($this->getDatabase());
         $product_service = new ProductService($this->getDatabase());
         $service_service = new ServiceService($this->getDatabase());
+        
 
 
         $field_error_event = $this->FieldErrorEventDispath('error', 'error', 'error');
@@ -74,6 +75,7 @@ class GoodsAndServicesController extends Controller
             'name' => $this->request()->input('name'),
             'warehouse_id' => $this->request()->input('warehouse_id')
         ]);
+
 
         if ($existingProduct) {
             $this->getDatabase()->update('Product', [
@@ -389,6 +391,73 @@ class GoodsAndServicesController extends Controller
                 $this->session()->set('error', 'Ошибка добавления позиции в чек: ' . $e->getMessage());
                 throw $e;
             }
+        }
+    }
+
+    public function moveProducts()
+    {
+        $input = json_decode(file_get_contents('php://input'), true);
+        if (!$input || !isset($input['source_warehouse_id'], $input['destination_warehouse_id'], $input['products'])) {
+            echo json_encode(['success' => false, 'message' => 'Неверные данные запроса']);
+            return;
+        }
+        $source_warehouse_id = $input['source_warehouse_id'];
+        $destination_warehouse_id = $input['destination_warehouse_id'];
+        $products = $input['products'];
+
+        try {
+            $this->getDatabase()->beginTransaction(); // Начать транзакцию
+
+            foreach ($products as $product) {
+                $product_id = $product['product_id'];
+                $quantity = $product['quantity'];
+
+                $source_product = $this->getDatabase()->first_found_in_db('Product', [
+                    'id' => $product_id,
+                    'warehouse_id' => $source_warehouse_id
+                ]);
+
+                if (!$source_product) {
+                    throw new Exception("Товар с ID $product_id не найден на исходном складе");
+                }
+
+                if ($source_product['amount'] < $quantity) {
+                    throw new Exception("Недостаточно товара '{$source_product['name']}' на складе");
+                }
+
+                $this->getDatabase()->update('Product', [
+                    'amount' => $source_product['amount'] - $quantity
+                ], ['id' => $product_id]);
+
+                $existing_product = $this->getDatabase()->first_found_in_db('Product', [
+                    'name' => $source_product['name'],
+                    'warehouse_id' => $destination_warehouse_id
+                ]);
+
+                if ($existing_product) {
+                    $this->getDatabase()->update('Product', [
+                        'amount' => $existing_product['amount'] + $quantity
+                    ], ['id' => $existing_product['id']]);
+                } else {
+                    $this->getDatabase()->insert('Product', [
+                        'name' => $source_product['name'],
+                        'amount' => $quantity,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'unit_measurement' => $source_product['unit_measurement'],
+                        'purchase_price' => $source_product['purchase_price'],
+                        'sale_price' => $source_product['sale_price'],
+                        'supplier_id' => $source_product['supplier_id'],
+                        'warehouse_id' => $destination_warehouse_id,
+                        'description' => $source_product['description']
+                    ]);
+                }
+            }
+
+            $this->getDatabase()->commit(); // Подтвердить транзакцию
+            echo json_encode(['success' => true]);
+        } catch (Exception $e) {
+            $this->getDatabase()->rollBack(); // Откатить транзакцию при ошибке
+            echo json_encode(['success' => false, 'message' => 'Ошибка при перемещении товаров: ' . $e->getMessage()]);
         }
     }
 }

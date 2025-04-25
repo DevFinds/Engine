@@ -470,8 +470,19 @@
                 "Source\\Middleware\\AuthMiddleware"
             ],
                 "access_level": 2
-            }
-        
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/goods_and_services/moveProducts",
+            "action": {
+                "controller": "Source\\Controllers\\GoodsAndServicesController",
+                "method": "moveProducts"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 2
+        }
         
         
 ]

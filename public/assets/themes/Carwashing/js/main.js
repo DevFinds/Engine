@@ -107,21 +107,82 @@ document.addEventListener('DOMContentLoaded', () => {
     confirmMoveButton.addEventListener('click', () => {
         const updatedItems = [];
         const inputs = selectedItemsList.querySelectorAll('input');
-
+    
+        console.log('Updated Items (before):', updatedItems); // Проверяем, какие товары выбраны (пустой массив)
+    
         inputs.forEach(input => {
             const itemId = input.getAttribute('data-id');
-            const newAmount = input.value;
-
+            const newAmount = parseInt(input.value); // Используем parseInt для преобразования в число
             const item = selectedItems[currentTab].find(i => i.id === itemId);
-            if (item) {
+            if (item && newAmount > 0) {
                 updatedItems.push({ ...item, newAmount });
             }
         });
-
+    
         console.log('Перемещаемые товары:', updatedItems);
-        popup.classList.add('hidden');
+    
+        if (updatedItems.length === 0) {
+            alert('Выберите товары и укажите корректное количество.');
+            popup.classList.add('hidden');
+            return;
+        }
+    
+        // Определяем исходный и целевой склады
+        let source_warehouse_id;
+        if (currentTab === 'warehouseOOO') {
+            source_warehouse_id = 1; // ООО
+        } else if (currentTab === 'warehouseIP') {
+            source_warehouse_id = 2; // ИП
+        }
+        const destination_warehouse_id = source_warehouse_id === 1 ? 2 : 1;
+    
+        // Формируем данные для отправки
+        const productsToMove = updatedItems.map(item => ({
+            product_id: item.id,
+            quantity: item.newAmount
+        }));
+    
+        console.log('Data to send:', {
+            source_warehouse_id,
+            destination_warehouse_id,
+            products: productsToMove
+        }); // Проверяем данные перед отправкой
+    
+        // Отправляем AJAX-запрос
+        fetch('/admin/dashboard/goods_and_services/moveProducts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                source_warehouse_id,
+                destination_warehouse_id,
+                products: productsToMove
+            })
+        })
+    
+    
+        .then(response => {
+            console.log('Response status:', response.status); // Проверяем статус ответа
+            return response.json();
+        })
+        .then(data => {
+            console.log('Server response:', data); // Проверяем ответ сервера
+            if (data.success) {
+                alert('Товары успешно перемещены');
+                popup.classList.add('hidden');
+                location.reload();
+            } else {
+                alert('Ошибка при перемещении товаров: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error); // Ловим ошибки AJAX
+            alert('Произошла ошибка при перемещении товаров');
+        });
     });
 });
+
 
 
 
