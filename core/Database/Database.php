@@ -267,4 +267,23 @@ class Database implements DatabaseInterface
             return [];
         }
     }
+
+    public function delete(string $table, array $conditions): bool
+    {
+        if (empty($conditions)) {
+            throw new Exception("Условия для удаления обязательны");
+        }
+
+        // Формируем часть WHERE из условий
+        $where = implode(' AND ', array_map(fn($field) => "$field = :$field", array_keys($conditions)));
+        $sql = "DELETE FROM $table WHERE $where";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($conditions);
+            return true;
+        } catch (PDOException $e) {
+            throw new Exception("Ошибка удаления из таблицы: " . $e->getMessage());
+        }
+    }
 }

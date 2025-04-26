@@ -1780,6 +1780,16 @@ input[type="text"]:focus,
   z-index: 1000;
   color: white;
 }
+#warehouse-delete-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #2d2f3a;
+  padding: 20px;
+  border-radius: 8px;
+  z-index: 1001;
+}
 .warehouse-popup-content {
   display: flex;
   flex-direction: column;

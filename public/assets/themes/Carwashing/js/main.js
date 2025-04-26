@@ -28,26 +28,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    const moveButtons = document.querySelectorAll('.warehouse-button'); // Получаем все кнопки "Переместить"
-    const popup = document.getElementById('warehouse-move-popup');
+    // Элементы для перемещения
+    const moveButtons = document.querySelectorAll('.move-button');
+    const movePopup = document.getElementById('warehouse-move-popup');
     const selectedItemsList = document.getElementById('warehouse-selected-items');
-    const closePopupButton = document.getElementById('warehouse-close-popup');
+    const closeMovePopupButton = document.getElementById('warehouse-close-popup');
     const confirmMoveButton = document.getElementById('warehouse-confirm-move');
-    const tabs = document.querySelectorAll('.tab'); // Все вкладки
 
-    let selectedItems = {}; // Хранить выбранные товары по вкладкам
-    let currentTab = 'warehouseOOO'; // По умолчанию первая вкладка
+    // Элементы для удаления
+    const deleteButtons = document.querySelectorAll('.delete-button');
+    const deletePopup = document.getElementById('warehouse-delete-popup');
+    const deleteItemsList = document.getElementById('warehouse-delete-items');
+    const confirmDeleteButton = document.getElementById('warehouse-confirm-delete');
+    const cancelDeleteButton = document.getElementById('warehouse-cancel-delete');
 
-    // Установить начальную структуру для хранения товаров
+    const tabs = document.querySelectorAll('.tab');
+    let selectedItems = {};
+    let currentTab = 'warehouseOOO';
+
+    console.log('Найдено кнопок удаления:', deleteButtons.length); // Проверка кнопок
+
+    // Инициализация структуры для хранения товаров
     tabs.forEach(tab => {
         const tabName = tab.getAttribute('data-tab');
         selectedItems[tabName] = [];
     });
 
-    // Обновить текущую вкладку при переключении
+    // Обновление текущей вкладки
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             currentTab = tab.getAttribute('data-tab');
+            console.log('Текущая вкладка:', currentTab);
         });
     });
 
@@ -57,29 +68,30 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = event.target.closest('tr');
             if (!row) return;
 
-            const rowId = row.querySelector('td:first-child').innerText; // ID товара
-            const rowName = row.querySelector('td:nth-child(2)').innerText; // Имя товара
-            const rowAmount = row.querySelector('td:nth-child(3)').innerText; // Количество
+            const rowId = row.querySelector('td:first-child').innerText;
+            const rowName = row.querySelector('td:nth-child(2)').innerText;
+            const rowAmount = row.querySelector('td:nth-child(3)').innerText;
 
-            const tabItems = selectedItems[currentTab]; // Товары текущей вкладки
+            const tabItems = selectedItems[currentTab];
 
-            // Если строка уже выбрана
             if (row.classList.contains('selected')) {
-                row.classList.remove('selected'); // Убираем подсветку
+                row.classList.remove('selected');
                 selectedItems[currentTab] = tabItems.filter(item => item.id !== rowId);
             } else {
-                // Добавляем подсветку
                 row.classList.add('selected');
                 tabItems.push({ id: rowId, name: rowName, amount: rowAmount });
             }
+
+            console.log('Выбранные товары:', selectedItems[currentTab]);
         });
     });
 
-    // Показать попап с выбранными товарами
+    // Обработчик для кнопок перемещения
     moveButtons.forEach(button => {
         button.addEventListener('click', () => {
-            selectedItemsList.innerHTML = ''; // Очистить предыдущие данные
-            const tabItems = selectedItems[currentTab]; // Только товары текущей вкладки
+            console.log('Кнопка перемещения нажата');
+            selectedItemsList.innerHTML = '';
+            const tabItems = selectedItems[currentTab];
 
             tabItems.forEach(item => {
                 const listItem = document.createElement('li');
@@ -91,94 +103,127 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             if (tabItems.length > 0) {
-                popup.classList.remove('hidden');
+                movePopup.classList.remove('hidden');
             } else {
                 alert('Выберите товары для перемещения.');
             }
         });
     });
 
-    // Закрыть попап
-    closePopupButton.addEventListener('click', () => {
-        popup.classList.add('hidden');
+    // Закрытие попапа перемещения
+    closeMovePopupButton.addEventListener('click', () => {
+        movePopup.classList.add('hidden');
     });
 
-    // Подтвердить перемещение
+    // Подтверждение перемещения
     confirmMoveButton.addEventListener('click', () => {
         const updatedItems = [];
         const inputs = selectedItemsList.querySelectorAll('input');
-    
-        console.log('Updated Items (before):', updatedItems); // Проверяем, какие товары выбраны (пустой массив)
-    
+
         inputs.forEach(input => {
             const itemId = input.getAttribute('data-id');
-            const newAmount = parseInt(input.value); // Используем parseInt для преобразования в число
+            const newAmount = parseInt(input.value);
             const item = selectedItems[currentTab].find(i => i.id === itemId);
             if (item && newAmount > 0) {
                 updatedItems.push({ ...item, newAmount });
             }
         });
-    
-        console.log('Перемещаемые товары:', updatedItems);
-    
+
         if (updatedItems.length === 0) {
             alert('Выберите товары и укажите корректное количество.');
-            popup.classList.add('hidden');
+            movePopup.classList.add('hidden');
             return;
         }
-    
-        // Определяем исходный и целевой склады
-        let source_warehouse_id;
-        if (currentTab === 'warehouseOOO') {
-            source_warehouse_id = 1; // ООО
-        } else if (currentTab === 'warehouseIP') {
-            source_warehouse_id = 2; // ИП
-        }
+
+        const source_warehouse_id = currentTab === 'warehouseOOO' ? 1 : 2;
         const destination_warehouse_id = source_warehouse_id === 1 ? 2 : 1;
-    
-        // Формируем данные для отправки
+
         const productsToMove = updatedItems.map(item => ({
             product_id: item.id,
             quantity: item.newAmount
         }));
-    
-        console.log('Data to send:', {
-            source_warehouse_id,
-            destination_warehouse_id,
-            products: productsToMove
-        }); // Проверяем данные перед отправкой
-    
-        // Отправляем AJAX-запрос
+
         fetch('/admin/dashboard/goods_and_services/moveProducts', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 source_warehouse_id,
                 destination_warehouse_id,
                 products: productsToMove
             })
         })
-    
-    
-        .then(response => {
-            console.log('Response status:', response.status); // Проверяем статус ответа
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log('Server response:', data); // Проверяем ответ сервера
             if (data.success) {
                 alert('Товары успешно перемещены');
-                popup.classList.add('hidden');
+                movePopup.classList.add('hidden');
                 location.reload();
             } else {
                 alert('Ошибка при перемещении товаров: ' + data.message);
             }
         })
         .catch(error => {
-            console.error('Fetch error:', error); // Ловим ошибки AJAX
+            console.error('Fetch error:', error);
             alert('Произошла ошибка при перемещении товаров');
+        });
+    });
+
+    // Обработчик для кнопок удаления
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            console.log('Кнопка удаления нажата');
+            deleteItemsList.innerHTML = '';
+            const tabItems = selectedItems[currentTab];
+
+
+            tabItems.forEach(item => {
+                const listItem = document.createElement('li');
+                listItem.textContent = item.name;
+                deleteItemsList.appendChild(listItem);
+            });
+
+            console.log('Попап удаления должен открыться');
+            if (tabItems.length > 0) {
+                deletePopup.classList.remove('hidden');
+            } else {
+                alert('Выберите товары для удаления.');
+            }
+        });
+    });
+
+    // Закрытие попапа удаления
+    cancelDeleteButton.addEventListener('click', () => {
+        console.log('Отмена удаления нажата');
+        deletePopup.classList.add('hidden');
+    });
+
+    // Подтверждение удаления
+    confirmDeleteButton.addEventListener('click', () => {
+        console.log('Подтверждение удаления нажато');
+        const tabItems = selectedItems[currentTab];
+        const productIds = tabItems.map(item => item.id);
+
+        fetch('/admin/dashboard/goods_and_services/deleteProducts', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                product_ids: productIds,
+                warehouse_id: currentTab === 'warehouseOOO' ? 1 : 2
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Товары успешно удалены');
+                deletePopup.classList.add('hidden');
+                location.reload();
+            } else {
+                alert('Ошибка при удалении товаров: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Fetch error:', error);
+            alert('Произошла ошибка при удалении товаров');
         });
     });
 });

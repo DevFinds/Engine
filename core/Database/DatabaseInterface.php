@@ -23,4 +23,5 @@ interface DatabaseInterface
     public function commit(): void;
     public function rollBack(): void;
     public function query(string $sql, array $params = []): array;
+    public function delete(string $table, array $conditions): bool;
 }

@@ -473,10 +473,34 @@
         },
         {
             "method": "POST",
-            "uri": "/admin/dashboard/goods_and_services/moveProducts",
+            "uri": "/admin/dashboard/storage_accounting/moveProducts",
             "action": {
-                "controller": "Source\\Controllers\\GoodsAndServicesController",
+                "controller": "Source\\Controllers\\StorageAccountingController",
                 "method": "moveProducts"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 2
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/storage_accounting/deleteProducts",
+            "action": {
+                "controller": "Source\\Controllers\\StorageAccountingController",
+                "method": "deleteProducts"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 2
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/storage_accounting/addIncome",
+            "action": {
+                "controller": "Source\\Controllers\\StorageAccountingController",
+                "method": "addIncome"
             },
             "middlewares": [
                 "Source\\Middleware\\AuthMiddleware"

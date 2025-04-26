@@ -67,7 +67,8 @@ $suppliers = $data['suppliers']->getAllFromDB();
                                 </div>
                             </li>
                             <div class="warehouse-move-label"><label>Переместить из склада</label></div>
-                            <button class="warehouse-button">Переместить на склад ИП</button>
+                            <button class="warehouse-button move-button">Переместить на склад ИП</button>
+                            <button class="warehouse-button delete-button">Удалить выбранные товары</button>
                         </ul>
 
 
@@ -76,24 +77,25 @@ $suppliers = $data['suppliers']->getAllFromDB();
                         <ul class="warehouse-second-column">
                             <li class="warehouse-income-form-container">
                                 <label class="warehouse-form-label">Поступление товара на склад ООО</label>
-                                <form action="" class="warehouse-income-form">
-                                    <select class="warehouse-form-select">
+                                <form action="/admin/dashboard/storage_accounting/addIncome" method="POST" class="warehouse-income-form">
+                                    <select name="supplier_id" class="warehouse-form-select" required>
                                         <option disabled selected>Поставщик</option>
                                         <?php foreach ($suppliers as $supplier) : ?>
                                             <option value="<?= $supplier->id() ?>"><?= $supplier->name() ?></option>
                                         <?php endforeach; ?>
                                     </select>
-                                    <select class="warehouse-form-select">
+                                    <select name="product_id" class="warehouse-form-select" required>
                                         <option disabled selected>Товар</option>
                                         <?php foreach ($products_OOO as $product_array => $product) : ?>
-                                            <option value="<?php echo $product['id']; ?>"> <?php echo $product['name']; ?></option>
+                                            <option value="<?php echo $product['id']; ?>"><?php echo $product['name']; ?></option>
                                         <?php endforeach; ?>
                                     </select>
-                                    <input type="number" placeholder="Количество">
-                                    <input type="date">
+                                    <input type="number" name="amount" placeholder="Количество" min="1" required>
+                                    <input type="date" name="created_at" value="<?php echo date('Y-m-d'); ?>" required>
+                                    <input type="hidden" name="warehouse_id" value="1"> <!-- Склад ООО -->
                                     <div class="warehouse-form-button-container">
                                         <button type="submit" class="warehouse-form-button">Сохранить</button>
-                                        <button type="button" class="warehouse-form-button cancel">Отменить</button>
+                                        <button type="reset" class="warehouse-form-button cancel">Отменить</button>
                                     </div>
                                 </form>
                             </li>
@@ -131,30 +133,32 @@ $suppliers = $data['suppliers']->getAllFromDB();
                                 </div>
                             </li>
                             <div class="warehouse-move-label"><label>Переместить из склада</label></div>
-                            <button class="warehouse-button">Переместить на склад ООО</button>
+                            <button class="warehouse-button move-button">Переместить на склад ООО</button>
+                            <button class="warehouse-button delete-button">Удалить выбранные товары</button>
                         </ul>
 
                         <ul class="warehouse-second-column">
                             <li class="warehouse-income-form-container">
                                 <label class="warehouse-form-label">Поступление товара на склад ИП</label>
-                                <form action="" class="warehouse-income-form">
-                                    <select class="warehouse-form-select">
+                                <form action="/admin/dashboard/storage_accounting/addIncome" method="POST" class="warehouse-income-form">
+                                    <select name="supplier_id" class="warehouse-form-select" required>
                                         <option disabled selected>Поставщик</option>
                                         <?php foreach ($suppliers as $supplier) : ?>
                                             <option value="<?= $supplier->id() ?>"><?= $supplier->name() ?></option>
                                         <?php endforeach; ?>
                                     </select>
-                                    <select class="warehouse-form-select">
+                                    <select name="product_id" class="warehouse-form-select" required>
                                         <option disabled selected>Товар</option>
                                         <?php foreach ($products_IP as $product_array => $product) : ?>
-                                            <option value="<?php echo $product['id']; ?>"> <?php echo $product['name']; ?></option>
+                                            <option value="<?php echo $product['id']; ?>"><?php echo $product['name']; ?></option>
                                         <?php endforeach; ?>
                                     </select>
-                                    <input type="number" placeholder="Количество">
-                                    <input type="date">
+                                    <input type="number" name="amount" placeholder="Количество" min="1" required>
+                                    <input type="date" name="created_at" value="<?php echo date('Y-m-d'); ?>" required>
+                                    <input type="hidden" name="warehouse_id" value="2"> <!-- Склад ИП -->
                                     <div class="warehouse-form-button-container">
                                         <button type="submit" class="warehouse-form-button">Сохранить</button>
-                                        <button type="button" class="warehouse-form-button cancel">Отменить</button>
+                                        <button type="reset" class="warehouse-form-button cancel">Отменить</button>
                                     </div>
                                 </form>
                             </li>
@@ -163,7 +167,8 @@ $suppliers = $data['suppliers']->getAllFromDB();
                     </div>
                 </div>
             </div>
-        </div>
+       <!-- Попап для перемещения -->    
+       </div>
             <div id="warehouse-move-popup" class="hidden">
             <div class="warehouse-popup-content">
             <h3>Перемещение товаров</h3>
@@ -172,7 +177,18 @@ $suppliers = $data['suppliers']->getAllFromDB();
                 </ul>
             <button id="warehouse-confirm-move">Подтвердить</button>
             <button id="warehouse-close-popup">Закрыть</button>
+            </div>
         </div>
+        <!-- Попап для удаления -->
+        <div id="warehouse-delete-popup" class="hidden">
+        <div class="warehouse-popup-content">
+            <h3>Подтверждение удаления</h3>
+            <p>Вы точно хотите удалить следующие товары?</p>
+            <ul id="warehouse-delete-items"></ul>
+            <button id="warehouse-confirm-delete">Да, удалить</button>
+            <button id="warehouse-cancel-delete">Отмена</button>
+        </div> 
+</div>
 </div>
     </div>
 </div>
