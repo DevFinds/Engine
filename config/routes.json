@@ -473,7 +473,7 @@
         },
         {
             "method": "POST",
-            "uri": "/admin/dashboard/storage_accounting/moveProducts",
+            "uri": "/admin/dashboard/goods_and_services/moveProducts",
             "action": {
                 "controller": "Source\\Controllers\\StorageAccountingController",
                 "method": "moveProducts"
@@ -485,7 +485,7 @@
         },
         {
             "method": "POST",
-            "uri": "/admin/dashboard/storage_accounting/deleteProducts",
+            "uri": "/admin/dashboard/goods_and_services/deleteProducts",
             "action": {
                 "controller": "Source\\Controllers\\StorageAccountingController",
                 "method": "deleteProducts"
