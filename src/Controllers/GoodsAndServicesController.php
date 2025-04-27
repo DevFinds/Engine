@@ -11,6 +11,7 @@ use Source\Services\ProductService;
 use Source\Services\ServiceService;
 use Source\Services\WarehouseService;
 use Source\Services\CompanyTypeService;
+use Source\Services\SupplierService;
 
 class GoodsAndServicesController extends Controller
 {
@@ -20,6 +21,7 @@ class GoodsAndServicesController extends Controller
 
         $company_service = new CompanyService($this->getDatabase());
         $company_type_service = new CompanyTypeService($this->getDatabase());
+        $suppliers_service = new SupplierService($this->getDatabase());
         $warehouse_service = new WarehouseService($this->getDatabase());
         $product_service = new ProductService($this->getDatabase());
         $service_service = new ServiceService($this->getDatabase());
@@ -35,7 +37,8 @@ class GoodsAndServicesController extends Controller
             'company_type_service' => $company_type_service,
             'warehouse_service' => $warehouse_service,
             'product_service' => $product_service,
-            'service_service' => $service_service
+            'service_service' => $service_service,
+            'suppliers_service' => $suppliers_service
         ]);
     }
 

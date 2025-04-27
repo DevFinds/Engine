@@ -11,6 +11,9 @@
 $company_service = $data['company_service'];
 $suppliers = $company_service->getCompanyByType(2);
 
+$suppliers_service = $data['suppliers_service'];
+$suppliers = $suppliers_service->getAllFromDB();
+
 // Склады
 $warehouse_service = $data['warehouse_service'];
 $warehouses = $warehouse_service->getAllFromDB();
@@ -83,12 +86,12 @@ $user = $this->auth->getUser();
                             <label for="" class="goods-form-information-label">Информация о поставщике</label>
                             <div class="goods-form-information-selects">
                                 <li>
-                                    <select class="goods-form-provider-select" name="supplier_id">
-                                        <option disabled selected>Поставщик</option>
-                                        <?php foreach ($suppliers as $supplier => $supplierData) : ?>
-                                            <option value="<?php echo $supplierData['id'] ?>"><?= $supplierData['name'] ?></option>
-                                        <?php endforeach; ?>
-                                    </select>
+                                <select class="goods-form-provider-select" name="supplier_id">
+                                    <option disabled selected>Поставщик</option>
+                                    <?php foreach ($suppliers as $supplier) : ?>
+                                        <option value="<?php echo $supplier->id(); ?>"><?= $supplier->name(); ?></option>
+                                    <?php endforeach; ?>
+                                </select>
                                 </li>
                                 <li>
                                     <select class="goods-form-storage-select" name="warehouse_id">

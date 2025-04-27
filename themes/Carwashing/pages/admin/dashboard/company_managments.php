@@ -6,13 +6,16 @@
  * @var \Core\Auth\AuthInterface $auth
  * @var \Source\Models\Company $company
  * @var \Source\Models\CompanyType $company_type
+ * @var \Source\Models\Supplier $supplier
  */
 
 use Source\Models\Company;
+use Source\Models\Supplier;
 
 $user = $this->auth->getUser();
 $companies = $data['companies'];
 $company_types = $data['company_types'];
+
 
 $employees_service  = $data['employees_service'];
 $employees = $employees_service->getAllFromDB();

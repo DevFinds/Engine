@@ -147,7 +147,7 @@ class StorageAccountingController extends Controller
             foreach ($this->request()->errors() as $field => $errors) {
                 $this->session()->set($field, $errors);
             }
-            $this->redirect('/admin/dashboard/goods_and_services');
+            $this->redirect('/admin/dashboard/storage_accounting');
             return;
         }
 

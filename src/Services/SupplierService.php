@@ -19,8 +19,13 @@ class SupplierService
             return new Supplier(
                 $supplier['id'],
                 $supplier['name'],
+                $supplier['inn'],
+                $supplier['ogrn'],
+                $supplier['legal_address'],
+                $supplier['actual_address'],
                 $supplier['phone'],
-                $supplier['email']
+                $supplier['email'],
+                $supplier['contact_info']
             );
         }, $suppliers);
     }
