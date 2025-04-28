@@ -135,7 +135,7 @@ class Render implements RenderInterface
 
         // Подключаем шаблон меню
         include $menu_layout_path;
-        renderMenuItems($menu_items, $current_route);
+        renderMenuItems($menu_items, $current_route, $this->defaultData());
     }
 
     public function renderMenuItems(array $items, $current_url) {}

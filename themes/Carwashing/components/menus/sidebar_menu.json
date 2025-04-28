@@ -4,47 +4,56 @@
         {
             "name": "Главная",
             "icon": "icon-home",
-            "url": "/admin/dashboard/general"
+            "url": "/admin/dashboard/general",
+            "access_level": 1
         },
         {
             "name": "Отчеты",
             "icon": "icon-user",
-            "url": "/admin/dashboard/reports"
+            "url": "/admin/dashboard/reports",
+            "access_level" : 3
         },
         {
             "name": "Товары и услуги",
             "icon": "icon-user",
-            "url": "/admin/dashboard/goods_and_services"
+            "url": "/admin/dashboard/goods_and_services",
+            "access_level" : 2
         },
         {
             "name": "Продажи",
             "icon": "icon-settings",
-            "url": "/admin/dashboard/service_sales"
+            "url": "/admin/dashboard/service_sales",
+            "access_level" : 1
         },
         {
             "name": "Складской учет",
             "icon": "icon-settings",
-            "url": "/admin/dashboard/storage_accounting"
+            "url": "/admin/dashboard/storage_accounting",
+            "access_level" : 2
         },
         {
             "name": "Финансовый учет",
             "icon": "icon-settings",
-            "url": "/admin/dashboard/financial_accounting"
+            "url": "/admin/dashboard/financial_accounting",
+            "access_level" : 3
         },
         {
             "name": "Управление компанией",
             "icon": "icon-settings",
-            "url": "/admin/dashboard/company_managments"
+            "url": "/admin/dashboard/company_managments",
+            "access_level" : 3
         },
         {
             "name": "Управление доступом",
             "icon": "icon-user",
-            "url": "/admin/dashboard/access_managments"
+            "url": "/admin/dashboard/access_managments",
+            "access_level" : 4
         },
         {
             "name": "Настройки",
             "icon": "icon-settings",
-            "url": "/admin/dashboard/settings"
+            "url": "/admin/dashboard/settings",
+            "access_level" : 4
         }
         
     ]
