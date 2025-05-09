@@ -54,4 +54,9 @@ class Supplier
     {
         return $this->email;
     }
+
+    public function contact_info()
+    {
+        return $this->contact_info;
+    }
 }

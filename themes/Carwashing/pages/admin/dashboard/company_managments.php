@@ -15,6 +15,7 @@ use Source\Models\Supplier;
 $user = $this->auth->getUser();
 $companies = $data['companies'];
 $company_types = $data['company_types'];
+$suppliers = $data['suppliers'];
 
 
 $employees_service  = $data['employees_service'];
@@ -144,39 +145,64 @@ $employees = $employees_service->getAllFromDB();
 
             <div class="tab-content" id="partnersContainer">
                 <div class="partners-tab-container">
-                    <label class="financial-accounting-first-label">Список партнеров</label>
+                    <h2>Добавить контрагента</h2>
+                <form action="/admin/dashboard/company_managments/addSupplier" method="post">
+                    <label for="name">Название</label>
+                    <input type="text" name="name" required>
+
+                    <label for="inn">ИНН</label>
+                    <input type="text" name="inn" required>
+
+                    <label for="ogrn">ОГРН</label>
+                    <input type="text" name="ogrn" required>
+
+                    <label for="legal_address">Юридический адрес</label>
+                    <input type="text" name="legal_address" required>
+
+                    <label for="actual_address">Фактический адрес</label>
+                    <input type="text" name="actual_address" required>
+
+                    <label for="phone">Телефон</label>
+                    <input type="text" name="phone" required>
+
+                    <label for="email">Email</label>
+                    <input type="email" name="email" required>
+
+                    <label for="contact_info">Контактная информация</label>
+                    <input type="text" name="contact_info" required>
+
+                    <button type="submit" class="company-button">Добавить контрагента</button>
+                </form>
+
+                    <h2>Список контрагентов</h2>
                     <div class="partners-table">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Тип</th>
                                     <th>Название</th>
                                     <th>ИНН</th>
                                     <th>ОГРН</th>
                                     <th>Юр. адрес</th>
                                     <th>Факт. адрес</th>
-                                    <th>Email</th>
                                     <th>Телефон</th>
+                                    <th>Email</th>
                                     <th>Контактная информация</th>
-                                    <th>Налоговый режим</th>
                                 </tr>
                             </thead>
-                            <?php foreach ($companies->getCompanies() as $company => $companyData) : ?>
+                            <tbody>
+                            <?php foreach ($suppliers as $supplier): ?>
                                 <tr>
-                                    <!-- echo $data['сompanies']->getCompanyType($companyData->type())[0]['company_type_name'];  -->
-                                    <?php $company_type = $companyData['type']; ?>
-                                    <td><?php echo $companies->getCompanyType($company_type)[0]['company_type_name']; ?></td>
-                                    <td><?php echo $companyData['name']; ?></td>
-                                    <td><?php echo $companyData['inn']; ?></td>
-                                    <td><?php echo $companyData['ogrn']; ?></td>
-                                    <td><?php echo $companyData['legal_address']; ?></td>
-                                    <td><?php echo $companyData['actual_address']; ?></td>
-                                    <td><?php echo $companyData['company_email']; ?></td>
-                                    <td><?php echo $companyData['company_phone']; ?></td>
-                                    <td><?php echo $companyData['contact_info']; ?></td>
-                                    <td><?php echo $companyData['tax_id']; ?></td>
+                                    <td><?php echo $supplier->name(); ?></td>
+                                    <td><?php echo $supplier->inn(); ?></td>
+                                    <td><?php echo $supplier->ogrn(); ?></td>
+                                    <td><?php echo $supplier->legal_address(); ?></td>
+                                    <td><?php echo $supplier->actual_address(); ?></td>
+                                    <td><?php echo $supplier->phone(); ?></td>
+                                    <td><?php echo $supplier->email(); ?></td>
+                                    <td><?php echo $supplier->contact_info(); ?></td> <!-- Добавляем отображение -->
                                 </tr>
                             <?php endforeach; ?>
+                            </tbody>
                         </table>
                     </div>
                 </div>

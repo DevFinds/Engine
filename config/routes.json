@@ -506,6 +506,18 @@
                 "Source\\Middleware\\AuthMiddleware"
             ],
             "access_level": 2
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/company_managments/addSupplier",
+            "action": {
+                "controller": "Source\\Controllers\\ManageCompanyController",
+                "method": "addSupplier"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 2
         }
         
         

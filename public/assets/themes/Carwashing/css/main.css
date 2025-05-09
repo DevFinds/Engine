@@ -966,6 +966,20 @@ li {
   text-align: center;
 }
 
+.company-button{
+
+  padding: 12px 24px;
+  background-color: var(--purple-accent);
+  border: none;
+  border-radius: 8px;
+  color: var(--white);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-family: var(--font-family);
+  font-size: var(--font-size-menu);
+
+}
+
 /* ------------------------------------------------ */
 
 /* Блок со стилями для Страницы управления доступом */
