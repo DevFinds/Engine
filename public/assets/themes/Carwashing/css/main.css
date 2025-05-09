@@ -2633,6 +2633,44 @@ input[type="number"]::-webkit-outer-spin-button {
   pointer-events: auto; /* Включает кликабельность */
   transition: opacity 0.7s ease, visibility 0.5s linear 0.3s, background-color 0.3s ease;
 }
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.7s ease, visibility 0s linear 0.2s;
+}
+
+.partners-table tbody tr:hover .action-buttons {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.7s ease, visibility 0s linear 0s;
+}
+
+.edit-button, .delete-button {
+  width: 36px;
+  height: 36px;
+  background-color: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.edit-button:hover, .delete-button:hover {
+  background-color: #3F4653;
+}
+
+.edit-button svg, .delete-button svg {
+  fill: #707FDD;
+}
+
 
 .employees-list-tab-container{
   width: 100%;

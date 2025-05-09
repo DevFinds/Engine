@@ -145,6 +145,17 @@ $employees = $employees_service->getAllFromDB();
 
             <div class="tab-content" id="partnersContainer">
                 <div class="partners-tab-container">
+                <?php if ($session->has('error')): ?>
+                    <p style="color: red;"><?php echo $session->get('error'); $session->remove('error'); ?></p>
+                <?php endif; ?>
+                <?php if ($session->has('success')): ?>
+                    <p style="color: green;"><?php echo $session->get('success'); $session->remove('success'); ?></p>
+                <?php endif; ?>
+                <?php foreach (['name', 'inn', 'ogrn', 'legal_address', 'actual_address', 'phone', 'email', 'contact_info'] as $field): ?>
+                    <?php if ($session->has($field)): ?>
+                        <p style="color: red;"><?php echo implode(', ', $session->get($field)); $session->remove($field); ?></p>
+                    <?php endif; ?>
+                <?php endforeach; ?>
                     <h2>Добавить контрагента</h2>
                 <form action="/admin/dashboard/company_managments/addSupplier" method="post">
                     <label for="name">Название</label>
@@ -200,6 +211,24 @@ $employees = $employees_service->getAllFromDB();
                                     <td><?php echo $supplier->phone(); ?></td>
                                     <td><?php echo $supplier->email(); ?></td>
                                     <td><?php echo $supplier->contact_info(); ?></td> <!-- Добавляем отображение -->
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button class="edit-button" onclick="openEditModal(1)">
+                                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M13.5858 3.58579C14.3668 2.80474 15.6332 2.80474 16.4142 3.58579C17.1953 4.36683 17.1953 5.63316 16.4142 6.41421L15.6213 7.20711L12.7929 4.37868L13.5858 3.58579Z" fill="#707FDD"/>
+                                                <path d="M11.3787 5.79289L3 14.1716V17H5.82843L14.2071 8.62132L11.3787 5.79289Z" fill="#707FDD"/>
+                                                </svg>
+                                            </button>
+                                            <button class="delete-button" onclick="confirmDelete(1)">
+                                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M6 2H14V4H6V2Z" fill="#707FDD"/>
+                                                <path d="M4 6H16V18C16 19.1 15.1 20 14 20H6C4.9 20 4 19.1 4 18V6Z" fill="#707FDD"/>
+                                                <path d="M8 9H10V16H8V9Z" fill="#707FDD"/>
+                                                <path d="M12 9H14V16H12V9Z" fill="#707FDD"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                             </tbody>

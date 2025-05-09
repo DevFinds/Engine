@@ -91,7 +91,7 @@ class ManageCompanyController extends Controller
             $this->getDatabase()->beginTransaction();
 
             // Проверяем, существует ли контрагент с таким ИНН
-            $existingSupplier = $this->getDatabase()->first_found_in_db('suppliers', [
+            $existingSupplier = $this->getDatabase()->first_found_in_db('Supplier', [
                 'inn' => $inn
             ]);
 
@@ -100,7 +100,7 @@ class ManageCompanyController extends Controller
             }
 
             // Добавляем нового контрагента
-            $result = $this->getDatabase()->insert('suppliers', [
+            $result = $this->getDatabase()->insert('Supplier', [
                 'name' => $name,
                 'inn' => $inn,
                 'ogrn' => $ogrn,
