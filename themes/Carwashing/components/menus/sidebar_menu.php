@@ -11,38 +11,41 @@
     // Определяем текущий маршрут для установки активного пункта меню
     $current_route = $_SERVER['REQUEST_URI'];
 
-    function renderMenuItems($items, $current_route)
+    function renderMenuItems($items, $current_route, $defaultData)
 
     {
         foreach ($items as $item) {
-            $hasChildren = isset($item['children']) && is_array($item['children']);
-            $isActive = ($current_route === $item['url']) ? 'active' : '';
+            //dd($defaultData['auth']->getRole()->id());
+            if ($defaultData['auth']->getRole()->id() >= $item['access_level']) {
+                $hasChildren = isset($item['children']) && is_array($item['children']);
+                $isActive = ($current_route === $item['url']) ? 'active' : '';
 
-            // Проверка на активность дочерних элементов
-            if ($hasChildren) {
-                foreach ($item['children'] as $child) {
-                    if ($current_route === $child['url']) {
-                        $isActive = 'active';
-                        break;
+                // Проверка на активность дочерних элементов
+                if ($hasChildren) {
+                    foreach ($item['children'] as $child) {
+                        if ($current_route === $child['url']) {
+                            $isActive = 'active';
+                            break;
+                        }
                     }
                 }
+
+                $icon = isset($item['icon']) ? '<i class="' . htmlspecialchars($item['icon']) . '"></i> ' : '';
+
+                echo '<li class="menu-list-item">';
+                echo '<a href="' . htmlspecialchars($item['url']) . '" class="menu-list-item-link ' . $isActive . '">';
+                echo $icon . htmlspecialchars($item['name']);
+                echo '</a>';
+
+                // Рендеринг подменю
+                if ($hasChildren) {
+                    echo '<ul class="nav flex-column ms-3">';
+                    renderMenuItems($item['children'], $current_route, $defaultData);
+                    echo '</ul>';
+                }
+
+                echo '</li>';
             }
-
-            $icon = isset($item['icon']) ? '<i class="' . htmlspecialchars($item['icon']) . '"></i> ' : '';
-
-            echo '<li class="menu-list-item">';
-            echo '<a href="' . htmlspecialchars($item['url']) . '" class="menu-list-item-link ' . $isActive . '">';
-            echo $icon . htmlspecialchars($item['name']);
-            echo '</a>';
-
-            // Рендеринг подменю
-            if ($hasChildren) {
-                echo '<ul class="nav flex-column ms-3">';
-                renderMenuItems($item['children'], $current_route);
-                echo '</ul>';
-            }
-
-            echo '</li>';
         }
     }
 
