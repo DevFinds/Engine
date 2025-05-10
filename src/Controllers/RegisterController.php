@@ -26,7 +26,18 @@ class RegisterController extends Controller
             'user_name' => ['required'],
             'user_lastname' => ['required'],
             'user_phone' => ['required'],
-        ]);
+            'privacy-policy' => ['required'],
+        ],
+        [
+            'email' => 'Электронная почта',
+            'login' => 'Логин',
+            'password' => 'Пароль',
+            'user_name' => 'Имя',
+            'user_lastname' => 'Фамилия',
+            'phone_number' => 'Номер телефона',
+            'privacy-policy' => 'Согласие с политикой конфиденциальности',
+        ]
+    );
 
         if (!$validation) {
 
@@ -47,7 +58,13 @@ class RegisterController extends Controller
             'password' => password_hash($this->request()->input('password'), PASSWORD_DEFAULT),
             'role' => '1',
         ]);
-
+        if ($userID) {
+            $this->session()->set('success', 'Регистрация успешна! Войдите в аккаунт.');
+            $this->redirect('/login');
+        } else {
+            $this->session()->set('error', 'Ошибка при регистрации. Попробуйте снова.');
+            $this->redirect('/register');
+        }
         //$this->redirect('/');
     }
 }
