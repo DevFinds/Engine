@@ -73,15 +73,6 @@
                                     </button>
                                 </form>
                             <?php endif; ?>
-
-                            <form action="/admin/dashboard/reports/export" method="POST">
-                                <input type="hidden" name="product_id" value="<?= htmlspecialchars($selectedProductId) ?>">
-                                <input type="hidden" name="start_date" value="<?= htmlspecialchars($selectedStartDate) ?>">
-                                <input type="hidden" name="end_date" value="<?= htmlspecialchars($selectedEndDate) ?>">
-                                <button type="submit">
-                                    Тест Excel
-                                </button>
-                            </form>
                         </div>
                     </div>
 
