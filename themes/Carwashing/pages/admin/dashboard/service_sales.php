@@ -199,307 +199,238 @@ $services_array = $data['service']->getAllFromDBAsArray();
     </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const productLinesContainer = document.getElementById('productLinesContainer');
-        const addLineBtn = document.getElementById('addLineBtn');
-        const totalAmountElem = document.getElementById('productTotal');
+document.addEventListener('DOMContentLoaded', () => {
+  /* ================================
+     Общие переменные и функции
+     ================================ */
+  // Ссылки на обе формы
+  const productLinesContainer = document.getElementById('productLinesContainer');
+  const addProductBtn         = document.getElementById('addLineBtn');
+  const productSaveBtn        = document.getElementById('saveLineBtn');
+  const productTotalElem      = document.getElementById('productTotal');
 
-        // 1. Инициализация уже существующей строки (data-index="0")
-        initializeLine(productLinesContainer.querySelector('.product-line'), 0);
+  const serviceLinesContainer = document.getElementById('servicesLinesContainer');
+  const addServiceBtn         = document.getElementById('addServiceBtn');
+  const serviceTotalElem      = document.getElementById('serviceTotal');
 
-        let lineIndex = 1; // следующая строка
+  let productLineIndex = 0;
+  let serviceLineIndex = 0;
 
-        // 2. Кнопка "Добавить товар"
-        addLineBtn.addEventListener('click', function() {
-            // Создаём div
-            const lineDiv = document.createElement('div');
-            lineDiv.className = 'product-line';
-            lineDiv.setAttribute('data-index', lineIndex);
+  // Утилиты для кнопок
+  function disableBtn(btn, text) {
+    btn.disabled = true;
+    btn.textContent = text;
+    btn.style.cursor = 'not-allowed';
+    btn.style.backgroundColor = '#D33B4C';
+  }
+  function enableBtn(btn, text = 'Сохранить') {
+    btn.disabled = false;
+    btn.textContent = text;
+    btn.style.cursor = 'pointer';
+    btn.style.backgroundColor = '#707FDD';
+  }
 
-            // HTML для новой строки
-            lineDiv.innerHTML = `
-            <div class="product-line-good">
-                <label>Товар</label>
-                <select name="products[${lineIndex}][product_warehouse]" class="productSelect" style="width: 320px;"></select>
-            </div>
-            <div class="product-line-count">
-                <label>Кол-во</label>
-                <input type="number" name="products[${lineIndex}][amount]" class="productAmountInput" value="1" min="1" style="width: 100px;">
-            </div>
-            <div class="product-line-btn">
-                <label for="products[${lineIndex}][amount]" class="warehouseStockLabel">
-                    Всего на складе:
-                </label>
+  /* ================================
+     Логика для товаров (Кафе)
+     ================================ */
+  function fillProductSelect(selectEl) {
+    selectEl.innerHTML = '<option disabled selected>Выбрать товар</option>';
+    productsJS.forEach(prod => {
+      const opt = document.createElement('option');
+      opt.value = `${prod.id}_${prod.warehouse_id}`;
+      opt.textContent = `${prod.name} [склад ${prod.warehouse_id}]`;
+      opt.dataset.price  = prod.sale_price;
+      opt.dataset.amount = prod.amount;
+      opt.dataset.unit   = prod.unit_measurement;
+      selectEl.appendChild(opt);
+    });
+  }
 
-                <button type="button" class="removeLineBtn"><img src="/assets/themes/Carwashing/img/trash-icon.svg" alt=""></button>
-            </div>
-        `;
-            productLinesContainer.appendChild(lineDiv);
+  function initializeProductLine(lineDiv, idx) {
+    const selectEl   = lineDiv.querySelector('.productSelect');
+    const inputEl    = lineDiv.querySelector('.productAmountInput');
+    const stockLabel = lineDiv.querySelector('.warehouseStockLabel');
+    const errorMsg   = document.createElement('div');
+    errorMsg.className = 'input-error';
+    errorMsg.style.color = 'red';
+    inputEl.parentNode.appendChild(errorMsg);
 
-            initializeLine(lineDiv, lineIndex);
-            lineIndex++;
-        });
-
-        /**
-         * Функция инициализации логики в строке
-         */
-        function initializeLine(lineDiv, idx) {
-            const productSelect = lineDiv.querySelector('.productSelect');
-            const amountInput = lineDiv.querySelector('.productAmountInput');
-            const removeBtn = lineDiv.querySelector('.removeLineBtn');
-
-            // Лейбл, где показываем остаток
-            const warehouseStockLabel = lineDiv.querySelector('.warehouseStockLabel');
-
-            // Заполним <select> опциями
-            fillProductSelect(productSelect);
-
-            // Подключим Select2 (опционально)
-            $(productSelect).select2({
-                placeholder: 'Выбрать товар',
-                allowClear: true,
-                language: {
-                    noResults: function() {
-                        return 'Товар не найден';
-                    }
-                }
-            }).on('change', function() {
-                updateLineStockAndPrice(lineDiv);
-                updateTotalPrice();
-            });
-
-            // При вводе количества
-            amountInput.addEventListener('input', function() {
-                updateTotalPrice();
-            });
-
-            // Удаление строки
-            removeBtn.addEventListener('click', function() {
-                lineDiv.remove();
-                updateTotalPrice();
-            });
-        }
-
-        /**
-         * Заполняет <select> вариантами "товар+склад"
-         * productsJS: массив, где каждый элемент = {id, name, warehouse_id, amount, unit_measurement, sale_price...}
-         */
-        function fillProductSelect(selectEl) {
-            selectEl.innerHTML = '<option disabled selected>Выбрать товар</option>';
-            productsJS.forEach(prod => {
-                const opt = document.createElement('option');
-                // value = "productId_warehouseId"
-                opt.value = prod.id + '_' + prod.warehouse_id;
-                opt.textContent = `${prod.name} [склад ${prod.warehouse_id}]`;
-                // для пересчёта цены
-                opt.setAttribute('data-price', prod.sale_price);
-                // для вывода остатка
-                opt.setAttribute('data-amount', prod.amount);
-                // для вывода ед. изм.
-                opt.setAttribute('data-unit', prod.unit_measurement);
-                selectEl.appendChild(opt);
-            });
-        }
-
-        /**
-         * При выборе товара-склада обновляем лейбл "Всего на складе: ..."
-         */
-        function updateLineStockAndPrice(lineDiv) {
-            const productSelect = lineDiv.querySelector('.productSelect');
-            const warehouseStockLabel = lineDiv.querySelector('.warehouseStockLabel');
-            const quantityToSale = lineDiv.querySelector('.productAmountInput');
-
-            const selectedOption = productSelect.options[productSelect.selectedIndex];
-            if (!selectedOption) {
-                warehouseStockLabel.textContent = 'Всего на складе: ---';
-                return;
-            }
-
-            const wAmount = selectedOption.getAttribute('data-amount') || '0';
-            const wUnit = selectedOption.getAttribute('data-unit') || '';
-            warehouseStockLabel.textContent = `Всего на складе: ${wAmount} (${wUnit})`;
-            if (wAmount == 0) {
-                document.getElementById('saveLineBtn').textContent = 'Товар закончился';
-                document.getElementById('saveLineBtn').disabled = true;
-                document.getElementById('saveLineBtn').style.cursor = 'not-allowed';
-                document.getElementById('saveLineBtn').style.backgroundColor = '#D33B4C';
-            } else {
-                document.getElementById('saveLineBtn').textContent = 'Сохранить';
-                document.getElementById('saveLineBtn').disabled = false;
-                document.getElementById('saveLineBtn').style.cursor = 'pointer';
-                document.getElementById('saveLineBtn').style.backgroundColor = '#707FDD';
-            }
-            if (quantityToSale.value > wAmount) {
-                document.getElementById('saveLineBtn').textContent = 'Недостаточно товара';
-                document.getElementById('saveLineBtn').disabled = true;
-                document.getElementById('saveLineBtn').style.cursor = 'not-allowed';
-                document.getElementById('saveLineBtn').style.backgroundColor = '#D33B4C';
-                document.getElementById('productAmountInput').value = wAmount;
-            } else {
-                document.getElementById('saveLineBtn').textContent = 'Сохранить';
-                document.getElementById('saveLineBtn').disabled = false;
-                document.getElementById('saveLineBtn').style.cursor = 'pointer';
-                document.getElementById('saveLineBtn').style.backgroundColor = '#707FDD';
-            }
-        }
-
-        document.addEventListener('keydown', function(event) {
-            const productLines = document.querySelectorAll('.product-line');
-            productLines.forEach(line => {
-                updateLineStockAndPrice(line);
-            });
-        });
-
-        /**
-         * Считает общую сумму по всем строкам
-         */
-        function updateTotalPrice() {
-            let grandTotal = 0;
-
-            document.querySelectorAll('.product-line').forEach(line => {
-                const productSelect = line.querySelector('.productSelect');
-                const amountInput = line.querySelector('.productAmountInput');
-
-                const userAmount = parseFloat(amountInput.value) || 1;
-                const selectedOption = productSelect.options[productSelect.selectedIndex];
-                if (!selectedOption) return;
-
-                const price = parseFloat(selectedOption.getAttribute('data-price')) || 0;
-                const lineTotal = price * userAmount;
-                grandTotal += lineTotal;
-            });
-
-            // Выводим результат
-            document.getElementById('productTotal').textContent = `${grandTotal} руб`;
-        }
-
-        // Инициализация строки [0]
-        updateLineStockAndPrice(productLinesContainer.querySelector('.product-line'));
-        updateTotalPrice();
+    fillProductSelect(selectEl);
+    $(selectEl).select2({
+      placeholder: 'Выбрать товар',
+      allowClear: true,
+      width: '320px',
+      language: { noResults: () => 'Товар не найден' }
+    }).on('change', () => {
+      validateProductLine();
+      updateProductTotal();
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const carNumberInput = document.getElementById('carNumberInput');
-
-        carNumberInput.addEventListener('input', function(event) {
-            let value = carNumberInput.value.toUpperCase(); // Приводим к верхнему регистру
-
-            // Удаляем недопустимые символы
-            value = value.replace(/[^АВЕКМНОРСТУХ0-9]/g, '');
-
-            // Применяем маску
-            if (value.length > 1 && !/^[АВЕКМНОРСТУХ]$/.test(value[0])) {
-                value = value.slice(0, -1); // Убираем неверный первый символ
-            }
-
-            // Ограничиваем длину и позицию
-            const maskedValue = [];
-            for (let i = 0; i < value.length; i++) {
-                if (i === 0) {
-                    maskedValue.push(value[i]); // Первая буква
-                } else if (i >= 1 && i <= 3 && /\d/.test(value[i])) {
-                    maskedValue.push(value[i]); // Цифры
-                } else if (i >= 4 && i <= 5 && /^[АВЕКМНОРСТУХ]$/.test(value[i])) {
-                    maskedValue.push(value[i]); // Буквы после цифр
-                } else if (i >= 6 && i <= 8 && /\d/.test(value[i])) {
-                    maskedValue.push(value[i]); // Последние цифры
-                }
-            }
-
-            carNumberInput.value = maskedValue.join('');
-        });
+    inputEl.addEventListener('input', () => {
+      inputEl.value = inputEl.value.replace(/[^\d]/g, '');
+      validateProductLine();
+      updateProductTotal();
     });
+
+    lineDiv.querySelector('.removeLineBtn').addEventListener('click', () => {
+      lineDiv.remove();
+      updateProductTotal();
+    });
+
+    function validateProductLine() {
+      const opt = selectEl.selectedOptions[0];
+      if (!opt) {
+        stockLabel.textContent = 'Всего на складе: ---';
+        errorMsg.textContent = 'Выберите товар';
+        disableBtn(productSaveBtn, 'Выберите товар');
+        return;
+      }
+      const stock = +opt.dataset.amount;
+      const unit  = opt.dataset.unit;
+      stockLabel.textContent = `Всего на складе: ${stock} (${unit})`;
+
+      let val = parseInt(inputEl.value, 10);
+      if (isNaN(val) || val < 1) {
+        errorMsg.textContent = 'Минимум 1';
+        disableBtn(productSaveBtn, 'Минимум 1');
+        return;
+      }
+      if (val > stock) {
+        errorMsg.textContent = `Максимум ${stock}`;
+        inputEl.value = stock;
+        disableBtn(productSaveBtn, `Максимум ${stock}`);
+        return;
+      }
+      errorMsg.textContent = '';
+      enableBtn(productSaveBtn);
+    }
+  }
+
+  function updateProductTotal() {
+    let total = 0;
+    document.querySelectorAll('.product-line').forEach(line => {
+      const sel = line.querySelector('.productSelect');
+      const inp = line.querySelector('.productAmountInput');
+      const opt = sel.selectedOptions[0];
+      if (!opt) return;
+      total += (+opt.dataset.price) * (+inp.value||0);
+    });
+    productTotalElem.textContent = `${total} руб`;
+  }
+
+  function addProductLine() {
+    const idx = productLineIndex++;
+    const div = document.createElement('div');
+    div.className = 'product-line';
+    div.dataset.index = idx;
+    div.innerHTML = `
+      <div class="product-line-good">
+        <label>Товар</label>
+        <select name="products[${idx}][product_warehouse]" class="productSelect"></select>
+      </div>
+      <div class="product-line-count">
+        <label>Кол-во</label>
+        <input type="number" name="products[${idx}][amount]" class="productAmountInput" value="1" min="1">
+      </div>
+      <div class="product-line-btn">
+        <label class="warehouseStockLabel">Всего на складе:</label>
+        <button type="button" class="removeLineBtn">
+          <img src="/assets/themes/Carwashing/img/trash-icon.svg" alt="">
+        </button>
+      </div>`;
+    productLinesContainer.appendChild(div);
+    initializeProductLine(div, idx);
+    updateProductTotal();
+  }
+
+  addProductBtn.addEventListener('click', addProductLine);
+  // инициализация первой строки
+  const firstProd = productLinesContainer.querySelector('.product-line');
+  if (firstProd) {
+    initializeProductLine(firstProd, 0);
+    productLineIndex = 1;
+  } else addProductLine();
+  updateProductTotal();
+
+  /* ================================
+     Логика для услуг (Автомойка)
+     ================================ */
+  function fillServiceSelect(selectEl) {
+    selectEl.innerHTML = '<option disabled selected>Выбрать услугу</option>';
+    servicesJS.forEach(srv => {
+      const opt = document.createElement('option');
+      opt.value = srv.id;
+      opt.textContent = srv.name;
+      opt.dataset.price = srv.price;
+      selectEl.appendChild(opt);
+    });
+  }
+
+  function initializeServiceLine(lineDiv, idx) {
+    const selectEl = lineDiv.querySelector('.serviceSelect');
+    const errorMsg = document.createElement('div');
+    errorMsg.className = 'input-error';
+    errorMsg.style.color = 'red';
+    lineDiv.appendChild(errorMsg);
+
+    fillServiceSelect(selectEl);
+    $(selectEl).select2({
+      placeholder: 'Выбрать услугу',
+      allowClear: true,
+      width: 'auto',
+      language: { noResults: () => 'Услуга не найдена' }
+    }).on('change', () => {
+      updateServiceTotal();
+    });
+
+    lineDiv.querySelector('.removeServiceBtn')
+      .addEventListener('click', () => {
+        lineDiv.remove();
+        updateServiceTotal();
+      });
+  }
+
+  function updateServiceTotal() {
+    let sum = 0;
+    document.querySelectorAll('.service-line').forEach(line => {
+      const opt = line.querySelector('.serviceSelect')?.selectedOptions[0];
+      if (!opt) return;
+      sum += +opt.dataset.price;
+    });
+    serviceTotalElem.textContent = `${sum} руб`;
+  }
+
+  function addServiceLine() {
+    const idx = serviceLineIndex++;
+    const div = document.createElement('div');
+    div.className = 'service-line';
+    div.dataset.index = idx;
+    div.innerHTML = `
+      <div class="service-line-service">
+        <label>Услуга</label>
+        <select name="services[${idx}][service_id]" class="serviceSelect" style="width:auto;"></select>
+      </div>
+      <div class="service-line-btn">
+        <label>ㅤ</label>
+        <button type="button" class="removeServiceBtn">
+          <img src="/assets/themes/Carwashing/img/trash-icon.svg" alt="">
+        </button>
+      </div>`;
+    serviceLinesContainer.appendChild(div);
+    initializeServiceLine(div, idx);
+    updateServiceTotal();
+  }
+
+  addServiceBtn.addEventListener('click', addServiceLine);
+  // инициализация первой строки
+  const firstServ = serviceLinesContainer.querySelector('.service-line');
+  if (firstServ) {
+    initializeServiceLine(firstServ, 0);
+    serviceLineIndex = 1;
+  } else addServiceLine();
+  updateServiceTotal();
+});
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const servicesLinesContainer = document.getElementById('servicesLinesContainer');
-        const addServiceBtn = document.getElementById('addServiceBtn');
-        const totalAmountElem = document.getElementById('serviceTotal');
-
-        // Инициализируем первую (существующую) строку (index=0)
-        initializeServiceLine(servicesLinesContainer.querySelector('.service-line'), 0);
-
-        let serviceIndex = 1;
-
-        // Кнопка "Добавить услугу"
-        addServiceBtn.addEventListener('click', function() {
-            const lineDiv = document.createElement('div');
-            lineDiv.className = 'service-line';
-            lineDiv.setAttribute('data-index', serviceIndex);
-
-            lineDiv.innerHTML = `
-            <div class="service-line-service">
-                <label>Услуга</label>
-                <select name="services[${serviceIndex}][service_id]" class="serviceSelect" style="width: auto;"></select>
-            </div>
-            <div class="service-line-btn">
-                <label for="">ㅤ</label>
-                <button type="button" class="removeServiceBtn"><img src="/assets/themes/Carwashing/img/trash-icon.svg" alt=""></button>
-            </div>
-        `;
-            servicesLinesContainer.appendChild(lineDiv);
-            initializeServiceLine(lineDiv, serviceIndex);
-            serviceIndex++;
-        });
-
-        // Функция инициализации строки
-        function initializeServiceLine(lineDiv, idx) {
-            const serviceSelect = lineDiv.querySelector('.serviceSelect');
-            const removeBtn = lineDiv.querySelector('.removeServiceBtn');
-
-            // Заполним <select> опциями
-            fillServiceSelect(serviceSelect);
-
-            // Подключаем Select2
-            $(serviceSelect).select2({
-                placeholder: 'Выбрать услугу',
-                allowClear: true,
-                language: {
-                    noResults: function() {
-                        return 'Услуга не найдена';
-                    }
-                }
-            }).on('change', function() {
-                updateTotalPrice();
-            });
-
-            // Кнопка удаления строки
-            removeBtn.addEventListener('click', function() {
-                lineDiv.remove();
-                updateTotalPrice();
-            });
-        }
-
-        // Заполняем <select> опциями (из servicesJS)
-        function fillServiceSelect(selectEl) {
-            selectEl.innerHTML = '<option disabled selected>Выбрать услугу</option>';
-            servicesJS.forEach(srv => {
-                const opt = document.createElement('option');
-                opt.value = srv.id; // service_id
-                opt.textContent = srv.name;
-                // сохраним price для пересчёта
-                opt.setAttribute('data-price', srv.price);
-                selectEl.appendChild(opt);
-            });
-        }
-
-        // Пересчёт общей суммы
-        function updateTotalPrice() {
-            let total = 0;
-            document.querySelectorAll('.service-line').forEach(line => {
-                const serviceSelect = line.querySelector('.serviceSelect');
-                const selectedOption = serviceSelect.options[serviceSelect.selectedIndex];
-                if (!selectedOption) return;
-
-                const price = parseFloat(selectedOption.getAttribute('data-price')) || 0;
-                total += price;
-            });
-            totalAmountElem.textContent = `${total} руб`;
-        }
-
-        updateTotalPrice();
-    });
-</script>
 
 <?php $render->component('dashboard_footer'); ?>
