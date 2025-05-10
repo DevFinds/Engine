@@ -90,10 +90,10 @@
             <?php if (isset($check['car_number'])): ?>
                 <p>Гос. номер: <?= htmlspecialchars($check['car_number']) ?></p>
             <?php endif; ?>
-            <?php if (isset($check['car_model'])): ?>
+            <?php if (isset($check['car_model']) || $check['car_model'] != null): ?>
                 <p>Модель: <?= htmlspecialchars($check['car_model']) ?></p>
             <?php endif; ?>
-            <?php if (isset($check['car_brand'])): ?>
+            <?php if (isset($check['car_brand']) || $check['car_brand'] != null): ?>
                 <p>Марка: <?= htmlspecialchars($check['car_brand']) ?></p>
             <?php endif; ?>
         </div>

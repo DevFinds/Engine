@@ -230,7 +230,9 @@ class GoodsAndServicesController extends Controller
                 'operator_name' => $operatorName,
                 'car_number' => null,
                 'change_amount' => 0,
-                'report_type' => 'product'
+                'report_type' => 'product',
+                'car_model' => null,
+                'car_brand' => null
             ]);
 
             $this->addCheckItems($checkId, $items);
