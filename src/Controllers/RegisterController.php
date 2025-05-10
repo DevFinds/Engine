@@ -22,10 +22,10 @@ class RegisterController extends Controller
         $validation = $this->request()->validate([
             'email' => ['required', 'email', 'already_exist'],
             'login' => ['required', 'min:3', 'max:25', 'already_exist'],
-            'password' => ['required', 'min:6', 'max:255'],
+            'password' => ['required', 'min:6'],
             'user_name' => ['required'],
             'user_lastname' => ['required'],
-            'user_phone' => ['required'],
+            'phone_number' => ['required'],
             'privacy-policy' => ['required'],
         ],
         [
@@ -41,29 +41,38 @@ class RegisterController extends Controller
 
         if (!$validation) {
 
-
             foreach ($this->request()->errors() as $field => $errors) {
                 $this->session()->set($field, $errors);
             }
 
+            dd('Validation failed', $this->request()->errors());
             $this->redirect('/register');
-            //dd('Validation failed', $this->request()->errors());
+            
         }
 
-        $userID = $this->getDatabase()->insert('users', [
-            'username' => $this->request()->input('user_name'),
-            'lastname' => $this->request()->input('user_lastname'),
-            'login' => $this->request()->input('login'),
-            'email' => $this->request()->input('email'),
-            'password' => password_hash($this->request()->input('password'), PASSWORD_DEFAULT),
-            'role' => '1',
-        ]);
-        if ($userID) {
-            $this->session()->set('success', 'Регистрация успешна! Войдите в аккаунт.');
-            $this->redirect('/login');
-        } else {
-            $this->session()->set('error', 'Ошибка при регистрации. Попробуйте снова.');
-            $this->redirect('/register');
+        try{
+            $userID = $this->getDatabase()->insert('users', [
+                'username' => $this->request()->input('user_name'),
+                'lastname' => $this->request()->input('user_lastname'),
+                'login' => $this->request()->input('login'),
+                'phone_number' => $this->request()->input('phone_number'),
+                'email' => $this->request()->input('email'),
+                'password' => password_hash($this->request()->input('password'), PASSWORD_DEFAULT),
+                'role' => 1,
+            ]);
+            if ($userID) {
+                $this->session()->set('success', 'Вы успешно зарегистрировались!');
+                $this->redirect('/login');
+            } else {
+                $this->session()->set('error', 'Ошибка регистрации. Попробуйте еще раз.');
+                $this->redirect('/register');
+            }
+        }
+        catch (\Exception $e) {
+            
+            
+            //$this->redirect('/register');
+            //dd('Error', $e->getMessage());
         }
         //$this->redirect('/');
     }
