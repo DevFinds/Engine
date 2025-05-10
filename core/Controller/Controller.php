@@ -142,4 +142,19 @@ abstract class Controller
 
         return $error_field_event;
     }
+
+    /**
+     * Возвращает JSON-ответ с указанным статусом HTTP.
+     *
+     * @param mixed $data Данные для ответа
+     * @param int $status Код HTTP-статуса (по умолчанию 200)
+     * @return void
+     */
+    protected function jsonResponse($data, $status = 200)
+    {
+        header('Content-Type: application/json');
+        http_response_code($status);
+        echo json_encode($data);
+        exit;
+    }
 }

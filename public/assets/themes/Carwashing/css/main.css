@@ -2671,6 +2671,104 @@ input[type="number"]::-webkit-outer-spin-button {
   fill: #707FDD;
 }
 
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.modal.show {
+  opacity: 1;
+}
+
+.modal-content {
+  background-color: var(--dark-bg, #2A2F3A);
+  color: var(--white, #FFFFFF);
+  padding: 20px;
+  border-radius: 8px;
+  width: 50%;
+  max-width: 600px;
+  min-height: 500px;
+  max-height: 90vh;
+  overflow: hidden;
+  position: relative;
+  transform: translateY(100px);
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal.show .modal-content {
+  transform: translateY(0);
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: var(--white, #FFFFFF);
+}
+
+.modal-content label {
+  display: block;
+  margin: 10px 0 5px;
+  color: var(--white, #FFFFFF);
+  font-family: var(--font-family, sans-serif);
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid var(--dark-inactive, #707FDD);
+  border-radius: 4px;
+  background-color: var(--dark-middle-bg, #3F4653);
+  color: var(--white, #FFFFFF);
+  font-family: var(--font-family, sans-serif);
+}
+
+.modal-content input:focus {
+  outline: none;
+  border-color: #707FDD;
+  box-shadow: 0 0 5px rgba(112, 127, 221, 0.5);
+}
+
+.modal-content .company-button {
+  background-color: #707FDD;
+  color: var(--white, #FFFFFF);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--font-family, sans-serif);
+  transition: background-color 0.3s ease;
+}
+
+.modal-content .company-button:hover {
+  background-color: #5A6ACF;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 24px;
+  color: var(--white, #FFFFFF);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close:hover {
+  color: #707FDD;
+}
+
 
 .employees-list-tab-container{
   width: 100%;

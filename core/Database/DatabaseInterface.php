@@ -24,4 +24,5 @@ interface DatabaseInterface
     public function rollBack(): void;
     public function query(string $sql, array $params = []): array;
     public function delete(string $table, array $conditions): bool;
+    public function exists(string $table, array $conditions): bool;
 }

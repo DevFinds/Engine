@@ -230,7 +230,82 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+document.addEventListener('DOMContentLoaded', () => {
+    const closeButton = document.querySelector('.close');
+    const modal = document.getElementById('editModal');
+    
+    if (closeButton) {
+        closeButton.addEventListener('click', closeEditModal);
+    }
+    
+    modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+            closeEditModal();
+        }
+    });
+});
 
+function openEditModal(id) {
+    console.log(`Открытие модального окна для контрагента с ID: ${id}`);
+    if (!Number.isInteger(id) || id <= 0) {
+        console.error(`Некорректный ID: ${id}`);
+        alert('Ошибка: Неверный ID контрагента');
+        return;
+    }
+    fetch(`/admin/dashboard/company_managments/getSupplier/${id}`)
+        .then(response => {
+            console.log(`Статус ответа: ${response.status}`);
+            if (!response.ok) {
+                return response.text().then(text => {
+                    throw new Error(`Ошибка HTTP: ${response.status}, Ответ: ${text}`);
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                console.error(`Ошибка от сервера: ${data.error}`);
+                alert(data.error);
+                return;
+            }
+            console.log('Полученные данные:', data);
+            if (data.id != id) {
+                console.error(`Несоответствие ID: Запрошен ${id}, получен ${data.id}`);
+                alert(`Ошибка: Получены данные другого контрагента (ID: ${data.id})`);
+                return;
+            }
+            document.getElementById('editId').value = data.id;
+            document.getElementById('editName').value = data.name;
+            document.getElementById('editInn').value = data.inn;
+            document.getElementById('editOgrn').value = data.ogrn;
+            document.getElementById('editLegalAddress').value = data.legal_address;
+            document.getElementById('editActualAddress').value = data.actual_address;
+            document.getElementById('editPhone').value = data.phone;
+            document.getElementById('editEmail').value = data.email;
+            document.getElementById('editContactInfo').value = data.contact_info;
+            const modal = document.getElementById('editModal');
+            modal.style.display = 'block';
+            setTimeout(() => modal.classList.add('show'), 10);
+        })
+        .catch(error => {
+            console.error('Ошибка:', error);
+            alert('Не удалось загрузить данные контрагента: ' + error.message);
+        });
+}
+
+function closeEditModal() {
+    const modal = document.getElementById('editModal');
+    modal.classList.remove('show');
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 300);
+}
+
+function confirmDelete(id) {
+    if (confirm('Вы уверены, что хотите удалить этого контрагента?')) {
+        window.location.href = `/admin/dashboard/company_managments/deleteSupplier/${id}`;
+    }
+}
 
 
 

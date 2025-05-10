@@ -286,4 +286,34 @@ class Database implements DatabaseInterface
             throw new Exception("Ошибка удаления из таблицы: " . $e->getMessage());
         }
     }
+
+    /**
+     * Проверяет, существуют ли записи в таблице по заданным условиям.
+     *
+     * @param string $table Имя таблицы
+     * @param array $conditions Условия для проверки (ключ => значение)
+     * @return bool Возвращает true, если записи найдены, иначе false
+     */
+    public function exists(string $table, array $conditions): bool
+    {
+        if (empty($conditions)) {
+            error_log("Database::exists - Условия пусты для таблицы $table");
+            return false;
+        }
+
+        $where = implode(' AND ', array_map(fn($field) => "`$field` = :$field", array_keys($conditions)));
+        $sql = "SELECT EXISTS (SELECT 1 FROM `$table` WHERE $where) as `exists`";
+        error_log("Database::exists - SQL: $sql, Условия: " . json_encode($conditions));
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($conditions);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+            error_log("Database::exists - Результат: " . json_encode($result));
+            return (bool) $result['exists'];
+        } catch (PDOException $e) {
+            error_log("Database::exists - Ошибка: " . $e->getMessage());
+            return false;
+        }
+    }
 }

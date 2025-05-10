@@ -518,6 +518,48 @@
                 "Source\\Middleware\\AuthMiddleware"
             ],
             "access_level": 2
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/company_managments/getSupplier/{id}",
+            "action": {
+                "controller": "Source\\Controllers\\ManageCompanyController",
+                "method": "getSupplier"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "parameters": {
+                "id": "[0-9]+"
+            },
+            "access_level": 2
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/company_managments/editSupplier",
+            "action": {
+                "controller": "Source\\Controllers\\ManageCompanyController",
+                "method": "editSupplier"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 2
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/company_managments/deleteSupplier/{id}",
+            "action": {
+                "controller": "Source\\Controllers\\ManageCompanyController",
+                "method": "deleteSupplier"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "parameters": {
+                "id": "[0-9]+"
+            },
+            "access_level": 2
         }
         
         

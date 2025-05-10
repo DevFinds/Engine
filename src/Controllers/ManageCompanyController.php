@@ -128,4 +128,153 @@ class ManageCompanyController extends Controller
             $this->redirect('/admin/dashboard/company_managments');
         }
     }
+
+    public function getSupplier($id)
+    {
+        try {
+            error_log("ManageCompanyController::getSupplier - Запрос для ID: " . $id);
+            $supplierService = new SupplierService($this->getDatabase());
+            $supplier = $supplierService->getSupplierById($id);
+
+            if (!$supplier) {
+                error_log("ManageCompanyController::getSupplier - Контрагент с ID $id не найден");
+                return $this->jsonResponse(['error' => 'Контрагент не найден'], 404);
+            }
+
+            $response = [
+                'id' => $supplier->id(),
+                'name' => $supplier->name(),
+                'inn' => $supplier->inn(),
+                'ogrn' => $supplier->ogrn(),
+                'legal_address' => $supplier->legal_address(),
+                'actual_address' => $supplier->actual_address(),
+                'phone' => $supplier->phone(),
+                'email' => $supplier->email(),
+                'contact_info' => $supplier->contact_info(),
+            ];
+
+            error_log("ManageCompanyController::getSupplier - Данные контрагента: " . json_encode($response));
+            return $this->jsonResponse($response);
+        } catch (\Exception $e) {
+            error_log("ManageCompanyController::getSupplier - Ошибка: " . $e->getMessage());
+            return $this->jsonResponse(['error' => 'Ошибка сервера: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function editSupplier()
+    {
+        $labels = [
+            'name' => 'Название',
+            'inn' => 'ИНН',
+            'ogrn' => 'ОГРН',
+            'legal_address' => 'Юридический адрес',
+            'actual_address' => 'Фактический адрес',
+            'phone' => 'Телефон',
+            'email' => 'Email',
+            'contact_info' => 'Контактная информация'
+        ];
+
+        $validation = $this->request()->validate([
+            'id' => ['required'],
+            'name' => ['required'],
+            'inn' => ['required'],
+            'ogrn' => ['required'],
+            'legal_address' => ['required'],
+            'actual_address' => ['required'],
+            'phone' => ['required'],
+            'email' => ['required', 'email'],
+            'contact_info' => ['required']
+        ], $labels);
+
+        if (!$validation) {
+            foreach ($this->request()->errors() as $field => $errors) {
+                $this->session()->set($field, $errors);
+            }
+            $this->session()->set('error', 'Ошибки валидации: ' . implode(', ', $this->request()->errors()));
+            $this->redirect('/admin/dashboard/company_managments');
+            return;
+        }
+
+        $id = $this->request()->input('id');
+        $name = $this->request()->input('name');
+        $inn = $this->request()->input('inn');
+        $ogrn = $this->request()->input('ogrn');
+        $legal_address = $this->request()->input('legal_address');
+        $actual_address = $this->request()->input('actual_address');
+        $phone = $this->request()->input('phone');
+        $email = $this->request()->input('email');
+        $contact_info = $this->request()->input('contact_info');
+
+        try {
+            $this->getDatabase()->beginTransaction();
+
+            $existingSupplier = $this->getDatabase()->first_found_in_db('Supplier', [
+                'inn' => $inn,
+                'id' => ['operator' => '!=', 'value' => $id]
+            ]);
+
+            if ($existingSupplier) {
+                throw new \Exception('Контрагент с таким ИНН уже существует');
+            }
+
+            $result = $this->getDatabase()->update('Supplier', [
+                'name' => $name,
+                'inn' => $inn,
+                'ogrn' => $ogrn,
+                'legal_address' => $legal_address,
+                'actual_address' => $actual_address,
+                'phone' => $phone,
+                'email' => $email,
+                'contact_info' => $contact_info
+            ], ['id' => $id]);
+
+            error_log("Результат обновления: " . ($result ? 'Успешно' : 'Не удалось'));
+
+            $this->getDatabase()->commit();
+
+            $this->session()->set('success', 'Контрагент успешно обновлен');
+            $this->redirect('/admin/dashboard/company_managments');
+        } catch (\Exception $e) {
+            $this->getDatabase()->rollBack();
+            error_log("Ошибка: " . $e->getMessage());
+            $this->session()->set('error', 'Ошибка при обновлении контрагента: ' . $e->getMessage());
+            $this->redirect('/admin/dashboard/company_managments');
+        }
+    }
+
+    public function deleteSupplier($id)
+    {
+        try {
+            error_log("ManageCompanyController::deleteSupplier - Начало удаления для ID: $id");
+            $this->getDatabase()->beginTransaction();
+
+            $supplierService = new SupplierService($this->getDatabase());
+
+            // Проверяем, есть ли связанные продукты
+            if ($supplierService->hasRelatedProducts($id)) {
+                error_log("ManageCompanyController::deleteSupplier - Найдены связанные продукты для ID: $id");
+                throw new \Exception('Нельзя удалить контрагента, так как он связан с продуктами. Сначала удалите связанные продукты.');
+            }
+
+            // Удаляем контрагента
+            error_log("ManageCompanyController::deleteSupplier - Попытка удаления контрагента ID: $id");
+            $result = $this->getDatabase()->delete('Supplier', ['id' => $id]);
+
+            if (!$result) {
+                error_log("ManageCompanyController::deleteSupplier - Контрагент с ID $id не найден");
+                throw new \Exception('Контрагент не найден или не может быть удален.');
+            }
+
+            error_log("ManageCompanyController::deleteSupplier - Успешное удаление контрагента ID: $id");
+            $this->getDatabase()->commit();
+
+            $this->session()->set('success', 'Контрагент успешно удален');
+            $this->redirect('/admin/dashboard/company_managments');
+        } catch (\Exception $e) {
+            $this->getDatabase()->rollBack();
+            error_log("ManageCompanyController::deleteSupplier - Ошибка: " . $e->getMessage());
+            $this->session()->set('error', 'Ошибка при удалении контрагента: ' . $e->getMessage());
+            $this->redirect('/admin/dashboard/company_managments');
+        }
+    }
 }

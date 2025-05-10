@@ -136,7 +136,6 @@ $employees = $employees_service->getAllFromDB();
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
-
                             </table>
                         </div>
                     </div>
@@ -201,38 +200,65 @@ $employees = $employees_service->getAllFromDB();
                                 </tr>
                             </thead>
                             <tbody>
-                            <?php foreach ($suppliers as $supplier): ?>
-                                <tr>
-                                    <td><?php echo $supplier->name(); ?></td>
-                                    <td><?php echo $supplier->inn(); ?></td>
-                                    <td><?php echo $supplier->ogrn(); ?></td>
-                                    <td><?php echo $supplier->legal_address(); ?></td>
-                                    <td><?php echo $supplier->actual_address(); ?></td>
-                                    <td><?php echo $supplier->phone(); ?></td>
-                                    <td><?php echo $supplier->email(); ?></td>
-                                    <td><?php echo $supplier->contact_info(); ?></td> <!-- Добавляем отображение -->
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="edit-button" onclick="openEditModal(1)">
-                                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M13.5858 3.58579C14.3668 2.80474 15.6332 2.80474 16.4142 3.58579C17.1953 4.36683 17.1953 5.63316 16.4142 6.41421L15.6213 7.20711L12.7929 4.37868L13.5858 3.58579Z" fill="#707FDD"/>
-                                                <path d="M11.3787 5.79289L3 14.1716V17H5.82843L14.2071 8.62132L11.3787 5.79289Z" fill="#707FDD"/>
-                                                </svg>
-                                            </button>
-                                            <button class="delete-button" onclick="confirmDelete(1)">
-                                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M6 2H14V4H6V2Z" fill="#707FDD"/>
-                                                <path d="M4 6H16V18C16 19.1 15.1 20 14 20H6C4.9 20 4 19.1 4 18V6Z" fill="#707FDD"/>
-                                                <path d="M8 9H10V16H8V9Z" fill="#707FDD"/>
-                                                <path d="M12 9H14V16H12V9Z" fill="#707FDD"/>
-                                                </svg>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
+                                <?php foreach ($suppliers as $supplier): ?>
+                                    <tr>
+                                        <td><?php echo $supplier->name(); ?></td>
+                                        <td><?php echo $supplier->inn(); ?></td>
+                                        <td><?php echo $supplier->ogrn(); ?></td>
+                                        <td><?php echo $supplier->legal_address(); ?></td>
+                                        <td><?php echo $supplier->actual_address(); ?></td>
+                                        <td><?php echo $supplier->phone(); ?></td>
+                                        <td><?php echo $supplier->email(); ?></td>
+                                        <td><?php echo $supplier->contact_info(); ?></td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="edit-button" data-id="<?php echo $supplier->id(); ?>" onclick="openEditModal(<?php echo $supplier->id(); ?>)">
+                                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M13.5858 3.58579C14.3668 2.80474 15.6332 2.80474 16.4142 3.58579C17.1953 4.36683 17.1953 5.63316 16.4142 6.41421L15.6213 7.20711L12.7929 4.37868L13.5858 3.58579Z" fill="#707FDD"/>
+                                                        <path d="M11.3787 5.79289L3 14.1716V17H5.82843L14.2071 8.62132L11.3787 5.79289Z" fill="#707FDD"/>
+                                                    </svg>
+                                                </button>
+                                                <button class="delete-button" onclick="confirmDelete(<?php echo $supplier->id(); ?>)">
+                                                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M6 2H14V4H6V2Z" fill="#707FDD"/>
+                                                        <path d="M4 6H16V18C16 19.1 15.1 20 14 20H6C4.9 20 4 19.1 4 18V6Z" fill="#707FDD"/>
+                                                        <path d="M8 9H10V16H8V9Z" fill="#707FDD"/>
+                                                        <path d="M12 9H14V16H12V9Z" fill="#707FDD"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
+                        <!-- Модальное окно для редактирования -->
+                            <div id="editModal" class="modal" style="display: none;">
+                                <div class="modal-content">
+                                    <span class="close" onclick="closeEditModal()">&times;</span>
+                                    <h2>Редактировать контрагента</h2>
+                                    <form id="editForm" method="post" action="/admin/dashboard/company_managments/editSupplier">
+                                        <input type="hidden" name="id" id="editId">
+                                        <label for="editName">Название</label>
+                                        <input type="text" name="name" id="editName" required>
+                                        <label for="editInn">ИНН</label>
+                                        <input type="text" name="inn" id="editInn" required>
+                                        <label for="editOgrn">ОГРН</label>
+                                        <input type="text" name="ogrn" id="editOgrn" required>
+                                        <label for="editLegalAddress">Юридический адрес</label>
+                                        <input type="text" name="legal_address" id="editLegalAddress" required>
+                                        <label for="editActualAddress">Фактический адрес</label>
+                                        <input type="text" name="actual_address" id="editActualAddress" required>
+                                        <label for="editPhone">Телефон</label>
+                                        <input type="text" name="phone" id="editPhone" required>
+                                        <label for="editEmail">Email</label>
+                                        <input type="email" name="email" id="editEmail" required>
+                                        <label for="editContactInfo">Контактная информация</label>
+                                        <input type="text" name="contact_info" id="editContactInfo" required>
+                                        <button type="submit" class="company-button">Сохранить изменения</button>
+                                    </form>
+                                </div>
+                            </div>
                     </div>
                 </div>
             </div>
