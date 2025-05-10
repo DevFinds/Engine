@@ -218,7 +218,7 @@ $employees = $employees_service->getAllFromDB();
                                                         <path d="M11.3787 5.79289L3 14.1716V17H5.82843L14.2071 8.62132L11.3787 5.79289Z" fill="#707FDD"/>
                                                     </svg>
                                                 </button>
-                                                <button class="delete-button" onclick="confirmDelete(<?php echo $supplier->id(); ?>)">
+                                                <button class="partners-delete-button" onclick="confirmDelete(<?php echo $supplier->id(); ?>)">
                                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M6 2H14V4H6V2Z" fill="#707FDD"/>
                                                         <path d="M4 6H16V18C16 19.1 15.1 20 14 20H6C4.9 20 4 19.1 4 18V6Z" fill="#707FDD"/>
