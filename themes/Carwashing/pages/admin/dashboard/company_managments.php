@@ -41,7 +41,7 @@ $employees = $employees_service->getAllFromDB();
             <div class="tabs-container">
 
                 <div class="tabs">
-                    <div class="tab active" data-tab="about-company" onclick="switchTab('about-company')">О компании</div>
+                    <!-- <div class="tab active" data-tab="about-company" onclick="switchTab('about-company')">О компании</div> -->
                     <div class="tab" data-tab="employees-list" onclick="switchTab('employees-list')">Сотрудники</div>
                     <div class="tab" data-tab="partners" onclick="switchTab('partners')">Партнеры</div>
                     <div class="tab" data-tab="time-sheet" onclick="switchTab('time-sheet')">Табель учета</div>
@@ -156,7 +156,8 @@ $employees = $employees_service->getAllFromDB();
                     <?php endif; ?>
                 <?php endforeach; ?>
                     <h2>Добавить контрагента</h2>
-                <form action="/admin/dashboard/company_managments/addSupplier" method="post">
+                <div class="partners-tab-container-form">
+                <form action="/admin/dashboard/company_managments/addSupplier" method="post" id="partners-tab-container-form">
                     <label for="name">Название</label>
                     <input type="text" name="name" required>
 
@@ -183,6 +184,7 @@ $employees = $employees_service->getAllFromDB();
 
                     <button type="submit" class="company-button">Добавить контрагента</button>
                 </form>
+                </div>
 
                     <h2>Список контрагентов</h2>
                     <div class="partners-table">

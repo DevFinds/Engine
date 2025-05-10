@@ -1395,7 +1395,6 @@ input[type="text"]:focus,
 .financial-accounting-first__buttons {
   display: flex;
   gap: 12px;
-  margin-top: 12px;
 }
 
 .financial-accounting-first__button-save,
@@ -1408,7 +1407,6 @@ input[type="text"]:focus,
   cursor: pointer;
   width: 100%;
   height: 100%;
-  max-width: 132px;
   max-height: 43px;
 }
 
@@ -1619,6 +1617,11 @@ input[type="text"]:focus,
   margin-top: 12px ;
 }
 
+.warehouse-action-buttons{
+  display: flex;
+  gap: 24px;
+}
+
 .warehouse-list-label{
   color: var(--white);
   font-size: var(--font-size-menu);
@@ -1788,21 +1791,23 @@ input[type="text"]:focus,
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: var(--dark-hover);
+  background: var(--dark-middle-bg);
   padding: 20px;
   border-radius: 8px;
   z-index: 1000;
   color: white;
+  border: var(--dark-hover) 2px solid;
 }
 #warehouse-delete-popup {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #2d2f3a;
+  background: var(--dark-middle-bg);
   padding: 20px;
   border-radius: 8px;
   z-index: 1001;
+  border: var(--dark-hover) 2px solid;
 }
 
 
@@ -1824,7 +1829,7 @@ input[type="text"]:focus,
   background-color: #6b7280;
 }
 .warehouse-popup-content {
-  background-color: var(--dark-bg);
+  background-color: var(--dark-middle-bg);
   color: var(--white);
   padding: 20px;
   border-radius: 8px;
@@ -2780,7 +2785,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .modal-content {
-  background-color: var(--dark-bg, #2A2F3A);
+  background-color: var(--dark-bg);
   color: var(--white, #FFFFFF);
   padding: 20px;
   border-radius: 8px;
@@ -2792,21 +2797,21 @@ input[type="number"]::-webkit-outer-spin-button {
   position: relative;
   transform: translateY(100px);
   transition: transform 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   margin: auto;
 }
 
 
 
 .modal-content h2 {
-  margin-top: 0;
+  margin: 0 0 16px 0;
   color: var(--white, #FFFFFF);
+  font-size: 18px;
 }
 
 .modal-content label {
   display: block;
   margin: 10px 0 5px;
-  color: var(--white, #FFFFFF);
+  color: var(--dirt-white);
   font-family: var(--font-family, sans-serif);
 }
 
@@ -2814,9 +2819,8 @@ input[type="number"]::-webkit-outer-spin-button {
   width: 100%;
   padding: 8px;
   margin-bottom: 10px;
-  border: 1px solid var(--dark-inactive, #707FDD);
-  border-radius: 4px;
-  background-color: var(--dark-middle-bg, #3F4653);
+  border-radius: 8px;
+  background-color: var(--dark-hover);
   color: var(--white, #FFFFFF);
   font-family: var(--font-family, sans-serif);
 }
@@ -2824,7 +2828,6 @@ input[type="number"]::-webkit-outer-spin-button {
 .modal-content input:focus {
   outline: none;
   border-color: #707FDD;
-  box-shadow: 0 0 5px rgba(112, 127, 221, 0.5);
 }
 
 .modal-content .company-button {
@@ -2832,10 +2835,14 @@ input[type="number"]::-webkit-outer-spin-button {
   color: var(--white, #FFFFFF);
   padding: 10px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-family: var(--font-family, sans-serif);
   transition: background-color 0.3s ease;
+}
+
+.company-button{
+  margin-top: 24px;
 }
 
 .modal-content .company-button:hover {
@@ -2999,4 +3006,27 @@ input[type="number"]::-webkit-outer-spin-button {
   align-items: center;
   gap: 8px;
   margin-bottom: 12px;
+}
+
+#partners-tab-container-form{
+  padding: 24px;
+  background-color: var(--dark-bg);
+  border-radius: 12px;
+  margin: 16px 0 36px 0;
+  gap: 24px;
+  max-width: 60%;
+}
+
+#partners-tab-container-form button{
+  margin-top: 24px;
+}
+
+#partners-tab-container-form input{
+  background-color: var(--dark-hover);
+  
+}
+
+#partners-tab-container-form label{
+  color: var(--dirt-white);
+  font-size: 14px;
 }
