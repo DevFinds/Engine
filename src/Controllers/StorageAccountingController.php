@@ -98,31 +98,68 @@ class StorageAccountingController extends Controller
     public function deleteProducts()
     {
         $input = json_decode(file_get_contents('php://input'), true);
-        if (!$input || !isset($input['product_ids'], $input['warehouse_id'])) {
+        error_log('Входные данные deleteProducts: ' . print_r($input, true));
+    
+        if (!$input || !isset($input['products'], $input['warehouse_id'])) {
+            error_log('Ошибка: Неверные данные запроса');
             echo json_encode(['success' => false, 'message' => 'Неверные данные запроса']);
             return;
         }
-
-        $product_ids = $input['product_ids'];
+    
+        $products = $input['products'];
         $warehouse_id = $input['warehouse_id'];
-
+    
         try {
             $this->getDatabase()->beginTransaction();
-
-            foreach ($product_ids as $product_id) {
-                $this->getDatabase()->delete('Product', [
+    
+            foreach ($products as $product) {
+                $product_id = $product['product_id'];
+                $quantity = $product['quantity'];
+                error_log("Обработка товара ID: $product_id, Количество: $quantity");
+    
+                $existing_product = $this->getDatabase()->first_found_in_db('Product', [
                     'id' => $product_id,
                     'warehouse_id' => $warehouse_id
                 ]);
+    
+                if (!$existing_product) {
+                    error_log("Ошибка: Товар ID $product_id не найден на складе $warehouse_id");
+                    throw new Exception("Товар с ID $product_id не найден на складе");
+                }
+    
+                if ($existing_product['amount'] < $quantity) {
+                    error_log("Ошибка: Недостаточно товара '{$existing_product['name']}' (доступно: {$existing_product['amount']}, запрошено: $quantity)");
+                    throw new Exception("Недостаточно товара '{$existing_product['name']}' для удаления");
+                }
+    
+                $new_amount = $existing_product['amount'] - $quantity;
+                error_log("Новое количество для ID $product_id: $new_amount");
+    
+                if ($new_amount > 0) {
+                    $this->getDatabase()->update('Product', [
+                        'amount' => $new_amount
+                    ], [
+                        'id' => $product_id,
+                        'warehouse_id' => $warehouse_id
+                    ]);
+                } else {
+                    $this->getDatabase()->delete('Product', [
+                        'id' => $product_id,
+                        'warehouse_id' => $warehouse_id
+                    ]);
+                }
             }
-
+    
             $this->getDatabase()->commit();
+            error_log('Удаление успешно завершено');
             echo json_encode(['success' => true]);
         } catch (Exception $e) {
             $this->getDatabase()->rollBack();
+            error_log('Ошибка при удалении: ' . $e->getMessage());
             echo json_encode(['success' => false, 'message' => 'Ошибка при удалении товаров: ' . $e->getMessage()]);
         }
     }
+
 
     public function addIncome()
     {

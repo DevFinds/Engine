@@ -28,14 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Элементы для перемещения
     const moveButtons = document.querySelectorAll('.move-button');
     const movePopup = document.getElementById('warehouse-move-popup');
     const selectedItemsList = document.getElementById('warehouse-selected-items');
     const closeMovePopupButton = document.getElementById('warehouse-close-popup');
     const confirmMoveButton = document.getElementById('warehouse-confirm-move');
 
-    // Элементы для удаления
     const deleteButtons = document.querySelectorAll('.delete-button');
     const deletePopup = document.getElementById('warehouse-delete-popup');
     const deleteItemsList = document.getElementById('warehouse-delete-items');
@@ -46,15 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let selectedItems = {};
     let currentTab = 'warehouseOOO';
 
-    console.log('Найдено кнопок удаления:', deleteButtons.length); // Проверка кнопок
-
-    // Инициализация структуры для хранения товаров
     tabs.forEach(tab => {
         const tabName = tab.getAttribute('data-tab');
         selectedItems[tabName] = [];
     });
 
-    // Обновление текущей вкладки
     tabs.forEach(tab => {
         tab.addEventListener('click', () => {
             currentTab = tab.getAttribute('data-tab');
@@ -62,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Выделение строки при клике
     document.querySelectorAll('[id^="warehouse-table"]').forEach(table => {
         table.addEventListener('click', (event) => {
             const row = event.target.closest('tr');
@@ -86,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Обработчик для кнопок перемещения
     moveButtons.forEach(button => {
         button.addEventListener('click', () => {
             console.log('Кнопка перемещения нажата');
@@ -110,12 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Закрытие попапа перемещения
     closeMovePopupButton.addEventListener('click', () => {
         movePopup.classList.add('hidden');
     });
 
-    // Подтверждение перемещения
     confirmMoveButton.addEventListener('click', () => {
         const updatedItems = [];
         const inputs = selectedItemsList.querySelectorAll('input');
@@ -168,21 +158,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Обработчик для кнопок удаления
     deleteButtons.forEach(button => {
         button.addEventListener('click', () => {
             console.log('Кнопка удаления нажата');
             deleteItemsList.innerHTML = '';
             const tabItems = selectedItems[currentTab];
 
-
             tabItems.forEach(item => {
                 const listItem = document.createElement('li');
-                listItem.textContent = item.name;
+                listItem.innerHTML = `
+                    ${item.name} - ${item.amount} шт.
+                    <input type="number" min="1" max="${item.amount}" value="1" data-id="${item.id}" style="width: 60px;">
+                `;
                 deleteItemsList.appendChild(listItem);
             });
 
-            console.log('Попап удаления должен открыться');
             if (tabItems.length > 0) {
                 deletePopup.classList.remove('hidden');
             } else {
@@ -191,28 +181,56 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Закрытие попапа удаления
     cancelDeleteButton.addEventListener('click', () => {
         console.log('Отмена удаления нажата');
         deletePopup.classList.add('hidden');
     });
 
-    // Подтверждение удаления
     confirmDeleteButton.addEventListener('click', () => {
         console.log('Подтверждение удаления нажато');
-        const tabItems = selectedItems[currentTab];
-        const productIds = tabItems.map(item => item.id);
-
+        const updatedItems = [];
+        const inputs = deleteItemsList.querySelectorAll('input');
+    
+        inputs.forEach(input => {
+            const itemId = input.getAttribute('data-id');
+            const quantity = parseInt(input.value);
+            const item = selectedItems[currentTab].find(i => i.id === itemId);
+            console.log(`Товар ID: ${itemId}, Количество: ${quantity}, Найден: ${!!item}`);
+            if (item && quantity > 0 && quantity <= parseInt(item.amount)) {
+                updatedItems.push({ ...item, quantity });
+            }
+        });
+    
+        console.log('Товары для удаления:', updatedItems);
+    
+        if (updatedItems.length === 0) {
+            alert('Выберите товары и укажите корректное количество.');
+            deletePopup.classList.add('hidden');
+            return;
+        }
+    
+        const productsToDelete = updatedItems.map(item => ({
+            product_id: item.id,
+            quantity: item.quantity
+        }));
+    
+        const warehouse_id = currentTab === 'warehouseOOO' ? 1 : 2;
+        console.log('Отправляемые данные:', { products: productsToDelete, warehouse_id });
+    
         fetch('/admin/dashboard/goods_and_services/deleteProducts', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                product_ids: productIds,
-                warehouse_id: currentTab === 'warehouseOOO' ? 1 : 2
+                products: productsToDelete,
+                warehouse_id: warehouse_id
             })
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log('Ответ сервера:', response.status, response.statusText);
+            return response.json();
+        })
         .then(data => {
+            console.log('Данные ответа:', data);
             if (data.success) {
                 alert('Товары успешно удалены');
                 deletePopup.classList.add('hidden');
@@ -222,8 +240,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
         .catch(error => {
-            console.error('Fetch error:', error);
-            alert('Произошла ошибка при удалении товаров');
+            console.error('Ошибка fetch:', error);
+            alert('Произошла ошибка при удалении товаров: ' + error.message);
         });
     });
 });
