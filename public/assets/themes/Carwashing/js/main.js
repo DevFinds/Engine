@@ -454,7 +454,51 @@ function toggleNoteField(noteFieldId) {
     }
 }
 
+//Код для отчетов
 
+document.getElementById('report_type').addEventListener('change', function() {
+    const type = this.value;
+    document.getElementById('product_select_container').style.display = type === 'product' ? 'block' : 'none';
+    document.getElementById('service_select_container').style.display = type === 'service' ? 'block' : 'none';
+});
 
+function clearForm() {
+    document.getElementById('reportForm').reset();
+    document.getElementById('product_select_container').style.display = 'block';
+    document.getElementById('service_select_container').style.display = 'none';
+}
+
+function toggleSelectionField() {
+    const reportType = document.getElementById('report_type').value;
+    const productField = document.getElementById('product_field');
+    const serviceField = document.getElementById('service_field');
+
+    productField.style.display = reportType === 'product' ? 'block' : 'none';
+    serviceField.style.display = reportType === 'service' ? 'block' : 'none';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const reportTypeSelect = document.getElementById('report_type');
+    const productSelectContainer = document.getElementById('product_select_container');
+    const serviceSelectContainer = document.getElementById('service_select_container');
+
+    // Обработчик изменения типа отчета
+    reportTypeSelect.addEventListener('change', () => {
+        const type = reportTypeSelect.value;
+        productSelectContainer.style.display = type === 'product' ? 'block' : 'none';
+        serviceSelectContainer.style.display = type === 'service' ? 'block' : 'none';
+    });
+
+    // Инициализация при загрузке страницы
+    reportTypeSelect.dispatchEvent(new Event('change'));
+});
+
+// Функция очистки формы
+function clearForm() {
+    document.getElementById('reportForm').reset();
+    const reportTypeSelect = document.getElementById('report_type');
+    reportTypeSelect.value = 'product'; // По умолчанию "Отчет по продуктам"
+    reportTypeSelect.dispatchEvent(new Event('change'));
+}
 
 
