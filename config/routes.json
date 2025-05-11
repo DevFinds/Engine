@@ -560,6 +560,18 @@
                 "id": "[0-9]+"
             },
             "access_level": 2
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/dashboard/reports/get-last-actions",
+            "action": {
+                "controller": "Source\\Controllers\\ReportsController",
+                "method": "getLastActions"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 3
         }
         
         

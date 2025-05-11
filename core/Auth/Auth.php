@@ -57,6 +57,36 @@ class Auth implements AuthInterface
         return null;
     }
 
+    public function getUserByID($id): ?User
+    {
+        if (!$this->check()) {
+            return null;
+        }
+
+        $user = $this->database->first_found_in_db($this->table(), [
+            'id' => $id
+        ]);
+
+        if ($user) {
+            return new User(
+                $user['id'],
+                $user['username'],
+                $user['lastname'],
+                $user[$this->login_field_type()],
+                $user['email'],
+                $user[$this->password()],
+                $user['role'],
+                $user['avatar'],
+                $user['created_at'],
+                $user['updated_at'],
+                $user['phone_number']
+            );
+        }
+
+
+        return null;
+    }
+
     public function getRole(): ?Role
     {
         $role = $this->database->get('roles', ['role_id' => $this->getUser()->Role()]);

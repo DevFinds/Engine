@@ -11,7 +11,6 @@ class LinkNavigationListener implements EventListenerInterface
     public function handle(EventInterface $event): void
     {
         if ($event->getName() === 'link.navigation') {
-           
         }
     }
 }

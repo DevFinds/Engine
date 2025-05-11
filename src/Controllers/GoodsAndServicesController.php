@@ -6,6 +6,8 @@ namespace Source\Controllers;
 use Core\Controller\Controller;
 use Exception;
 use FPDF;
+use Source\Events\LogActionEvent;
+use Source\Listeners\LogActionListener;
 use Source\Services\CompanyService;
 use Source\Services\ProductService;
 use Source\Services\ServiceService;
@@ -25,7 +27,7 @@ class GoodsAndServicesController extends Controller
         $warehouse_service = new WarehouseService($this->getDatabase());
         $product_service = new ProductService($this->getDatabase());
         $service_service = new ServiceService($this->getDatabase());
-        
+
 
 
         $field_error_event = $this->FieldErrorEventDispath('error', 'error', 'error');
@@ -44,6 +46,7 @@ class GoodsAndServicesController extends Controller
 
     public function addNewGood()
     {
+        $this->getEventManager()->addListener('log.action', new LogActionListener());
         $labels = [
             'name' => 'Наименование',
             'amount' => 'Количество',
@@ -106,6 +109,7 @@ class GoodsAndServicesController extends Controller
 
     public function addNewService()
     {
+        $this->getEventManager()->addListener('log.action', new LogActionListener());
         $labels = [
             'name' => 'Наименование',
             'price' => 'Цена',
@@ -147,6 +151,7 @@ class GoodsAndServicesController extends Controller
 
     public function addNewProductSale()
     {
+        $this->getEventManager()->addListener('log.action', new LogActionListener());
         $validation = $this->request()->validate([
             'payment_type' => ['required']
         ], [
@@ -199,7 +204,7 @@ class GoodsAndServicesController extends Controller
             $lineTotal = $price * $amount;
             $grandTotal += $lineTotal;
 
-            
+
 
             // Уменьшаем остаток товара
             $newAmount = max(0, $productRow['amount'] - $amount);
@@ -238,6 +243,16 @@ class GoodsAndServicesController extends Controller
             $this->addCheckItems($checkId, $items);
 
             // Печать чека
+            $payload = [
+                'action_name' => 'Продажа товара',
+                'actor_id' => $this->getAuth()->getUser()->id(),
+                'action_info' => [
+                    'Ссылка на чек' => '/admin/dashboard/check/preview/' . $checkId,
+                    'Кассир' => $this->getAuth()->getRole()->name() . " " . $this->getAuth()->getUser()->username() . " " . $this->getAuth()->getUser()->lastname()
+                ]
+            ];
+            $event = new LogActionEvent($payload);
+            $this->getEventManager()->dispatch($event);
             $this->redirect('/admin/dashboard/check/preview/' . $checkId);
         } catch (Exception $e) {
             $this->session()->set('error', 'Ошибка при создании чека: ' . $e->getMessage());
@@ -247,6 +262,7 @@ class GoodsAndServicesController extends Controller
 
     public function addNewServiceSale()
     {
+        $this->getEventManager()->addListener('log.action', new LogActionListener());
         $validation = $this->request()->validate([
             'employee_id' => ['required'],
             'car_number' => ['required'],
@@ -338,6 +354,16 @@ class GoodsAndServicesController extends Controller
             $this->addCheckItems($checkId, $items);
 
             // Печать чека
+            $payload = [
+                'action_name' => 'Продажа услуги',
+                'actor_id' => $this->getAuth()->getUser()->id(),
+                'action_info' => [
+                    'Ссылка на чек' => '/admin/dashboard/check/preview/' . $checkId,
+                    'Кассир' => $this->getAuth()->getRole()->name() . " " . $this->getAuth()->getUser()->username() . " " . $this->getAuth()->getUser()->lastname()
+                ]
+            ];
+            $event = new LogActionEvent($payload);
+            $this->getEventManager()->dispatch($event);
             $this->redirect('/admin/dashboard/check/preview/' . $checkId);
         } catch (Exception $e) {
             $this->session()->set('error', 'Ошибка при создании чека: ' . $e->getMessage());
@@ -398,6 +424,4 @@ class GoodsAndServicesController extends Controller
             }
         }
     }
-
-    
 }

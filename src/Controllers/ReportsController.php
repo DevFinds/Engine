@@ -8,6 +8,7 @@ use Source\Services\EmployeeService;
 use Source\Services\ProductService;
 use Source\Services\ServiceService;
 use Source\Services\ExcelExporter;
+use Source\Services\LogService;
 
 class ReportsController extends Controller
 {
@@ -79,6 +80,12 @@ class ReportsController extends Controller
             'selectedStartDate' => $selectedStartDate,
             'selectedEndDate' => $selectedEndDate,
         ]);
+    }
+
+    public function getLastActions()
+    {
+        $logService = new LogService($this->getDatabase());
+        return  $logService->getLastActions();
     }
 
     public function exportReport()
