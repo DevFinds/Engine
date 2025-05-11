@@ -26,20 +26,24 @@ class ReportsController extends Controller
             'products' => $products,
             'services' => $services,
             'productReports' => [],
+            'reports' => [],
+            'reportType' => 'product',
+            'selectedId' => '',
+            'selectedStartDate' => '',
+            'selectedEndDate' => '',
         ]);
     }
 
     public function getReport()
     {
         $reportType = $_POST['report_type'] ?? 'product';
-        $selectedProductId = $_POST['product_id'] ?? '';
-        $selectedServiceId = $_POST['service_id'] ?? '';
+        $selectedId = $reportType === 'service' ? ($_POST['service_id'] ?? '') : ($_POST['product_id'] ?? '');
         $selectedStartDate = $_POST['start_date'] ?? '';
         $selectedEndDate = $_POST['end_date'] ?? '';
 
         $filters = [
-            'product_id' => $selectedProductId,
-            'service_id' => $selectedServiceId,
+            'product_id' => $reportType === 'product' ? $selectedId : null,
+            'service_id' => $reportType === 'service' ? $selectedId : null,
             'start_date' => $selectedStartDate,
             'end_date' => $selectedEndDate,
         ];
@@ -50,9 +54,19 @@ class ReportsController extends Controller
             : $reportService->generateProductReport($filters);
 
         $formattedReports = array_map(function ($r) use ($reportType) {
+            if ($reportType === 'service') {
+                return [
+                    'name' => htmlspecialchars($r->serviceName()),
+                    'car_brand' => htmlspecialchars($r->carBrand()),
+                    'car_number' => htmlspecialchars($r->carNumber()),
+                    'sale_date' => htmlspecialchars($r->saleDate()),
+                    'payment_method' => htmlspecialchars($r->paymentMethod()),
+                    'total' => number_format($r->total(), 2),
+                ];
+            }
             return [
-                'name' => $reportType === 'service' ? htmlspecialchars($r->serviceName()) : htmlspecialchars($r->productName()),
-                'quantity' => $reportType === 'service' ? 1 : $r->quantity(),
+                'product_name' => htmlspecialchars($r->productName()),
+                'quantity' => $r->quantity(),
                 'price' => number_format($r->price(), 2),
                 'total' => number_format($r->total(), 2),
                 'employee_name' => htmlspecialchars($r->employeeName()),
@@ -72,10 +86,10 @@ class ReportsController extends Controller
             'employees' => $employees,
             'products' => $products,
             'services' => $services,
-            'productReports' => $formattedReports,
+            'productReports' => $reportType === 'product' ? $formattedReports : [],
+            'reports' => $formattedReports,
             'reportType' => $reportType,
-            'selectedProductId' => $selectedProductId,
-            'selectedServiceId' => $selectedServiceId,
+            'selectedId' => $selectedId,
             'selectedStartDate' => $selectedStartDate,
             'selectedEndDate' => $selectedEndDate,
         ]);
@@ -86,8 +100,8 @@ class ReportsController extends Controller
         try {
             $reportType = $_POST['report_type'] ?? 'product';
             $filters = [
-                'product_id' => $_POST['product_id'] ?? null,
-                'service_id' => $_POST['service_id'] ?? null,
+                'product_id' => $reportType === 'product' ? ($_POST['product_id'] ?? null) : null,
+                'service_id' => $reportType === 'service' ? ($_POST['service_id'] ?? null) : null,
                 'start_date' => $_POST['start_date'] ?? null,
                 'end_date' => $_POST['end_date'] ?? null,
             ];
@@ -98,9 +112,19 @@ class ReportsController extends Controller
                 : $reportService->generateProductReport($filters);
 
             $rows = array_map(function ($r) use ($reportType) {
+                if ($reportType === 'service') {
+                    return [
+                        'name' => $r->serviceName(),
+                        'car_brand' => $r->carBrand(),
+                        'car_number' => $r->carNumber(),
+                        'sale_date' => $r->saleDate(),
+                        'payment_method' => $r->paymentMethod(),
+                        'total' => $r->total(),
+                    ];
+                }
                 return [
-                    'name' => $reportType === 'service' ? $r->serviceName() : $r->productName(),
-                    'quantity' => $reportType === 'service' ? 1 : $r->quantity(),
+                    'product_name' => $r->productName(),
+                    'quantity' => $r->quantity(),
                     'price' => $r->price(),
                     'total' => $r->total(),
                     'employee_name' => $r->employeeName(),
@@ -108,8 +132,15 @@ class ReportsController extends Controller
                 ];
             }, $reports);
 
-            $columns = [
-                ['header' => $reportType === 'service' ? 'Услуга' : 'Товар', 'key' => 'name', 'format' => 'string'],
+            $columns = $reportType === 'service' ? [
+                ['header' => 'Услуга', 'key' => 'name', 'format' => 'string'],
+                ['header' => 'Марка машины', 'key' => 'car_brand', 'format' => 'string'],
+                ['header' => 'Номер', 'key' => 'car_number', 'format' => 'string'],
+                ['header' => 'Дата', 'key' => 'sale_date', 'format' => 'string'],
+                ['header' => 'Тип оплаты', 'key' => 'payment_method', 'format' => 'string'],
+                ['header' => 'Сумма', 'key' => 'total', 'format' => 'number', 'number_format' => '#,##0.00'],
+            ] : [
+                ['header' => 'Товар', 'key' => 'product_name', 'format' => 'string'],
                 ['header' => 'Кол-во', 'key' => 'quantity', 'format' => 'number', 'number_format' => '0'],
                 ['header' => 'Цена', 'key' => 'price', 'format' => 'number', 'number_format' => '#,##0.00'],
                 ['header' => 'Сумма', 'key' => 'total', 'format' => 'number', 'number_format' => '#,##0.00'],
