@@ -67,8 +67,10 @@ $suppliers = $data['suppliers']->getAllFromDB();
                                 </div>
                             </li>
                             <div class="warehouse-move-label"><label>Переместить из склада</label></div>
-                            <button class="warehouse-button move-button">Переместить на склад ИП</button>
-                            <button class="warehouse-button delete-button">Удалить выбранные товары</button>
+                            <div class="warehouse-action-buttons">
+                                <button class="warehouse-button move-button">Переместить на склад ИП</button>
+                                <button class="warehouse-button delete-button">Удалить выбранные товары</button>
+                            </div>
                         </ul>
 
 
@@ -133,8 +135,10 @@ $suppliers = $data['suppliers']->getAllFromDB();
                                 </div>
                             </li>
                             <div class="warehouse-move-label"><label>Переместить из склада</label></div>
-                            <button class="warehouse-button move-button">Переместить на склад ООО</button>
-                            <button class="warehouse-button delete-button">Удалить выбранные товары</button>
+                            <div class="warehouse-action-buttons">
+                                <button class="warehouse-button move-button">Переместить на склад ООО</button>
+                                <button class="warehouse-button delete-button">Удалить выбранные товары</button>
+                            </div>
                         </ul>
 
                         <ul class="warehouse-second-column">
