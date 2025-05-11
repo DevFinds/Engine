@@ -19,25 +19,26 @@ class RegisterController extends Controller
 
     public function register()
     {
-        $validation = $this->request()->validate([
-            'email' => ['required', 'email', 'already_exist'],
-            'login' => ['required', 'min:3', 'max:25', 'already_exist'],
-            'password' => ['required', 'min:6'],
-            'user_name' => ['required'],
-            'user_lastname' => ['required'],
-            'phone_number' => ['required'],
-            'privacy-policy' => ['required'],
-        ],
-        [
-            'email' => 'Электронная почта',
-            'login' => 'Логин',
-            'password' => 'Пароль',
-            'user_name' => 'Имя',
-            'user_lastname' => 'Фамилия',
-            'phone_number' => 'Номер телефона',
-            'privacy-policy' => 'Согласие с политикой конфиденциальности',
-        ]
-    );
+        $validation = $this->request()->validate(
+            [
+                'email' => ['required', 'email', 'already_exist'],
+                'login' => ['required', 'min:3', 'max:25', 'already_exist'],
+                'password' => ['required', 'min:6'],
+                'user_name' => ['required'],
+                'user_lastname' => ['required'],
+                'phone_number' => ['required'],
+                'privacy-policy' => ['required'],
+            ],
+            [
+                'email' => 'Электронная почта',
+                'login' => 'Логин',
+                'password' => 'Пароль',
+                'user_name' => 'Имя',
+                'user_lastname' => 'Фамилия',
+                'phone_number' => 'Номер телефона',
+                'privacy-policy' => 'Согласие с политикой конфиденциальности',
+            ]
+        );
 
         if (!$validation) {
 
@@ -47,10 +48,9 @@ class RegisterController extends Controller
 
             dd('Validation failed', $this->request()->errors());
             $this->redirect('/register');
-            
         }
 
-        try{
+        try {
             $userID = $this->getDatabase()->insert('users', [
                 'username' => $this->request()->input('user_name'),
                 'lastname' => $this->request()->input('user_lastname'),
@@ -67,10 +67,9 @@ class RegisterController extends Controller
                 $this->session()->set('error', 'Ошибка регистрации. Попробуйте еще раз.');
                 $this->redirect('/register');
             }
-        }
-        catch (\Exception $e) {
-            
-            
+        } catch (\Exception $e) {
+
+
             //$this->redirect('/register');
             //dd('Error', $e->getMessage());
         }
