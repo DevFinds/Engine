@@ -35,9 +35,10 @@
                             <form class="financial-accounting-first__create-forms" id="reportForm" method="POST" action="/admin/dashboard/reports/getReport">
                                 <ul class="financial-accounting-first__create-first-column">
                                     <li>
-                                        <select class="financial-accounting-first__create-select" name="report_type">
+                                        <select class="financial-accounting-first__create-select" name="report_type" id="report_type">
                                             <option value="employee">Отчет по сотрудникам</option>
                                             <option value="product" selected>Отчет по продуктам</option>
+                                            <option value="service">Отчет по услугам</option>
                                         </select>
                                     </li>
                                     <li>
@@ -45,11 +46,19 @@
                                     </li>
                                 </ul>
                                 <ul class="financial-accounting-first__create-second-column">
-                                    <li>
-                                        <select class="financial-accounting-first__create-select" name="product_id">
-                                            <option value="">Все</option>
+                                    <li id="product_select_container" style="display: block;">
+                                        <select class="financial-accounting-first__create-select" name="product_id" id="product_id">
+                                            <option value="">Все продукты</option>
                                             <?php foreach ($products as $product): ?>
                                                 <option value="<?= htmlspecialchars($product['id']) ?>"><?= htmlspecialchars($product['name']) ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </li>
+                                    <li id="service_select_container" style="display: none;">
+                                        <select class="financial-accounting-first__create-select" name="service_id" id="service_id">
+                                            <option value="">Все услуги</option>
+                                            <?php foreach ($services as $service): ?>
+                                                <option value="<?= htmlspecialchars($service['id']) ?>"><?= htmlspecialchars($service['name']) ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </li>
@@ -64,10 +73,11 @@
                             </form>
                             <?php if (!empty($productReports)): ?>
                                 <form action="/admin/dashboard/reports/export" method="POST" id="exportForm" style="margin-top:1em;">
-                                    <!-- Заполняем скрытые поля теми же фильтрами -->
-                                    <input type="hidden" name="product_id" value="<?= htmlspecialchars($selectedProductId) ?>">
-                                    <input type="hidden" name="start_date" value="<?= htmlspecialchars($selectedStartDate) ?>">
-                                    <input type="hidden" name="end_date" value="<?= htmlspecialchars($selectedEndDate) ?>">
+                                    <input type="hidden" name="report_type" value="<?= htmlspecialchars($reportType ?? 'product') ?>">
+                                    <input type="hidden" name="product_id" value="<?= htmlspecialchars($selectedProductId ?? '') ?>">
+                                    <input type="hidden" name="service_id" value="<?= htmlspecialchars($selectedServiceId ?? '') ?>">
+                                    <input type="hidden" name="start_date" value="<?= htmlspecialchars($selectedStartDate ?? '') ?>">
+                                    <input type="hidden" name="end_date" value="<?= htmlspecialchars($selectedEndDate ?? '') ?>">
                                     <button type="submit" class="financial-accounting-first__button-export">
                                         Экспортировать в Excel
                                     </button>
@@ -91,40 +101,27 @@
                                     </tr>
                                 </thead>
                                 <tbody id="productReportBody">
-
-                                    <?php
-
-                                    if (empty($productReports)) {
-                                    ?>
+                                    <?php if (empty($productReports)): ?>
                                         <tr>
                                             <td colspan="6">Выберите параметры и нажмите "Сформировать" для отображения отчета</td>
                                         </tr>
-                                        <?php
-                                    } else {
-                                        foreach ($productReports as $productReport) {
-                                        ?>
+                                    <?php else: ?>
+                                        <?php foreach ($productReports as $report): ?>
                                             <tr>
-                                                <td><?= htmlspecialchars($productReport['product_name']) ?></td>
-                                                <td><?= htmlspecialchars($productReport['quantity']) ?></td>
-                                                <td><?= htmlspecialchars($productReport['price']) ?></td>
-                                                <td><?= htmlspecialchars($productReport['total']) ?></td>
-                                                <td><?= htmlspecialchars($productReport['employee_name']) ?></td>
-                                                <td><?= htmlspecialchars($productReport['sale_date']) ?></td>
+                                                <td><?= htmlspecialchars($report['name']) ?></td>
+                                                <td><?= htmlspecialchars($report['quantity']) ?></td>
+                                                <td><?= htmlspecialchars($report['price']) ?></td>
+                                                <td><?= htmlspecialchars($report['total']) ?></td>
+                                                <td><?= htmlspecialchars($report['employee_name']) ?></td>
+                                                <td><?= htmlspecialchars($report['sale_date']) ?></td>
                                             </tr>
-                                    <?php
-                                        }
-                                    }
-                                    ?>
-
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-
-
-
-
             </div>
 
             <div class="tab-content" id="reportsContainer" style="display: none;">

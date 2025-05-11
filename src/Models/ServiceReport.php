@@ -1,30 +1,59 @@
 <?php
 
-
 namespace Source\Models;
-class ServiceReport {
+
+class ServiceReport
+{
+    private string $serviceName;
+    private int $quantity;
+    private float $price;
+    private float $total;
+    private string $employeeName;
+    private string $saleDate;
+
     public function __construct(
-        private int $id,
-        private string $serviceName,
-        private ?string $description,
-        private float $price,
-        private ?string $category,
-        private ?string $carNumber,
-        private ?string $carBrand,
-        private string $saleDate,
-        private float $total,
-        private ?string $employeeName,
-        private ?string $clientName
-    ) {}
-    public function id() { return $this->id; }
-    public function serviceName() { return $this->serviceName; }
-    public function description() { return $this->description; }
-    public function price() { return $this->price; }
-    public function category() { return $this->category; }
-    public function carNumber() { return $this->carNumber; }
-    public function carBrand() { return $this->carBrand; }
-    public function saleDate() { return $this->saleDate; }
-    public function total() { return $this->total; }
-    public function employeeName() { return $this->employeeName; }
-    public function clientName() { return $this->clientName; }
+        string $serviceName,
+        int $quantity,
+        float $price,
+        float $total,
+        string $employeeName,
+        string $saleDate
+    ) {
+        $this->serviceName = $serviceName;
+        $this->quantity = $quantity;
+        $this->price = $price;
+        $this->total = $total;
+        $this->employeeName = $employeeName;
+        $this->saleDate = $saleDate;
+    }
+
+    public function serviceName(): string
+    {
+        return $this->serviceName;
+    }
+
+    public function quantity(): int
+    {
+        return $this->quantity;
+    }
+
+    public function price(): float
+    {
+        return $this->price;
+    }
+
+    public function total(): float
+    {
+        return $this->total;
+    }
+
+    public function employeeName(): string
+    {
+        return $this->employeeName;
+    }
+
+    public function saleDate(): string
+    {
+        return $this->saleDate;
+    }
 }
