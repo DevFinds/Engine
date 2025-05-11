@@ -22,6 +22,7 @@
                 <div class="tabs">
                     <div class="tab active" data-tab="create-report" onclick="switchTab('create-report')">Создать отчет</div>
                     <div class="tab" data-tab="reports" onclick="switchTab('reports')">Отчеты</div>
+                    <div class="tab" data-tab="last-actions" onclick="switchTab('last-actions')">Последние действия</div>
                 </div>
             </div>
 
@@ -178,6 +179,52 @@
                     </div>
                 </div>
             </div>
+
+            <div class="tab-content" id="last-actionsContainer" style="display: none;">
+                <div class="financial-accounting-first__list">
+                            <table id="productReportTable">
+                                <thead>
+                                    <tr>
+                                        <th>Сотрудник</th>
+                                        <th>Кол-во</th>
+                                        <th>Цена</th>
+                                        <th>Сумма</th>
+                                        <th>Сотрудник</th>
+                                        <th>Дата</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productReportBody">
+
+                                    <?php
+
+                                    if (empty($productReports)) {
+                                    ?>
+                                        <tr>
+                                            <td colspan="6">Выберите параметры и нажмите "Сформировать" для отображения отчета</td>
+                                        </tr>
+                                        <?php
+                                    } else {
+                                        foreach ($productReports as $productReport) {
+                                        ?>
+                                            <tr>
+                                                <td><?= htmlspecialchars($productReport['product_name']) ?></td>
+                                                <td><?= htmlspecialchars($productReport['quantity']) ?></td>
+                                                <td><?= htmlspecialchars($productReport['price']) ?></td>
+                                                <td><?= htmlspecialchars($productReport['total']) ?></td>
+                                                <td><?= htmlspecialchars($productReport['employee_name']) ?></td>
+                                                <td><?= htmlspecialchars($productReport['sale_date']) ?></td>
+                                            </tr>
+                                    <?php
+                                        }
+                                    }
+                                    ?>
+
+                                </tbody>
+                            </table>
+                        </div>
+            </div>
+
+            
         </div>
     </div>
 </div>

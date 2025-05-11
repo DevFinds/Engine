@@ -5,9 +5,10 @@ namespace Source\Services;
 
 use Core\Database\DatabaseInterface;
 use Source\Models\Debt;
+
 class DebtService
 {
-	public function __construct(
+    public function __construct(
         private DatabaseInterface $db
     ) {}
 
@@ -21,7 +22,7 @@ class DebtService
                 $debt['sum'],
                 $debt['start_date'],
                 $debt['end_date'],
-                $debt['company_id']
+                $debt['supplier_id']
             );
         }, $debts);
     }
