@@ -13,6 +13,8 @@
  * @var string $selectedStartDate
  * @var string $selectedEndDate
  */
+
+
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -27,7 +29,7 @@
                 <div class="tabs">
                     <div class="tab active" data-tab="create-report" onclick="switchTab('create-report')">Создать отчет</div>
                     <div class="tab" data-tab="reports" onclick="switchTab('reports')">Отчеты</div>
-                    <div class="tab" data-tab="last-actions" onclick="switchTab('last-actions')">Последние действия</div>
+                    <div class="tab" id="lastActionsTab" data-tab="last-actions" onclick="switchTab('last-actions')">Последние действия</div>
                 </div>
             </div>
 
@@ -208,40 +210,103 @@
 
             <div class="tab-content" id="last-actionsContainer" style="display: none;">
                 <div class="financial-accounting-first__list">
-                    <table id="productReportTable">
+                    <table id="lastActionsTable">
                         <thead>
                             <tr>
-                                <th>Наименование</th>
-                                <th>Кол-во</th>
-                                <th>Цена</th>
-                                <th>Сумма</th>
-                                <th>Сотрудник</th>
+                                <th>ID Сотрудника</th>
+                                <th>Тип действия</th>
+                                <th>Информация</th>
                                 <th>Дата</th>
                             </tr>
                         </thead>
-                        <tbody id="productReportBody">
-                            <?php if (empty($productReports)): ?>
-                                <tr>
-                                    <td colspan="6">Выберите параметры и нажмите "Сформировать" для отображения отчета</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($productReports as $productReport): ?>
-                                    <tr>
-                                        <td><?= htmlspecialchars($productReport['product_name'] ?? '') ?></td>
-                                        <td><?= htmlspecialchars($productReport['quantity'] ?? '') ?></td>
-                                        <td><?= htmlspecialchars($productReport['price'] ?? '') ?></td>
-                                        <td><?= htmlspecialchars($productReport['total'] ?? '') ?></td>
-                                        <td><?= htmlspecialchars($productReport['employee_name'] ?? '') ?></td>
-                                        <td><?= htmlspecialchars($productReport['sale_date'] ?? '') ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                        <tbody id="lastActionsBody">
+                            <!-- JS вставит сюда <tr>...<tr/> -->
                         </tbody>
                     </table>
+                    <div id="lastActionsLoader" style="display: none;">Загрузка последних действий…</div>
+                    <div id="lastActionsError" style="color: red; display: none;"></div>
                 </div>
             </div>
+
         </div>
     </div>
 </div>
+
+<script>
+    // Обработка табов
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(c => c.style.display = 'none');
+        document.getElementById(tabName + 'Container').style.display = 'block';
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const tab = document.getElementById('lastActionsTab');
+        const tbody = document.getElementById('lastActionsBody');
+        const loader = document.getElementById('lastActionsLoader');
+        const errorBox = document.getElementById('lastActionsError');
+
+        tab.addEventListener('click', async () => {
+            switchTab('last-actions');
+
+            if (tbody.children.length > 0) return;
+
+            loader.style.display = 'block';
+            errorBox.style.display = 'none';
+
+            try {
+                const response = await fetch('/admin/dashboard/reports/get-last-actions');
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const actions = await response.json();
+                loader.style.display = 'none';
+
+                if (!actions.length) {
+                    tbody.innerHTML = '<tr><td colspan="4">Нет записей</td></tr>';
+                    return;
+                }
+
+                const rows = actions.map(act => {
+                    const employee = act.actor_name || act.actor
+                    const type = act.action_name;
+
+                    let infoList = '';
+                    try {
+                        const infoObj = typeof act.action_info === 'string' ?
+                            JSON.parse(act.action_info) :
+                            act.action_info;
+                        infoList = Object.entries(infoObj)
+                            .map(([key, val]) => `<li><strong>${key}:</strong> ${val}</li>`)
+                            .join('');
+                    } catch {
+                        infoList = `<li>${act.action_info}</li>`;
+                    }
+
+                    const infoCell = `
+          <details>
+            <summary>Показать детали</summary>
+            <ul>${infoList}</ul>
+          </details>`;
+
+                    const date = new Date(act.action_date).toLocaleString();
+
+                    return `
+          <tr>
+            <td>${employee}</td>
+            <td>${type}</td>
+            <td>${infoCell}</td>
+            <td>${date}</td>
+          </tr>`;
+                }).join('');
+
+                tbody.innerHTML = rows;
+            } catch (err) {
+                loader.style.display = 'none';
+                errorBox.textContent = 'Ошибка загрузки: ' + err.message;
+                errorBox.style.display = 'block';
+            }
+        });
+    });
+</script>
 
 <?php $render->component('dashboard_footer'); ?>
