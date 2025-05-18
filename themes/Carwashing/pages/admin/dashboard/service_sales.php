@@ -11,7 +11,7 @@ use \Source\Models\Service;
 
 $user = $this->auth->getUser();
 $services = $data['service']->getAllFromDB();
-$employees = $data['employees']->getAllFromDB();
+$users = $data['users']->getAllFromDB();
 
 // Товары
 $product_service = $data['products'];
@@ -79,11 +79,11 @@ $services_array = $data['service']->getAllFromDBAsArray();
                 <div class="about-service-forms">
                     <ul class="about-service-forms-first-column">
                         <li>
-                            <label class="about-service-form-label">Сотрудник</label>
+                            <label class="about-service-form-label">Испольнитель</label>
                             <select class="about-service-form" name="employee_id" required>
-                                <option disabled selected>Выбрать сотрудника</option>
-                                <?php foreach ($employees as $employee_model) : ?>
-                                    <option value="<?= $employee_model->id() ?>"><?= $employee_model->name() ?></option>
+                                <option disabled selected>Выбрать исполнителя</option>
+                                <?php foreach ($users as $user_model) : ?>
+                                    <option value="<?= $user_model->id() ?>"><?= $user_model->username() ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </li>
