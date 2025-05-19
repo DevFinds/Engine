@@ -3,6 +3,8 @@
 namespace Source\Controllers;
 
 use Core\Controller\Controller;
+use Source\Events\LogActionEvent;
+use Source\Listeners\LogActionListener;
 use Source\Services\ReportService;
 use Source\Services\EmployeeService;
 use Source\Services\ProductService;
@@ -49,6 +51,8 @@ class ReportsController extends Controller
             'end_date' => $selectedEndDate,
         ];
 
+        $this->getEventManager()->addListener('log.action', new LogActionListener());
+
         $reportService = new ReportService($this->getDatabase());
         $reports = $reportType === 'service'
             ? $reportService->generateServiceReport($filters)
@@ -82,6 +86,22 @@ class ReportsController extends Controller
         $employees = $employeeService->getAllFromDB();
         $products = $productService->getAllFromDBAllSuppliers();
         $services = $serviceService->getAllFromDBAsArray();
+
+        $payload = [
+            'action_name' => 'Создан отчет',
+            'actor_id' => $this->getAuth()->getUser()->id(),
+            'action_info' => [
+                'Отчет' => $reportType,
+                'Дата создания' => date('Y-m-d H:i:s'),
+                'Фильтры' => json_encode($filters),
+                'Количество записей' => count($formattedReports),
+                'Тип пользователя' => $this->getAuth()->getRole()->name(),
+                'ID пользователя' => $this->getAuth()->getUser()->id(),
+                'Пользователь' => $this->getAuth()->getRole()->name() . " " . $this->getAuth()->getUser()->username() . " " . $this->getAuth()->getUser()->lastname()
+            ]
+        ];
+        $event = new LogActionEvent($payload);
+        $this->getEventManager()->dispatch($event);
 
         $this->render('/admin/dashboard/reports', [
             'employees' => $employees,
@@ -139,6 +159,8 @@ class ReportsController extends Controller
                 ];
             }, $reports);
 
+            $this->getEventManager()->addListener('log.action', new LogActionListener());
+
             $columns = $reportType === 'service' ? [
                 ['header' => 'Услуга', 'key' => 'name', 'format' => 'string'],
                 ['header' => 'Марка машины', 'key' => 'car_brand', 'format' => 'string'],
@@ -160,6 +182,22 @@ class ReportsController extends Controller
                 $columns,
                 $rows
             );
+            $payload = [
+                'action_name' => 'Экспорт отчета',
+                'actor_id' => $this->getAuth()->getUser()->id(),
+                'action_info' => [
+                    'Отчет' => $reportType,
+                    'Фильтры' => json_encode($filters),
+                    'Дата экспорта' => date('Y-m-d H:i:s'),
+                    'IP' => $_SERVER['REMOTE_ADDR'],
+                    'Браузер' => $_SERVER['HTTP_USER_AGENT'],
+                    'Операционная система' => php_uname(),
+                    'Тип экспорта' => 'Excel',
+                    'Пользователь' => $this->getAuth()->getRole()->name() . " " . $this->getAuth()->getUser()->username() . " " . $this->getAuth()->getUser()->lastname()
+                ]
+            ];
+            $event = new LogActionEvent($payload);
+            $this->getEventManager()->dispatch($event);
             $exporter->export();
         } catch (\Exception $e) {
             error_log($e->getMessage());
