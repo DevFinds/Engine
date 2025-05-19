@@ -101,6 +101,22 @@ class GoodsAndServicesController extends Controller
                 'warehouse_id' => $this->request()->input('warehouse_id'),
                 'description' => $this->request()->input('description')
             ]);
+
+            $payload = [
+                'action_name' => 'Добавление товара',
+                'actor_id' => $this->getAuth()->getUser()->id(),
+                'action_info' => [
+                    'Товар' => $this->request()->input('name'),
+                    'Количество' => $this->request()->input('amount'),
+                    'Склад' => $this->request()->input('warehouse_id'),
+                    'Поставщик' => $this->request()->input('supplier_id'),
+                    'Ед. изм.' => $this->request()->input('unit_measurement'),
+                    'Дата создания' => $this->request()->input('created_at'),
+                    'Пользователь' => $this->getAuth()->getRole()->name() . " " . $this->getAuth()->getUser()->username() . " " . $this->getAuth()->getUser()->lastname()
+                ]
+            ];
+            $event = new LogActionEvent($payload);
+            $this->getEventManager()->dispatch($event);
         }
 
         $this->redirect('/admin/dashboard/goods_and_services');
@@ -145,6 +161,19 @@ class GoodsAndServicesController extends Controller
             'category' => $this->request()->input('category')
         ]);
 
+        $payload = [
+            'action_name' => 'Добавление услуги',
+            'actor_id' => $this->getAuth()->getUser()->id(),
+            'action_info' => [
+                'Услуга' => $this->request()->input('name'),
+                'Цена' => $this->request()->input('price'),
+                'Категория' => $this->request()->input('category'),
+                'Описание' => $this->request()->input('description'),
+                'Пользователь' => $this->getAuth()->getRole()->name() . " " . $this->getAuth()->getUser()->username() . " " . $this->getAuth()->getUser()->lastname()
+            ]
+        ];
+        $event = new LogActionEvent($payload);
+        $this->getEventManager()->dispatch($event);
         $this->redirect('/admin/dashboard/goods_and_services');
     }
 
