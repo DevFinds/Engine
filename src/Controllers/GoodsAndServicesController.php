@@ -82,7 +82,6 @@ class GoodsAndServicesController extends Controller
             'warehouse_id' => $this->request()->input('warehouse_id')
         ]);
 
-
         if ($existingProduct) {
             $this->getDatabase()->update('Product', [
                 'amount' => $existingProduct['amount'] + $this->request()->input('amount')

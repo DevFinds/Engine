@@ -18,34 +18,31 @@ class ReportService
 
         $query = "
         SELECT 
-            ci.name          AS product_name,
-            ci.quantity      AS quantity,
-            ci.price         AS price,
-            ci.total         AS total,
-            u.username       AS employee_name,
-            c.date           AS sale_date
-        FROM checks AS c
-        JOIN check_items AS ci 
-          ON ci.check_id = c.id
-        JOIN users AS u 
-          ON c.operator_name COLLATE utf8mb4_unicode_ci = u.username COLLATE utf8mb4_unicode_ci
-        JOIN Product AS p 
-          ON ci.name COLLATE utf8mb4_unicode_ci = p.name COLLATE utf8mb4_unicode_ci
-        WHERE c.report_type = 'product'
+            check_items.name AS product_name,
+            check_items.quantity AS quantity,
+            check_items.price AS price,
+            check_items.total AS total,
+            users.username AS employee_name,
+            checks.date AS sale_date
+        FROM checks
+        JOIN check_items ON check_items.check_id = checks.id
+        JOIN users ON checks.operator_name COLLATE utf8mb4_unicode_ci = users.username COLLATE utf8mb4_unicode_ci
+        JOIN Product ON check_items.name COLLATE utf8mb4_unicode_ci = Product.name COLLATE utf8mb4_unicode_ci
+        WHERE checks.report_type = 'product'
     ";
 
         $params = [];
-        if ($filters['product_id'] ?? null) {
-            $query .= " AND p.id = :product_id";
-            $params['product_id'] = $filters['product_id'];
+        if ($productId) {
+            $query .= " AND Product.id = :product_id";
+            $params['product_id'] = $productId;
         }
-        if (($filters['start_date'] ?? null) && ($filters['end_date'] ?? null)) {
-            $query .= " AND c.date BETWEEN :start_date AND :end_date";
-            $params['start_date'] = $filters['start_date'];
-            $params['end_date'] = $filters['end_date'];
+        if ($startDate && $endDate) {
+            $query .= " AND checks.date BETWEEN :start_date AND :end_date";
+            $params['start_date'] = $startDate;
+            $params['end_date'] = $endDate;
         }
 
-        $query .= " ORDER BY c.date DESC";
+        $query .= " ORDER BY checks.date DESC";
 
         try {
             $reports = $this->db->query($query, $params);
@@ -74,33 +71,42 @@ class ReportService
 
         $query = "
         SELECT 
-            s.name AS service_name,
-            1 AS quantity,  -- Услуги всегда в количестве 1
-            s.price AS price,
-            s.price AS total,
-            u.username AS employee_name,
-            c.sale_date AS sale_date
-        FROM Service_Sale AS c
-        JOIN Service AS s ON c.service_id = s.id
-        JOIN users AS u ON c.employee_id = u.id
-        WHERE c.service_id IS NOT NULL
+            Service.name AS name,
+            checks.car_brand AS car_brand,
+            checks.car_number AS car_number,
+            checks.date AS sale_date,
+            CASE 
+                WHEN checks.cash > 0 AND checks.card <= 0 THEN 'cash'
+                WHEN checks.card > 0 AND checks.cash <= 0 THEN 'card'
+                WHEN checks.cash > 0 AND checks.card > 0 THEN 'cash'
+                ELSE 'unknown'
+            END AS payment_method,
+            check_items.total AS total
+        FROM checks
+        JOIN check_items ON check_items.check_id = checks.id
+        JOIN Service ON check_items.name COLLATE utf8mb4_unicode_ci = Service.name COLLATE utf8mb4_unicode_ci
+        WHERE checks.report_type = 'service'
     ";
 
         $params = [];
         if ($serviceId) {
-            $query .= " AND s.id = :service_id";
+            $query .= " AND Service.id = :service_id";
             $params['service_id'] = $serviceId;
         }
         if ($startDate && $endDate) {
-            $query .= " AND c.sale_date BETWEEN :start_date AND :end_date";
+            $query .= " AND checks.date BETWEEN :start_date AND :end_date";
             $params['start_date'] = $startDate;
             $params['end_date'] = $endDate;
         }
 
-        $query .= " ORDER BY c.sale_date DESC";
+        $query .= " ORDER BY checks.date DESC";
 
         try {
             $reports = $this->db->query($query, $params);
+            error_log('Service report query executed. Rows returned: ' . count($reports));
+            if (empty($reports)) {
+                error_log('No data returned for service report. Query: ' . $query . ' Params: ' . json_encode($params));
+            }
         } catch (\Exception $e) {
             error_log('SQL Error: ' . $e->getMessage());
             return [];
@@ -108,12 +114,12 @@ class ReportService
 
         return array_map(function ($report) {
             return new ServiceReport(
-                $report['service_name'],
-                1,  // Количество всегда 1
-                $report['price'],
-                $report['total'],
-                $report['employee_name'],
-                $report['sale_date']
+                $report['name'],
+                $report['car_brand'] ?? '',
+                $report['car_number'] ?? '',
+                $report['sale_date'],
+                $report['payment_method'],
+                $report['total'] ?? 0.0
             );
         }, $reports);
     }

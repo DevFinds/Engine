@@ -5,26 +5,26 @@ namespace Source\Models;
 class ServiceReport
 {
     private string $serviceName;
-    private int $quantity;
-    private float $price;
-    private float $total;
-    private string $employeeName;
+    private string $carBrand;
+    private string $carNumber;
     private string $saleDate;
+    private string $paymentMethod;
+    private float $total;
 
     public function __construct(
         string $serviceName,
-        int $quantity,
-        float $price,
-        float $total,
-        string $employeeName,
-        string $saleDate
+        string $carBrand,
+        string $carNumber,
+        string $saleDate,
+        string $paymentMethod,
+        float $total
     ) {
         $this->serviceName = $serviceName;
-        $this->quantity = $quantity;
-        $this->price = $price;
-        $this->total = $total;
-        $this->employeeName = $employeeName;
+        $this->carBrand = $carBrand;
+        $this->carNumber = $carNumber;
         $this->saleDate = $saleDate;
+        $this->paymentMethod = $paymentMethod;
+        $this->total = $total;
     }
 
     public function serviceName(): string
@@ -32,28 +32,28 @@ class ServiceReport
         return $this->serviceName;
     }
 
-    public function quantity(): int
+    public function carBrand(): string
     {
-        return $this->quantity;
+        return $this->carBrand;
     }
 
-    public function price(): float
+    public function carNumber(): string
     {
-        return $this->price;
-    }
-
-    public function total(): float
-    {
-        return $this->total;
-    }
-
-    public function employeeName(): string
-    {
-        return $this->employeeName;
+        return $this->carNumber;
     }
 
     public function saleDate(): string
     {
         return $this->saleDate;
+    }
+
+    public function paymentMethod(): string
+    {
+        return $this->paymentMethod;
+    }
+
+    public function total(): float
+    {
+        return $this->total;
     }
 }

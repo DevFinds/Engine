@@ -53,18 +53,26 @@ $user = $this->auth->getUser();
             <div class="tab-content" id="goodsContainer">
                 <div class="create-goods-container">
                     <p>Создать позицию товара</p>
+                    <?php if ($session->has('error')): ?>
+                        <p style="color: red;"><?php echo $session->get('error'); $session->remove('error'); ?></p>
+                    <?php endif; ?>
+                    <?php foreach (['name', 'amount', 'created_at', 'unit_measurement', 'purchase_price', 'sale_price', 'supplier_id', 'warehouse_id'] as $field): ?>
+                        <?php if ($session->has($field)): ?>
+                            <p style="color: red;"><?php echo implode(', ', $session->get($field)); $session->remove($field); ?></p>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                     <form class="goods-form-section" action="/admin/dashboard/goods_and_services/addNewGood" method="post">
                         <div class="goods-form-main-fields">
                             <label for="" class="goods-form-main-fields-label">Основные поля</label>
                             <div class="goods-form-main-fields-inputs">
                                 <ul class="goods-form-main-fields-column">
-                                    <li><input type="text" name="name" placeholder="Название"></li>
-                                    <li><input type="number" name="amount" placeholder="Количество"></li>
+                                    <li><input type="text" name="name" placeholder="Название" required></li>
+                                    <li><input type="number" name="amount" placeholder="Количество" required></li>
                                 </ul>
                                 <ul class="goods-form-main-fields-column">
-                                    <li><input type="date" name="created_at" placeholder="Дата добавления"></li>
+                                    <li><input type="date" name="created_at" placeholder="Дата добавления" required></li>
                                     <li>
-                                        <select class="goods-form-unit-measurement-select" aria-placeholder="Ед. изм." name="unit_measurement">
+                                        <select class="goods-form-unit-measurement-select" aria-placeholder="Ед. изм." name="unit_measurement" required>
                                             <option disabled selected>Ед. изм.</option>
                                             <option value="шт.">Шт.</option>
                                             <option value="кг.">Кг.</option>
@@ -78,15 +86,15 @@ $user = $this->auth->getUser();
                         <div class="goods-form-buy-and-sell-fields">
                             <label for="" class="goods-form-buy-and-sell-fields-label">Закупка и продажа</label>
                             <div class="goods-form-buy-and-sell-fields-inputs">
-                                <li><input type="number" name="purchase_price" placeholder="Стоимость закупки"></li>
-                                <li><input type="number" name="sale_price" placeholder="Стоимость продажи"></li>
+                                <li><input type="number" name="purchase_price" placeholder="Стоимость закупки" required></li>
+                                <li><input type="number" name="sale_price" placeholder="Стоимость продажи" required></li>
                             </div>
                         </div>
                         <div class="goods-form-information">
                             <label for="" class="goods-form-information-label">Информация о поставщике</label>
                             <div class="goods-form-information-selects">
                                 <li>
-                                <select class="goods-form-provider-select" name="supplier_id">
+                                <select class="goods-form-provider-select" name="supplier_id" required>
                                     <option disabled selected>Поставщик</option>
                                     <?php foreach ($suppliers as $supplier) : ?>
                                         <option value="<?php echo $supplier->id(); ?>"><?= $supplier->name(); ?></option>
@@ -94,7 +102,7 @@ $user = $this->auth->getUser();
                                 </select>
                                 </li>
                                 <li>
-                                    <select class="goods-form-storage-select" name="warehouse_id">
+                                    <select class="goods-form-storage-select" name="warehouse_id" required>
                                         <option disabled selected>На склад</option>
                                         <?php foreach ($warehouses as $warehouse => $warehouseData) : ?>
                                             <option value="<?= $warehouseData['id'] ?>"><?= $warehouseData['name'] ?></option>
@@ -180,22 +188,30 @@ $user = $this->auth->getUser();
             <div class="tab-content" id="servicesContainer" style="display: none;">
                 <div class="create-goods-container">
                     <p>Создать позицию услуги</p>
+                    <?php if ($session->has('error')): ?>
+                        <p style="color: red;"><?php echo $session->get('error'); $session->remove('error'); ?></p>
+                    <?php endif; ?>
+                    <?php foreach (['name', 'price', 'category'] as $field): ?>
+                        <?php if ($session->has($field)): ?>
+                            <p style="color: red;"><?php echo implode(', ', $session->get($field)); $session->remove($field); ?></p>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                     <form class="goods-form-section" action="/admin/dashboard/goods_and_services/addNewService" method="post">
                         <div class="goods-form-main-fields">
                             <label for="" class="goods-form-main-fields-label">Основные поля</label>
                             <div class="goods-form-main-fields-inputs">
                                 <ul class="goods-form-main-fields-column">
-                                    <li><input type="text" placeholder="Категория" name="category"></li>
+                                    <li><input type="text" placeholder="Категория" name="category" required></li>
 
                                 </ul>
 
                                 <ul class="goods-form-main-fields-column">
-                                    <li><input type="number" placeholder="Стоимость услуги" name="price"></li>
+                                    <li><input type="number" placeholder="Стоимость услуги" name="price" required></li>
                                 </ul>
 
                             </div>
                             <div class="goods-form-main-fields-inputs">
-                                <input type="text" name="name" placeholder="Наименование услуги">
+                                <input type="text" name="name" placeholder="Наименование услуги" required>
                             </div>
 
                         </div>

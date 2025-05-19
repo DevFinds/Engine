@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @var \Core\RenderInterface $render
  * @var \Core\Session\SessionInterface $session
@@ -8,6 +7,11 @@
  * @var array $productReports
  * @var array $products
  * @var array $services
+ * @var array $reports
+ * @var string $reportType
+ * @var string $selectedId
+ * @var string $selectedStartDate
+ * @var string $selectedEndDate
  */
 
 
@@ -40,34 +44,41 @@
                                 <ul class="financial-accounting-first__create-first-column">
                                     <li>
                                         <select class="financial-accounting-first__create-select" name="report_type" id="report_type">
-                                            <option value="employee">Отчет по сотрудникам</option>
-                                            <option value="product" selected>Отчет по продуктам</option>
-                                            <option value="service">Отчет по услугам</option>
+                                            <option value="product" <?= ($reportType ?? 'product') === 'product' ? 'selected' : '' ?>>Отчет по продуктам</option>
+                                            <option value="service" <?= ($reportType ?? 'product') === 'service' ? 'selected' : '' ?>>Отчет по услугам</option>
                                         </select>
                                     </li>
                                     <li>
-                                        <input type="date" name="start_date" placeholder="Дата начала">
+                                        <input type="date" name="start_date" value="<?= htmlspecialchars($selectedStartDate ?? '') ?>" placeholder="Дата начала">
                                     </li>
                                 </ul>
                                 <ul class="financial-accounting-first__create-second-column">
-                                    <li id="product_select_container" style="display: block;">
-                                        <select class="financial-accounting-first__create-select" name="product_id" id="product_id">
+                                    <li id="product_select_container" style="display: <?= ($reportType ?? 'product') === 'product' ? 'block' : 'none' ?>;">
+                                        <select class="financial-accounting-first__create-select" name="product_id">
                                             <option value="">Все продукты</option>
                                             <?php foreach ($products as $product): ?>
-                                                <option value="<?= htmlspecialchars($product['id']) ?>"><?= htmlspecialchars($product['name']) ?></option>
+                                                <option value="<?= htmlspecialchars($product['id']) ?>" <?= ($selectedId ?? '') === $product['id'] && ($reportType ?? 'product') === 'product' ? 'selected' : '' ?>>
+                                                    <?= htmlspecialchars($product['name']) ?>
+                                                </option>
                                             <?php endforeach; ?>
                                         </select>
                                     </li>
-                                    <li id="service_select_container" style="display: none;">
-                                        <select class="financial-accounting-first__create-select" name="service_id" id="service_id">
+                                    <li id="service_select_container" style="display: <?= ($reportType ?? 'product') === 'service' ? 'block' : 'none' ?>;">
+                                        <select class="financial-accounting-first__create-select" name="service_id">
                                             <option value="">Все услуги</option>
-                                            <?php foreach ($services as $service): ?>
-                                                <option value="<?= htmlspecialchars($service['id']) ?>"><?= htmlspecialchars($service['name']) ?></option>
-                                            <?php endforeach; ?>
+                                            <?php if (empty($services)): ?>
+                                                <option value="" disabled>Нет доступных услуг</option>
+                                            <?php else: ?>
+                                                <?php foreach ($services as $service): ?>
+                                                    <option value="<?= htmlspecialchars($service['id']) ?>" <?= ($selectedId ?? '') === $service['id'] && ($reportType ?? 'product') === 'service' ? 'selected' : '' ?>>
+                                                        <?= htmlspecialchars($service['name']) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
                                         </select>
                                     </li>
                                     <li>
-                                        <input type="date" name="end_date" placeholder="Дата конца">
+                                        <input type="date" name="end_date" value="<?= htmlspecialchars($selectedEndDate ?? '') ?>" placeholder="Дата конца">
                                     </li>
                                 </ul>
                                 <div class="financial-accounting-first__buttons">
@@ -75,11 +86,10 @@
                                     <button type="button" class="financial-accounting-first__button-clear" onclick="clearForm()">Очистить</button>
                                 </div>
                             </form>
-                            <?php if (!empty($productReports)): ?>
+                            <?php if (!empty($reports)): ?>
                                 <form action="/admin/dashboard/reports/export" method="POST" id="exportForm" style="margin-top:1em;">
                                     <input type="hidden" name="report_type" value="<?= htmlspecialchars($reportType ?? 'product') ?>">
-                                    <input type="hidden" name="product_id" value="<?= htmlspecialchars($selectedProductId ?? '') ?>">
-                                    <input type="hidden" name="service_id" value="<?= htmlspecialchars($selectedServiceId ?? '') ?>">
+                                    <input type="hidden" name="<?= ($reportType ?? 'product') === 'service' ? 'service_id' : 'product_id' ?>" value="<?= htmlspecialchars($selectedId ?? '') ?>">
                                     <input type="hidden" name="start_date" value="<?= htmlspecialchars($selectedStartDate ?? '') ?>">
                                     <input type="hidden" name="end_date" value="<?= htmlspecialchars($selectedEndDate ?? '') ?>">
                                     <button type="submit" class="financial-accounting-first__button-export">
@@ -93,31 +103,49 @@
                     <div class="financial-accounting-first__list-container">
                         <label class="financial-accounting-first__list-label">Создан отчет</label>
                         <div class="financial-accounting-first__list">
-                            <table id="productReportTable">
+                            <table id="reportTable">
                                 <thead>
                                     <tr>
-                                        <th>Наименование</th>
-                                        <th>Кол-во</th>
-                                        <th>Цена</th>
-                                        <th>Сумма</th>
-                                        <th>Сотрудник</th>
-                                        <th>Дата</th>
+                                        <?php if (($reportType ?? 'product') === 'service'): ?>
+                                            <th>Марка машины</th>
+                                            <th>Номер</th>
+                                            <th>Наименование</th>
+                                            <th>Дата время</th>
+                                            <th>Тип оплаты</th>
+                                            <th>Сумма</th>
+                                        <?php else: ?>
+                                            <th>Наименование</th>
+                                            <th>Кол-во</th>
+                                            <th>Цена</th>
+                                            <th>Сумма</th>
+                                            <th>Сотрудник</th>
+                                            <th>Дата</th>
+                                        <?php endif; ?>
                                     </tr>
                                 </thead>
-                                <tbody id="productReportBody">
-                                    <?php if (empty($productReports)): ?>
+                                <tbody id="reportBody">
+                                    <?php if (empty($reports)): ?>
                                         <tr>
-                                            <td colspan="6">Выберите параметры и нажмите "Сформировать" для отображения отчета</td>
+                                            <td colspan="<?= ($reportType ?? 'product') === 'service' ? 6 : 6 ?>">Выберите параметры и нажмите "Сформировать" для отображения отчета</td>
                                         </tr>
                                     <?php else: ?>
-                                        <?php foreach ($productReports as $report): ?>
+                                        <?php foreach ($reports as $report): ?>
                                             <tr>
-                                                <td><?= htmlspecialchars($report['name']) ?></td>
-                                                <td><?= htmlspecialchars($report['quantity']) ?></td>
-                                                <td><?= htmlspecialchars($report['price']) ?></td>
-                                                <td><?= htmlspecialchars($report['total']) ?></td>
-                                                <td><?= htmlspecialchars($report['employee_name']) ?></td>
-                                                <td><?= htmlspecialchars($report['sale_date']) ?></td>
+                                                <?php if (($reportType ?? 'product') === 'service'): ?>
+                                                    <td><?= htmlspecialchars($report['car_brand'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['car_number'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['name'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['sale_date'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['payment_method'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['total'] ?? '') ?></td>
+                                                <?php else: ?>
+                                                    <td><?= htmlspecialchars($report['product_name'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['quantity'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['price'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['total'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['employee_name'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['sale_date'] ?? '') ?></td>
+                                                <?php endif; ?>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
