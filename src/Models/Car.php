@@ -1,5 +1,4 @@
 <?php
-
 namespace Source\Models;
 
 class Car
@@ -9,7 +8,9 @@ class Car
         private $state_number,
         private $car_type,
         private $car_brand,
-        private $client_id
+        private $client_id,
+        private $car_model = null,
+        private $class_id = null
     ) {
     }
 
@@ -36,5 +37,15 @@ class Car
     public function client_id()
     {
         return $this->client_id;
+    }
+
+    public function car_model()
+    {
+        return $this->car_model;
+    }
+
+    public function class_id()
+    {
+        return $this->class_id;
     }
 }

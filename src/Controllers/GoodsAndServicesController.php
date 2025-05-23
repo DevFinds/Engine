@@ -293,15 +293,11 @@ class GoodsAndServicesController extends Controller
         $this->getEventManager()->addListener('log.action', new LogActionListener());
         $validation = $this->request()->validate([
             'employee_id' => ['required'],
-            'car_number' => ['required'],
-            'car_model' => ['required'],
-            'car_brand' => ['required'],
+            'state_number' => ['required'],
             'payment_type' => ['required']
         ], [
             'employee_id' => 'Сотрудник',
-            'car_number' => 'Номер машины',
-            'car_model' => 'Модель машины',
-            'car_brand' => 'Марка машины',
+            'state_number' => 'Гос. номер',
             'payment_type' => 'Тип оплаты'
         ]);
 
@@ -318,44 +314,58 @@ class GoodsAndServicesController extends Controller
             return;
         }
 
-        $employeeId = $this->request()->input('employee_id');
-        $carNumber = $this->request()->input('car_number');
-        $carModel = $this->request()->input('car_model');
-        $carBrand = $this->request()->input('car_brand');
-        $paymentType = $this->request()->input('payment_type');
-        $operatorName = $this->getAuth()->getUser()->username(); // Имя текущего оператора
-        $grandTotal = 0;
+        // Поиск или создание машины
+        $stateNumber = $this->request()->input('state_number');
+        $car = $this->getDatabase()->first_found_in_db('Car', ['state_number' => $stateNumber]);
+        if (!$car) {
+            $carId = $this->getDatabase()->insert('Car', [
+                'state_number' => $stateNumber,
+                'car_brand' => $this->request()->input('car_brand'),
+                'class_id' => $this->request()->input('class_id'),
+                'car_type' => null,
+                'client_id' => null,
+                'car_model' => null
+            ]);
+            $car = $this->getDatabase()->first_found_in_db('Car', ['id' => $carId]);
+        } else {
+            $carId = $car['id'];
+        }
 
+        $employeeId = $this->request()->input('employee_id');
+        $paymentType = $this->request()->input('payment_type');
+        $operatorName = $this->getAuth()->getUser()->username();
+        $grandTotal = 0;
         $items = [];
+
+        // Получаем класс автомобиля и процент наценки
+        $classId = $car['class_id'];
+        $carClass = $this->getDatabase()->first_found_in_db('Car_Classes', ['id' => $classId]);
+        $percent = $carClass ? (float)$carClass['percent'] : 0.00;
 
         foreach ($serviceLines as $line) {
             $servId = $line['service_id'] ?? null;
-
-            if (!$servId) {
-                continue;
-            }
+            if (!$servId) continue;
 
             $serviceRow = $this->getDatabase()->first_found_in_db('Service', ['id' => $servId]);
-            if (!$serviceRow) {
-                continue;
-            }
+            if (!$serviceRow) continue;
 
-            $price = (float)$serviceRow['price'];
-            $grandTotal += $price;
+            $basePrice = (float)$serviceRow['price'];
+            $markup = $basePrice * ($percent / 100);
+            $adjustedPrice = $basePrice + $markup;
+            $grandTotal += $adjustedPrice;
 
             $items[] = [
                 'name' => $serviceRow['name'],
                 'quantity' => 1,
-                'price' => $price,
-                'total' => $price
+                'price' => $adjustedPrice,
+                'total' => $adjustedPrice
             ];
 
             $this->getDatabase()->insert('Service_Sale', [
                 'service_id' => $servId,
                 'employee_id' => $employeeId,
-                'car_number' => $carNumber,
-                'car_model' => $carModel,
-                'car_brand' => $carBrand,
+                'car_id' => $carId,
+                'total_amount' => $adjustedPrice,
                 'payment_method' => $paymentType
             ]);
         }
@@ -372,22 +382,23 @@ class GoodsAndServicesController extends Controller
                 'card' => $card,
                 'discount' => 0,
                 'operator_name' => $operatorName,
-                'car_number' => $carNumber,
+                'car_number' => $car['state_number'],
                 'change_amount' => 0,
                 'report_type' => 'service',
-                'car_model' => $this->request()->input('car_model'),
-                'car_brand' => $this->request()->input('car_brand')
+                'car_model' => $car['car_model'],
+                'car_brand' => $car['car_brand']
             ]);
 
             $this->addCheckItems($checkId, $items);
 
-            // Печать чека
             $payload = [
                 'action_name' => 'Продажа услуги',
                 'actor_id' => $this->getAuth()->getUser()->id(),
                 'action_info' => [
                     'Ссылка на чек' => '/admin/dashboard/check/preview/' . $checkId,
-                    'Кассир' => $this->getAuth()->getRole()->name() . " " . $this->getAuth()->getUser()->username() . " " . $this->getAuth()->getUser()->lastname()
+                    'Кассир' => $this->getAuth()->getRole()->name() . " " . 
+                                $this->getAuth()->getUser()->username() . " " . 
+                                $this->getAuth()->getUser()->lastname()
                 ]
             ];
             $event = new LogActionEvent($payload);

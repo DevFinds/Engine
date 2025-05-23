@@ -1,5 +1,4 @@
 <?php
-
 namespace Source\Models;
 
 class ServiceSale
@@ -12,7 +11,10 @@ class ServiceSale
         private $total_amount,
         private $payment_method,
         private $service_id,
-        private $status
+        private $status,
+        private $car_id,
+        private $cash_amount = null,
+        private $non_cash_amount = null
     ) {
     }
 
@@ -54,5 +56,20 @@ class ServiceSale
     public function status()
     {
         return $this->status;
+    }
+
+    public function car_id()
+    {
+        return $this->car_id;
+    }
+
+    public function cash_amount()
+    {
+        return $this->cash_amount;
+    }
+
+    public function non_cash_amount()
+    {
+        return $this->non_cash_amount;
     }
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Source\Controllers;
 
 use Core\Controller\Controller;
@@ -8,6 +7,7 @@ use Source\Services\ServiceService;
 use Source\Services\ProductService;
 use Source\Services\WarehouseService;
 use Source\Services\UserService;
+use Source\Services\CarClassService;
 
 class ServiceController extends Controller
 {
@@ -21,7 +21,35 @@ class ServiceController extends Controller
             'service' => $serviceService,
             'users' => $userService,
             'products' => $product_service,
-            'warehouses' => $warehouse_service
+            'warehouses' => $warehouse_service,
+            'cars' => $serviceService->getAllCarsAsArray(),
+            'car_classes' => $serviceService->getAllClassesAsArray()
         ]);
+    }
+
+    public function autocompleteCars()
+    {
+        $query = $this->request()->input('q', '');
+        $serviceService = new ServiceService($this->getDatabase());
+        $cars = $serviceService->getAllCarsAsArray();
+
+        // Фильтруем машины по state_number
+        $filteredCars = array_filter($cars, function ($car) use ($query) {
+            return stripos($car['state_number'], $query) !== false;
+        });
+
+        // Форматируем ответ для Select2
+        $response = array_map(function ($car) {
+            return [
+                'id' => $car['state_number'],
+                'state_number' => $car['state_number'],
+                'car_brand' => $car['car_brand'],
+                'class_id' => $car['class_id']
+            ];
+        }, $filteredCars);
+
+        header('Content-Type: application/json');
+        echo json_encode($response);
+        exit;
     }
 }

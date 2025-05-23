@@ -572,6 +572,18 @@
                 "Source\\Middleware\\AuthMiddleware"
             ],
             "access_level": 3
+        },
+        {
+            "method": "GET",
+            "uri": "/admin/cars/autocomplete",
+            "action": {
+                "controller": "Source\\Controllers\\ServiceController",
+                "method": "autocompleteCars"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 2
         }
         
         

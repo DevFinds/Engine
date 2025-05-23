@@ -9,8 +9,7 @@ class Service
         private $name,
         private $description,
         private $price,
-        private $category,
-        private $car_id
+        private $category
     ) {
     }
 
@@ -37,10 +36,5 @@ class Service
     public function category()
     {
         return $this->category;
-    }
-
-    public function car_id()
-    {
-        return $this->car_id;
     }
 }
