@@ -44,7 +44,8 @@ class ServiceController extends Controller
                 'id' => $car['state_number'],
                 'state_number' => $car['state_number'],
                 'car_brand' => $car['car_brand'],
-                'class_id' => $car['class_id']
+                'class_id' => $car['class_id'],
+                'client_id' => $car['client_id'],
             ];
         }, $filteredCars);
 

@@ -321,10 +321,10 @@ class GoodsAndServicesController extends Controller
             $carId = $this->getDatabase()->insert('Car', [
                 'state_number' => $stateNumber,
                 'car_brand' => $this->request()->input('car_brand'),
+                'car_model' => null,
                 'class_id' => $this->request()->input('class_id'),
-                'car_type' => null,
                 'client_id' => null,
-                'car_model' => null
+
             ]);
             $car = $this->getDatabase()->first_found_in_db('Car', ['id' => $carId]);
         } else {
@@ -396,9 +396,9 @@ class GoodsAndServicesController extends Controller
                 'actor_id' => $this->getAuth()->getUser()->id(),
                 'action_info' => [
                     'Ссылка на чек' => '/admin/dashboard/check/preview/' . $checkId,
-                    'Кассир' => $this->getAuth()->getRole()->name() . " " . 
-                                $this->getAuth()->getUser()->username() . " " . 
-                                $this->getAuth()->getUser()->lastname()
+                    'Кассир' => $this->getAuth()->getRole()->name() . " " .
+                        $this->getAuth()->getUser()->username() . " " .
+                        $this->getAuth()->getUser()->lastname()
                 ]
             ];
             $event = new LogActionEvent($payload);
