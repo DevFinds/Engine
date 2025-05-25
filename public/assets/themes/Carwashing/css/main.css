@@ -1266,6 +1266,127 @@ input[type="text"]:focus,
   font-family: var(--font-family);
 }
 
+/*Блок модального окна редактирования и удаления*/
+/* Модальное окно редактирования и удаления */
+.goods-services-modal {
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        overflow: auto;
+    }
+
+    .goods-services-modal-content {
+        background-color: var(--dark-middle-bg, #1a202c);
+        color: var(--white, #ffffff);
+        margin: 10% auto;
+        padding: 20px;
+        border: 2px solid var(--dark-hover, #2d3748);
+        border-radius: 8px;
+        width: 90%;
+        max-width: 600px;
+        position: relative;
+    }
+
+    .goods-services-close-button {
+        position: absolute;
+        top: 10px;
+        right: 20px;
+        color: var(--dark-inactive, #a0aec0);
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .goods-services-close-button:hover {
+        color: var(--white, #ffffff);
+    }
+
+    .goods-services-modal-content h2 {
+        margin-top: 0;
+        font-size: 1.5em;
+    }
+
+    .goods-services-modal-content form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .modal-two-columns {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .modal-column {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .goods-services-modal-content label {
+        font-size: 1em;
+        margin-bottom: 5px;
+    }
+
+    .goods-services-modal-content input,
+    .goods-services-modal-content select,
+    .goods-services-modal-content textarea {
+        background-color: var(--dark-hover, #2d3748);
+        color: var(--white, #ffffff);
+        border: none;
+        border-radius: 4px;
+        padding: 10px;
+        font-size: 1em;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .goods-services-modal-content textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .modal-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .goods-services-modal-content button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1em;
+    }
+
+    .goods-services-modal-content button[type="submit"] {
+        background-color: var(--purple-accent, #667eea);
+        color: var(--white, #ffffff);
+    }
+
+    .goods-services-modal-content button[type="submit"]:hover {
+        background-color: #5a67d8;
+    }
+
+    .goods-services-modal-content button#deleteProductButton,
+    .goods-services-modal-content button#deleteServiceButton {
+        background-color: var(--dark-inactive, #a0aec0);
+        color: var(--white, #ffffff);
+    }
+
+    .goods-services-modal-content button#deleteProductButton:hover,
+    .goods-services-modal-content button#deleteServiceButton:hover {
+        background-color: #718096;
+    }
+
 /* Кнопка сохранения */
 
 .save-button {

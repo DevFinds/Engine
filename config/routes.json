@@ -584,6 +584,54 @@
                 "Source\\Middleware\\AuthMiddleware"
             ],
             "access_level": 2
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/goods_and_services/editProduct",
+            "action": {
+                "controller": "Source\\Controllers\\GoodsAndServicesController",
+                "method": "editProduct"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 1
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/goods_and_services/deleteProduct",
+            "action": {
+                "controller": "Source\\Controllers\\GoodsAndServicesController",
+                "method": "deleteProduct"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 1
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/goods_and_services/editService",
+            "action": {
+                "controller": "Source\\Controllers\\GoodsAndServicesController",
+                "method": "editService"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 1
+        },
+        {
+            "method": "POST",
+            "uri": "/admin/dashboard/goods_and_services/deleteService",
+            "action": {
+                "controller": "Source\\Controllers\\GoodsAndServicesController",
+                "method": "deleteService"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 1
         }
         
         

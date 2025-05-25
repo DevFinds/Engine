@@ -463,4 +463,210 @@ class GoodsAndServicesController extends Controller
             }
         }
     }
+
+    
+
+    public function editProduct()
+    {
+        $id = $this->request()->input('id');
+        $data = [
+            'name' => $this->request()->input('name'),
+            'amount' => $this->request()->input('amount'),
+            'created_at' => $this->request()->input('created_at'),
+            'unit_measurement' => $this->request()->input('unit_measurement'),
+            'purchase_price' => $this->request()->input('purchase_price'),
+            'sale_price' => $this->request()->input('sale_price'),
+            'supplier_id' => $this->request()->input('supplier_id'),
+            'warehouse_id' => $this->request()->input('warehouse_id'),
+            'description' => $this->request()->input('description')
+        ];
+
+        $this->getDatabase()->update('Product', $data, ['id' => $id]);
+        $this->redirect('/admin/dashboard/goods_and_services');
+    }
+
+    public function deleteProduct()
+    {
+        ob_start(); // Начать буферизацию вывода
+        header('Content-Type: application/json'); // Установить заголовок JSON
+        try {
+            // Получить и залогировать сырое тело запроса
+            $rawInput = file_get_contents('php://input');
+            error_log('deleteProduct raw input: ' . $rawInput);
+
+            // Декодировать JSON
+            $input = json_decode($rawInput, true);
+            $id = $input['id'] ?? null;
+
+            if (!$id) {
+                error_log('deleteProduct: ID not provided');
+                echo json_encode(['status' => 'error', 'message' => 'ID товара не указан']);
+                ob_end_flush();
+                return;
+            }
+
+            error_log('deleteProduct: Processing ID ' . $id);
+
+            // Проверка существования товара
+            $product = $this->getDatabase()->first_found_in_db('Product', ['id' => $id]);
+            if (!$product) {
+                error_log('deleteProduct: Product ID ' . $id . ' not found');
+                echo json_encode(['status' => 'error', 'message' => 'Товар не найден']);
+                ob_end_flush();
+                return;
+            }
+
+            // Удаление связанных записей в check_items (если связь через name)
+            // Замените 'name' на актуальный столбец, если связь другая
+            $this->getDatabase()->delete('check_items', ['name' => $product['name']]);
+            error_log('deleteProduct: Deleted related check_items for product name ' . $product['name']);
+
+            // Удаление товара
+            $result = $this->getDatabase()->delete('Product', ['id' => $id]);
+            if ($result === false) {
+                throw new Exception('Не удалось удалить товар');
+            }
+            error_log('deleteProduct: Successfully deleted product ID ' . $id);
+
+            // Логирование действия
+            $this->getEventManager()->addListener('log.action', new LogActionListener());
+            $payload = [
+                'action_name' => 'Удаление товара',
+                'actor_id' => $this->getAuth()->getUser()->id(),
+                'action_info' => [
+                    'Товар' => $product['name'],
+                    'Пользователь' => $this->getAuth()->getRole()->name() . " " . 
+                                    $this->getAuth()->getUser()->username() . " " . 
+                                    $this->getAuth()->getUser()->lastname()
+                ]
+            ];
+            $event = new LogActionEvent($payload);
+            $this->getEventManager()->dispatch($event);
+
+            echo json_encode(['status' => 'success']);
+        } catch (Exception $e) {
+            error_log('deleteProduct error for ID ' . ($id ?? 'unknown') . ': ' . $e->getMessage());
+            echo json_encode(['status' => 'error', 'message' => 'Ошибка при удалении товара: ' . $e->getMessage()]);
+        }
+        ob_end_flush();
+    }
+
+    public function editService()
+    {
+        $this->getEventManager()->addListener('log.action', new LogActionListener());
+        $id = $this->request()->input('id');
+        $labels = [
+            'name' => 'Наименование',
+            'price' => 'Цена',
+            'category' => 'Категория'
+        ];
+
+        $validation = $this->request()->validate([
+            'name' => ['required'],
+            'price' => ['required'],
+            'category' => ['required']
+        ], $labels);
+
+        if (!$validation) {
+            foreach ($this->request()->errors() as $field => $errors) {
+                $this->session()->set($field, $errors);
+            }
+            $this->redirect('/admin/dashboard/goods_and_services');
+            return;
+        }
+
+        $data = [
+            'name' => $this->request()->input('name'),
+            'price' => $this->request()->input('price'),
+            'category' => $this->request()->input('category'),
+            'description' => $this->request()->input('description')
+        ];
+
+        $this->getDatabase()->update('Service', $data, ['id' => $id]);
+
+        $payload = [
+            'action_name' => 'Редактирование услуги',
+            'actor_id' => $this->getAuth()->getUser()->id(),
+            'action_info' => [
+                'Услуга' => $this->request()->input('name'),
+                'Цена' => $this->request()->input('price'),
+                'Категория' => $this->request()->input('category'),
+                'Описание' => $this->request()->input('description'),
+                'Пользователь' => $this->getAuth()->getRole()->name() . " " . 
+                                $this->getAuth()->getUser()->username() . " " . 
+                                $this->getAuth()->getUser()->lastname()
+            ]
+        ];
+        $event = new LogActionEvent($payload);
+        $this->getEventManager()->dispatch($event);
+
+        $this->redirect('/admin/dashboard/goods_and_services');
+    }
+
+    public function deleteService()
+    {
+        ob_start(); // Начать буферизацию вывода
+        header('Content-Type: application/json'); // Установить заголовок JSON
+        try {
+            // Получить и залогировать сырое тело запроса
+            $rawInput = file_get_contents('php://input');
+            error_log('deleteService raw input: ' . $rawInput);
+
+            // Декодировать JSON
+            $input = json_decode($rawInput, true);
+            $id = $input['id'] ?? null;
+
+            if (!$id) {
+                error_log('deleteService: ID not provided');
+                echo json_encode(['status' => 'error', 'message' => 'ID услуги не указан']);
+                ob_end_flush();
+                return;
+            }
+
+            error_log('deleteService: Processing ID ' . $id);
+
+            // Проверка существования услуги
+            $service = $this->getDatabase()->first_found_in_db('Service', ['id' => $id]);
+            if (!$service) {
+                error_log('deleteService: Service ID ' . $id . ' not found');
+                echo json_encode(['status' => 'error', 'message' => 'Услуга не найдена']);
+                ob_end_flush();
+                return;
+            }
+
+            // Удаление связанных записей в Service_Sale
+            $this->getDatabase()->delete('Service_Sale', ['service_id' => $id]);
+            error_log('deleteService: Deleted related Service_Sale for ID ' . $id);
+
+            // Удаление услуги
+            $result = $this->getDatabase()->delete('Service', ['id' => $id]);
+            if ($result === false) {
+                throw new Exception('Не удалось удалить услугу');
+            }
+            error_log('deleteService: Successfully deleted service ID ' . $id);
+
+            // Логирование действия
+            $this->getEventManager()->addListener('log.action', new LogActionListener());
+            $payload = [
+                'action_name' => 'Удаление услуги',
+                'actor_id' => $this->getAuth()->getUser()->id(),
+                'action_info' => [
+                    'Услуга' => $service['name'],
+                    'Пользователь' => $this->getAuth()->getRole()->name() . " " . 
+                                    $this->getAuth()->getUser()->username() . " " . 
+                                    $this->getAuth()->getUser()->lastname()
+                ]
+            ];
+            $event = new LogActionEvent($payload);
+            $this->getEventManager()->dispatch($event);
+
+            echo json_encode(['status' => 'success']);
+        } catch (Exception $e) {
+            error_log('deleteService error for ID ' . ($id ?? 'unknown') . ': ' . $e->getMessage());
+            echo json_encode(['status' => 'error', 'message' => 'Ошибка при удалении услуги: ' . $e->getMessage()]);
+        }
+        ob_end_flush();
+    }
+
+    
 }
