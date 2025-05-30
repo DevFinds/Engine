@@ -632,7 +632,53 @@
                 "Source\\Middleware\\AuthMiddleware"
             ],
             "access_level": 1
-        }
+        },
+        {
+        "method": "POST",
+        "uri": "/admin/dashboard/company_managments/addCarClass",
+        "action": {
+            "controller": "Source\\Controllers\\ManageCompanyController",
+            "method": "addCarClass"
+        },
+        "middlewares": ["Source\\Middleware\\AuthMiddleware"],
+        "access_level": 2
+    },
+    {
+        "method": "GET",
+        "uri": "/admin/dashboard/company_managments/getCarClass/{id}",
+        "action": {
+            "controller": "Source\\Controllers\\ManageCompanyController",
+            "method": "getCarClass"
+        },
+        "middlewares": ["Source\\Middleware\\AuthMiddleware"],
+        "parameters": {
+            "id": "[0-9]+"
+        },
+        "access_level": 2
+    },
+    {
+        "method": "POST",
+        "uri": "/admin/dashboard/company_managments/editCarClass",
+        "action": {
+            "controller": "Source\\Controllers\\ManageCompanyController",
+            "method": "editCarClass"
+        },
+        "middlewares": ["Source\\Middleware\\AuthMiddleware"],
+        "access_level": 2
+    },
+    {
+        "method": "POST",
+        "uri": "/admin/dashboard/company_managments/deleteCarClass/{id}",
+        "action": {
+            "controller": "Source\\Controllers\\ManageCompanyController",
+            "method": "deleteCarClass"
+        },
+        "middlewares": ["Source\\Middleware\\AuthMiddleware"],
+        "parameters": {
+            "id": "[0-9]+"
+        },
+        "access_level": 2
+    }
         
         
 ]

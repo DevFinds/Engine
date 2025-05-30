@@ -277,18 +277,19 @@ $employees = $employees_service->getAllFromDB();
                                 <p style="color: red;"><?php echo implode(', ', $session->get($field)); $session->remove($field); ?></p>
                             <?php endif; ?>
                         <?php endforeach; ?>
-                        <form class="car-class-form-section" action="/admin/car-classes/add" method="post">
+                        <form class="car-class-form-section" action="/admin/dashboard/company_managments/addCarClass" method="post">
+                            <input type="hidden" name="_token" value="">
                             <div class="car-class-form-fields">
                                 <label for="name" class="car-class-form-label">Название класса</label>
                                 <input type="text" name="name" placeholder="Название класса" required>
                             </div>
                             <div class="car-class-form-fields">
-                                <label for="multiplier" class="car-class-form-label">Коэффициент</label>
-                                <input type="number" step="0.1" name="multiplier" placeholder="Коэффициент" required>
+                                <label for="markup" class="car-class-form-label">Наценка</label>
+                                <input type="number" step="0.1" name="markup" placeholder="100" required>
                             </div>
                             <div class="car-class-form-buttons">
                                 <button type="submit" class="car-class-form-button-save">Сохранить</button>
-                                <button type="button" class="car-class-form-button-clear">Очистить</button>
+                                <button type="button" class="car-class-form-button-clear" onclick="this.form.reset()">Очистить</button>
                             </div>
                         </form>
                     </div>
@@ -302,8 +303,8 @@ $employees = $employees_service->getAllFromDB();
                                     <tr>
                                         <th>ID</th>
                                         <th>Название</th>
-                                        <th>Коэффициент</th>
-                                        <th>Действия</th>
+                                        <th>Наценка</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -311,7 +312,7 @@ $employees = $employees_service->getAllFromDB();
                                         <tr>
                                             <td><?php echo $car_classData->id(); ?></td>
                                             <td><?php echo $car_classData->name(); ?></td>
-                                            <td><?php echo $car_classData->multiplier(); ?></td>
+                                            <td><?php echo $car_classData->markup(); ?></td>
                                             <td>
                                                 <button class="financial-accounting-first__edit-button" onclick="editCarClass(<?php echo $car_classData->id(); ?>)">
                                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -333,5 +334,67 @@ $employees = $employees_service->getAllFromDB();
         </div>
     </div>
 </div>
+
+<script>
+function openCarClassEditModal(id) {
+    fetch(`/admin/dashboard/company_managments/getCarClass/${id}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                alert('Ошибка: ' + data.error);
+                return;
+            }
+            document.getElementById('carClassEditId').value = data.id;
+            document.getElementById('carClassEditName').value = data.name;
+            document.getElementById('carClassEditMarkup').value = data.markup;
+            document.getElementById('carClassEditModal').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ошибка при загрузке данных класса автомобиля: ' + error.message);
+        });
+}
+
+function closeCarClassEditModal() {
+    document.getElementById('carClassEditModal').style.display = 'none';
+}
+
+function confirmCarClassDelete(id) {
+    if (confirm('Вы уверены, что хотите удалить этот класс автомобиля?')) {
+        fetch(`/admin/dashboard/company_managments/deleteCarClass/${id}`, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content // Если требуется
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                location.reload();
+            } else {
+                alert('Ошибка при удалении класса автомобиля: ' + (data.message || 'Неизвестная ошибка'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ошибка при удалении класса автомобиля: ' + error.message);
+        });
+    }
+}
+</script>
 
 <?php $render->component('dashboard_footer'); ?>
