@@ -50,7 +50,7 @@ class CarClassesService
 
     public function update(int $id, array $data): bool
     {
-        return $this->database->update('car_classes', [
+        return $this->database->update('Car_Classes', [
             'name' => $data['name'],
             'markup' => $data['markup']
         ], ['id' => $id]);
@@ -58,6 +58,6 @@ class CarClassesService
 
     public function delete(int $id): bool
     {
-        return $this->database->delete('car_classes', ['id' => $id]);
+        return $this->database->delete('Car_Classes', ['id' => $id]);
     }
 }

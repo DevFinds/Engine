@@ -6,7 +6,7 @@ use Source\Services\CompanyService;
 use Source\Services\CompanyTypeService;
 use Source\Services\EmployeeService;
 use Source\Services\SupplierService;
-use Source\Services\CarClassesService; // Исправлено
+use Source\Services\CarClassesService;
 
 class ManageCompanyController extends Controller
 {
@@ -16,13 +16,13 @@ class ManageCompanyController extends Controller
         $company_types = new CompanyTypeService($this->getDatabase());
         $employees_service = new EmployeeService($this->getDatabase());
         $suppliers_service = new SupplierService($this->getDatabase());
-        $car_classes_service = new CarClassesService($this->getDatabase()); // Исправлено
+        $car_classes_service = new CarClassesService($this->getDatabase());
         
         $suppliers = $suppliers_service->getAllFromDB();
         $car_classes = $car_classes_service->getAllFromDB();
         
         $this->render('/admin/dashboard/company_managments', [
-            'companies' => $companies, 
+            'companies' => $companies,
             'company_types' => $company_types,
             'employees_service' => $employees_service,
             'suppliers' => $suppliers,
@@ -44,33 +44,30 @@ class ManageCompanyController extends Controller
 
         if (!$validation) {
             $errors = implode(', ', array_merge(...array_values($this->request()->errors())));
-            $this->session()->set('error', 'Ошибки валидации: ' . $errors);
-            return $this->redirect('/admin/dashboard/company_managments');
+            return $this->jsonResponse(['error' => 'Ошибки валидации: ' . $errors], 400);
         }
 
         try {
             $this->getDatabase()->beginTransaction();
-            $car_classes_service = new CarClassesService($this->getDatabase()); // Исправлено
+            $car_classes_service = new CarClassesService($this->getDatabase());
             $result = $car_classes_service->add([
                 'name' => $this->request()->input('name'),
                 'markup' => $this->request()->input('markup')
             ]);
 
             $this->getDatabase()->commit();
-            $this->session()->set('success', 'Класс автомобиля успешно добавлен');
-            return $this->redirect('/admin/dashboard/company_managments');
+            return $this->jsonResponse(['status' => 'success']);
         } catch (\Exception $e) {
             $this->getDatabase()->rollBack();
             error_log("ManageCompanyController::addCarClass - Ошибка: " . $e->getMessage());
-            $this->session()->set('error', 'Ошибка при добавлении класса автомобиля: ' . $e->getMessage());
-            return $this->redirect('/admin/dashboard/company_managments');
+            return $this->jsonResponse(['error' => 'Ошибка при добавлении: ' . $e->getMessage()], 500);
         }
     }
 
     public function getCarClass($id)
     {
         try {
-            $car_classes_service = new CarClassesService($this->getDatabase()); // Исправлено
+            $car_classes_service = new CarClassesService($this->getDatabase());
             $car_class = $car_classes_service->getById($id);
 
             if (!$car_class) {
@@ -104,13 +101,12 @@ class ManageCompanyController extends Controller
 
         if (!$validation) {
             $errors = implode(', ', array_merge(...array_values($this->request()->errors())));
-            $this->session()->set('error', 'Ошибки валидации: ' . $errors);
-            return $this->redirect('/admin/dashboard/company_managments');
+            return $this->jsonResponse(['error' => 'Ошибки валидации: ' . $errors], 400);
         }
 
         try {
             $this->getDatabase()->beginTransaction();
-            $car_classes_service = new CarClassesService($this->getDatabase()); // Исправлено
+            $car_classes_service = new CarClassesService($this->getDatabase());
             $result = $car_classes_service->update($this->request()->input('id'), [
                 'name' => $this->request()->input('name'),
                 'markup' => $this->request()->input('markup')
@@ -121,13 +117,11 @@ class ManageCompanyController extends Controller
             }
 
             $this->getDatabase()->commit();
-            $this->session()->set('success', 'Класс автомобиля успешно обновлен');
-            return $this->redirect('/admin/dashboard/company_managments');
+            return $this->jsonResponse(['status' => 'success']);
         } catch (\Exception $e) {
             $this->getDatabase()->rollBack();
             error_log("ManageCompanyController::editCarClass - Ошибка: " . $e->getMessage());
-            $this->session()->set('error', 'Ошибка при обновлении класса автомобиля: ' . $e->getMessage());
-            return $this->redirect('/admin/dashboard/company_managments');
+            return $this->jsonResponse(['error' => 'Ошибка при обновлении: ' . $e->getMessage()], 500);
         }
     }
 
@@ -135,7 +129,7 @@ class ManageCompanyController extends Controller
     {
         try {
             $this->getDatabase()->beginTransaction();
-            $car_classes_service = new CarClassesService($this->getDatabase()); // Исправлено
+            $car_classes_service = new CarClassesService($this->getDatabase());
             $result = $car_classes_service->delete($id);
 
             if (!$result) {
@@ -147,7 +141,17 @@ class ManageCompanyController extends Controller
         } catch (\Exception $e) {
             $this->getDatabase()->rollBack();
             error_log("ManageCompanyController::deleteCarClass - Ошибка: " . $e->getMessage());
-            return $this->jsonResponse(['error' => 'Ошибка при удалении класса автомобиля: ' . $e->getMessage()], 500);
+            return $this->jsonResponse(['error' => 'Ошибка при удалении: ' . $e->getMessage()], 500);
         }
     }
+
+    protected function jsonResponse($data, $statusCode = 200)
+    {
+        header('Content-Type: application/json');
+        http_response_code($statusCode);
+        echo json_encode($data);
+        exit;
+    }
+
+
 }
