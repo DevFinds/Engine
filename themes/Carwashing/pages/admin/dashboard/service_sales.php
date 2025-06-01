@@ -21,6 +21,10 @@ $products = $product_service->getAllFromDBAllSuppliers();
 $warehouse_service = $data['warehouses'];
 $warehouses = $warehouse_service->getAllFromDB();
 
+// Классы автомобилей
+$car_classes_service = $data['car_classes_service'];
+$car_classes = $car_classes_service->getAllFromDB();
+
 $services_array = $data['service']->getAllFromDBAsArray();
 
 
@@ -105,16 +109,14 @@ $services_array = $data['service']->getAllFromDBAsArray();
                             <select class="about-service-form" name="class_id" id="classSelect" required>
                                 <option disabled selected>Выбрать класс</option>
                                 <?php foreach ($car_classes as $class) : ?>
-                                    <option value="<?= $class['id'] ?>" data-percent="<?= $class['percent'] ?>">
-                                        <?= $class['name'] ?>
+                                    <option value="<?= $class->id() ?>" data-percent="<?= $class->markup() ?>">
+                                        <?= $class->name() ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
                         </li>
                     </ul>
                 </div>
-
-
 
                 <div class="payment-section">
                     <div class="payment-options">
@@ -130,7 +132,7 @@ $services_array = $data['service']->getAllFromDBAsArray();
                     </div>
                     <div class="total-amount">
                         <label class="total-amount-label">Итоговая сумма</label>
-                        <div class="total-amount-value" id="serviceTotal">0 руб</div>
+                        <div name="total_amount_service" class="total-amount-value" id="serviceTotal">0 руб</div>
                     </div>
                 </div>
                 <button type="submit" class="save-button">Сохранить</button>
@@ -188,7 +190,7 @@ $services_array = $data['service']->getAllFromDBAsArray();
                     </div>
                     <div class="total-amount">
                         <label>Итоговая сумма</label>
-                        <div class="total-amount-value" id="productTotal">0 руб</div>
+                        <div name="total_amount" class="total-amount-value" id="productTotal">0 руб</div>
                     </div>
                 </div>
 
@@ -477,7 +479,7 @@ $services_array = $data['service']->getAllFromDBAsArray();
                 const opt = line.querySelector('.serviceSelect')?.selectedOptions[0];
                 if (!opt) return;
                 const basePrice = +opt.dataset.price;
-                const markup = basePrice * (percent / 100);
+                const markup = percent;
                 sum += basePrice + markup;
             });
 

@@ -3,11 +3,11 @@
 namespace Source\Controllers;
 
 use Core\Controller\Controller;
+use Source\Services\CarClassesService;
 use Source\Services\ServiceService;
 use Source\Services\ProductService;
 use Source\Services\WarehouseService;
 use Source\Services\UserService;
-use Source\Services\CarClassService;
 
 class ServiceController extends Controller
 {
@@ -17,13 +17,17 @@ class ServiceController extends Controller
         $userService = new UserService($this->getDatabase());
         $product_service = new ProductService($this->getDatabase());
         $warehouse_service = new WarehouseService($this->getDatabase());
+        $carClassesService = new CarClassesService($this->getDatabase());
+
+
         $this->render('/admin/dashboard/service_sales', [
             'service' => $serviceService,
             'users' => $userService,
             'products' => $product_service,
             'warehouses' => $warehouse_service,
             'cars' => $serviceService->getAllCarsAsArray(),
-            'car_classes' => $serviceService->getAllClassesAsArray()
+            'car_classes' => $serviceService->getAllClassesAsArray(),
+            'car_classes_service' => $carClassesService
         ]);
     }
 

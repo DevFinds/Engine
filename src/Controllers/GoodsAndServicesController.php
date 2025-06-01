@@ -340,7 +340,7 @@ class GoodsAndServicesController extends Controller
         // Получаем класс автомобиля и процент наценки
         $classId = $car['class_id'];
         $carClass = $this->getDatabase()->first_found_in_db('Car_Classes', ['id' => $classId]);
-        $percent = $carClass ? (float)$carClass['percent'] : 0.00;
+        $percent = $carClass ? (float)$carClass['markup'] : 0.00;
 
         foreach ($serviceLines as $line) {
             $servId = $line['service_id'] ?? null;
@@ -349,23 +349,23 @@ class GoodsAndServicesController extends Controller
             $serviceRow = $this->getDatabase()->first_found_in_db('Service', ['id' => $servId]);
             if (!$serviceRow) continue;
 
-            $basePrice = (float)$serviceRow['price'];
-            $markup = $basePrice * ($percent / 100);
-            $adjustedPrice = $basePrice + $markup;
-            $grandTotal += $adjustedPrice;
+
+            $price = (float)$serviceRow['price'];
+            $grandTotal = (float)$price + (float)$percent;
 
             $items[] = [
                 'name' => $serviceRow['name'],
                 'quantity' => 1,
-                'price' => $adjustedPrice,
-                'total' => $adjustedPrice
+                'price' => $price,
+                'total' => $grandTotal
             ];
+
 
             $this->getDatabase()->insert('Service_Sale', [
                 'service_id' => $servId,
                 'employee_id' => $employeeId,
                 'car_id' => $carId,
-                'total_amount' => $adjustedPrice,
+                'total_amount' => $grandTotal,
                 'payment_method' => $paymentType
             ]);
         }
@@ -464,7 +464,7 @@ class GoodsAndServicesController extends Controller
         }
     }
 
-    
+
 
     public function editProduct()
     {
@@ -535,9 +535,9 @@ class GoodsAndServicesController extends Controller
                 'actor_id' => $this->getAuth()->getUser()->id(),
                 'action_info' => [
                     'Товар' => $product['name'],
-                    'Пользователь' => $this->getAuth()->getRole()->name() . " " . 
-                                    $this->getAuth()->getUser()->username() . " " . 
-                                    $this->getAuth()->getUser()->lastname()
+                    'Пользователь' => $this->getAuth()->getRole()->name() . " " .
+                        $this->getAuth()->getUser()->username() . " " .
+                        $this->getAuth()->getUser()->lastname()
                 ]
             ];
             $event = new LogActionEvent($payload);
@@ -592,9 +592,9 @@ class GoodsAndServicesController extends Controller
                 'Цена' => $this->request()->input('price'),
                 'Категория' => $this->request()->input('category'),
                 'Описание' => $this->request()->input('description'),
-                'Пользователь' => $this->getAuth()->getRole()->name() . " " . 
-                                $this->getAuth()->getUser()->username() . " " . 
-                                $this->getAuth()->getUser()->lastname()
+                'Пользователь' => $this->getAuth()->getRole()->name() . " " .
+                    $this->getAuth()->getUser()->username() . " " .
+                    $this->getAuth()->getUser()->lastname()
             ]
         ];
         $event = new LogActionEvent($payload);
@@ -652,9 +652,9 @@ class GoodsAndServicesController extends Controller
                 'actor_id' => $this->getAuth()->getUser()->id(),
                 'action_info' => [
                     'Услуга' => $service['name'],
-                    'Пользователь' => $this->getAuth()->getRole()->name() . " " . 
-                                    $this->getAuth()->getUser()->username() . " " . 
-                                    $this->getAuth()->getUser()->lastname()
+                    'Пользователь' => $this->getAuth()->getRole()->name() . " " .
+                        $this->getAuth()->getUser()->username() . " " .
+                        $this->getAuth()->getUser()->lastname()
                 ]
             ];
             $event = new LogActionEvent($payload);
@@ -667,6 +667,4 @@ class GoodsAndServicesController extends Controller
         }
         ob_end_flush();
     }
-
-    
 }
