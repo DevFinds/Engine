@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @var \Core\RenderInterface $render
  * @var \Core\Session\SessionInterface $session
@@ -11,11 +12,9 @@ $company_service = $data['company_service'];
 $suppliers = $company_service->getCompanyByType(2);
 $suppliers_service = $data['suppliers_service'];
 $suppliers = $suppliers_service->getAllFromDB();
-
 // Склады
 $warehouse_service = $data['warehouse_service'];
 $warehouses = $warehouse_service->getAllFromDB();
-
 // Товары
 $product_service = $data['product_service'];
 $products = $product_service->getAllFromDBAllSuppliers();
@@ -47,11 +46,13 @@ $user = $this->auth->getUser();
                 <div class="create-goods-container">
                     <p>Создать позицию товара</p>
                     <?php if ($session->has('error')): ?>
-                        <p style="color: red;"><?php echo $session->get('error'); $session->remove('error'); ?></p>
+                        <p style="color: red;"><?php echo $session->get('error');
+                                                $session->remove('error'); ?></p>
                     <?php endif; ?>
                     <?php foreach (['name', 'amount', 'created_at', 'unit_measurement', 'purchase_price', 'sale_price', 'supplier_id', 'warehouse_id'] as $field): ?>
                         <?php if ($session->has($field)): ?>
-                            <p style="color: red;"><?php echo implode(', ', $session->get($field)); $session->remove($field); ?></p>
+                            <p style="color: red;"><?php echo implode(', ', $session->get($field));
+                                                    $session->remove($field); ?></p>
                         <?php endif; ?>
                     <?php endforeach; ?>
                     <form class="goods-form-section" action="/admin/dashboard/goods_and_services/addNewGood" method="post">
@@ -153,8 +154,11 @@ $user = $this->auth->getUser();
                                             <td><?php echo $productData['name']; ?></td>
                                             <td><?php echo $productData['purchase_price']; ?></td>
                                             <td><?php echo $productData['sale_price']; ?></td>
-                                            <td><?php echo $productData['warehouse_id']; ?></td>
-                                            <td><?php echo $productData['supplier_id']; ?></td>
+                                            <td><?php
+                                                $warehouse_id = intval($productData['warehouse_id']) - 1;
+                                                $supplier_id = intval($productData['supplier_id']) - 1;
+                                                echo $warehouses[$warehouse_id]['name']; ?></td>
+                                            <td><?php echo $suppliers[$supplier_id]->name(); ?></td>
                                             <td><?php echo $productData['created_at']; ?></td>
                                             <td><?php echo $productData['amount']; ?></td>
                                             <td>
@@ -180,11 +184,13 @@ $user = $this->auth->getUser();
                 <div class="create-goods-container">
                     <p>Создать позицию услуги</p>
                     <?php if ($session->has('error')): ?>
-                        <p style="color: red;"><?php echo $session->get('error'); $session->remove('error'); ?></p>
+                        <p style="color: red;"><?php echo $session->get('error');
+                                                $session->remove('error'); ?></p>
                     <?php endif; ?>
                     <?php foreach (['name', 'price', 'category'] as $field): ?>
                         <?php if ($session->has($field)): ?>
-                            <p style="color: red;"><?php echo implode(', ', $session->get($field)); $session->remove($field); ?></p>
+                            <p style="color: red;"><?php echo implode(', ', $session->get($field));
+                                                    $session->remove($field); ?></p>
                         <?php endif; ?>
                     <?php endforeach; ?>
                     <form class="goods-form-section" action="/admin/dashboard/goods_and_services/addNewService" method="post">
@@ -333,172 +339,192 @@ $user = $this->auth->getUser();
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const editButtons = document.querySelectorAll('.financial-accounting-first__edit-button');
-    const productModal = document.getElementById('editProductModal');
-    const serviceModal = document.getElementById('editServiceModal');
-    const closeButtons = document.querySelectorAll('.goods-services-close-button');
-    const deleteProductButton = document.getElementById('deleteProductButton');
-    const deleteServiceButton = document.getElementById('deleteServiceButton');
+    document.addEventListener('DOMContentLoaded', function() {
+        const editButtons = document.querySelectorAll('.financial-accounting-first__edit-button');
+        const productModal = document.getElementById('editProductModal');
+        const serviceModal = document.getElementById('editServiceModal');
+        const closeButtons = document.querySelectorAll('.goods-services-close-button');
+        const deleteProductButton = document.getElementById('deleteProductButton');
+        const deleteServiceButton = document.getElementById('deleteServiceButton');
 
-    editButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const row = this.closest('tr');
-            const type = row.getAttribute('data-type');
+        editButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const row = this.closest('tr');
+                const type = row.getAttribute('data-type');
 
-            if (type === 'product') {
-                const id = row.cells[0].textContent;
-                const name = row.cells[1].textContent;
-                const purchasePrice = row.cells[2].textContent;
-                const salePrice = row.cells[3].textContent;
-                const warehouseId = row.cells[4].textContent;
-                const supplierId = row.cells[5].textContent;
-                const createdAt = row.cells[6].textContent;
-                const amount = row.cells[7].textContent;
-                const unitMeasurement = row.getAttribute('data-unit-measurement') || 'шт.';
-                const description = row.getAttribute('data-description') || '';
+                if (type === 'product') {
+                    const id = row.cells[0].textContent;
+                    const name = row.cells[1].textContent;
+                    const purchasePrice = row.cells[2].textContent;
+                    const salePrice = row.cells[3].textContent;
+                    const warehouseId = row.cells[4].textContent;
+                    const supplierId = row.cells[5].textContent;
+                    const createdAt = row.cells[6].textContent;
+                    const amount = row.cells[7].textContent;
+                    const unitMeasurement = row.getAttribute('data-unit-measurement') || 'шт.';
+                    const description = row.getAttribute('data-description') || '';
 
-                document.getElementById('productId').value = id;
-                document.getElementById('productName').value = name;
-                document.getElementById('productAmount').value = amount;
-                document.getElementById('productCreatedAt').value = createdAt;
-                document.getElementById('productUnitMeasurement').value = unitMeasurement;
-                document.getElementById('productPurchasePrice').value = purchasePrice;
-                document.getElementById('productSalePrice').value = salePrice;
-                document.getElementById('productSupplierId').value = supplierId;
-                document.getElementById('productWarehouseId').value = warehouseId;
-                document.getElementById('productDescription').value = description;
+                    document.getElementById('productId').value = id;
+                    document.getElementById('productName').value = name;
+                    document.getElementById('productAmount').value = amount;
+                    document.getElementById('productCreatedAt').value = createdAt;
+                    document.getElementById('productUnitMeasurement').value = unitMeasurement;
+                    document.getElementById('productPurchasePrice').value = purchasePrice;
+                    document.getElementById('productSalePrice').value = salePrice;
+                    document.getElementById('productSupplierId').value = supplierId;
+                    document.getElementById('productWarehouseId').value = warehouseId;
+                    document.getElementById('productDescription').value = description;
 
-                productModal.style.display = 'block';
-            } else if (type === 'service') {
-                const id = row.cells[0].textContent;
-                const name = row.cells[1].textContent;
-                const price = row.cells[2].textContent;
-                const category = row.getAttribute('data-category') || '';
-                const description = row.getAttribute('data-description') || '';
+                    productModal.style.display = 'block';
+                } else if (type === 'service') {
+                    const id = row.cells[0].textContent;
+                    const name = row.cells[1].textContent;
+                    const price = row.cells[2].textContent;
+                    const category = row.getAttribute('data-category') || '';
+                    const description = row.getAttribute('data-description') || '';
 
-                document.getElementById('serviceId').value = id;
-                document.getElementById('serviceName').value = name;
-                document.getElementById('servicePrice').value = price;
-                document.getElementById('serviceCategory').value = category;
-                document.getElementById('serviceDescription').value = description;
+                    document.getElementById('serviceId').value = id;
+                    document.getElementById('serviceName').value = name;
+                    document.getElementById('servicePrice').value = price;
+                    document.getElementById('serviceCategory').value = category;
+                    document.getElementById('serviceDescription').value = description;
 
-                serviceModal.style.display = 'block';
+                    serviceModal.style.display = 'block';
+                }
+            });
+        });
+
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                productModal.style.display = 'none';
+                serviceModal.style.display = 'none';
+            });
+        });
+
+        window.addEventListener('click', function(event) {
+            if (event.target === productModal) productModal.style.display = 'none';
+            if (event.target === serviceModal) serviceModal.style.display = 'none';
+        });
+
+        deleteProductButton.addEventListener('click', function() {
+            const productId = document.getElementById('productId').value;
+            console.log('Deleting product with ID:', productId);
+            if (!productId) {
+                alert('Ошибка: ID товара не указан');
+                return;
+            }
+            if (confirm('Вы уверены, что хотите удалить этот товар?')) {
+                const button = this;
+                button.disabled = true; // Отключаем кнопку
+                fetch('/admin/dashboard/goods_and_services/deleteProduct', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: productId
+                        })
+                    })
+                    .then(response => {
+                        console.log('Response status:', response.status);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.text().then(text => ({
+                            text,
+                            response
+                        }));
+                    })
+                    .then(({
+                        text,
+                        response
+                    }) => {
+                        console.log('Raw response:', text);
+                        if (!text) {
+                            throw new Error('Пустой ответ от сервера');
+                        }
+                        return JSON.parse(text);
+                    })
+                    .then(data => {
+                        if (data.status === 'success') {
+                            location.reload();
+                        } else {
+                            alert('Ошибка при удалении товара: ' + (data.message || 'Неизвестная ошибка'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Ошибка при удалении товара: ' + error.message);
+                    })
+                    .finally(() => {
+                        button.disabled = false; // Включаем кнопку
+                    });
             }
         });
-    });
 
-    closeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            productModal.style.display = 'none';
-            serviceModal.style.display = 'none';
+        deleteServiceButton.addEventListener('click', function() {
+            const serviceId = document.getElementById('serviceId').value;
+            console.log('Deleting service with ID:', serviceId);
+            if (!serviceId) {
+                alert('Ошибка: ID услуги не указан');
+                return;
+            }
+            if (confirm('Вы уверены, что хотите удалить эту услугу?')) {
+                fetch('/admin/dashboard/goods_and_services/deleteService', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id: serviceId
+                        })
+                    })
+                    .then(response => {
+                        console.log('Response status:', response.status);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.text().then(text => ({
+                            text,
+                            response
+                        }));
+                    })
+                    .then(({
+                        text,
+                        response
+                    }) => {
+                        console.log('Raw response:', text);
+                        if (!text) {
+                            throw new Error('Пустой ответ от сервера');
+                        }
+                        return JSON.parse(text);
+                    })
+                    .then(data => {
+                        if (data.status === 'success') {
+                            location.reload();
+                        } else {
+                            alert('Ошибка при удалении услуги: ' + (data.message || 'Неизвестная ошибка'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Ошибка при удалении услуги: ' + error.message);
+                    });
+            }
         });
+
+        window.switchTab = function(tab) {
+            document.getElementById('goodsContainer').style.display = tab === 'goods' ? 'block' : 'none';
+            document.getElementById('servicesContainer').style.display = tab === 'services' ? 'block' : 'none';
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
+        };
+
+        window.toggleNoteField = function(id) {
+            const field = document.getElementById(id);
+            field.style.display = field.style.display === 'none' ? 'block' : 'none';
+        };
     });
-
-    window.addEventListener('click', function(event) {
-        if (event.target === productModal) productModal.style.display = 'none';
-        if (event.target === serviceModal) serviceModal.style.display = 'none';
-    });
-
-    deleteProductButton.addEventListener('click', function() {
-        const productId = document.getElementById('productId').value;
-        console.log('Deleting product with ID:', productId);
-        if (!productId) {
-            alert('Ошибка: ID товара не указан');
-            return;
-        }
-        if (confirm('Вы уверены, что хотите удалить этот товар?')) {
-            const button = this;
-            button.disabled = true; // Отключаем кнопку
-            fetch('/admin/dashboard/goods_and_services/deleteProduct', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: productId })
-            })
-            .then(response => {
-                console.log('Response status:', response.status);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.text().then(text => ({ text, response }));
-            })
-            .then(({ text, response }) => {
-                console.log('Raw response:', text);
-                if (!text) {
-                    throw new Error('Пустой ответ от сервера');
-                }
-                return JSON.parse(text);
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    location.reload();
-                } else {
-                    alert('Ошибка при удалении товара: ' + (data.message || 'Неизвестная ошибка'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Ошибка при удалении товара: ' + error.message);
-            })
-            .finally(() => {
-                button.disabled = false; // Включаем кнопку
-            });
-        }
-    });
-
-    deleteServiceButton.addEventListener('click', function() {
-        const serviceId = document.getElementById('serviceId').value;
-        console.log('Deleting service with ID:', serviceId);
-        if (!serviceId) {
-            alert('Ошибка: ID услуги не указан');
-            return;
-        }
-        if (confirm('Вы уверены, что хотите удалить эту услугу?')) {
-            fetch('/admin/dashboard/goods_and_services/deleteService', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: serviceId })
-            })
-            .then(response => {
-                console.log('Response status:', response.status);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.text().then(text => ({ text, response }));
-            })
-            .then(({ text, response }) => {
-                console.log('Raw response:', text);
-                if (!text) {
-                    throw new Error('Пустой ответ от сервера');
-                }
-                return JSON.parse(text);
-            })
-            .then(data => {
-                if (data.status === 'success') {
-                    location.reload();
-                } else {
-                    alert('Ошибка при удалении услуги: ' + (data.message || 'Неизвестная ошибка'));
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Ошибка при удалении услуги: ' + error.message);
-            });
-        }
-    });
-
-    window.switchTab = function(tab) {
-        document.getElementById('goodsContainer').style.display = tab === 'goods' ? 'block' : 'none';
-        document.getElementById('servicesContainer').style.display = tab === 'services' ? 'block' : 'none';
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelector(`.tab[data-tab="${tab}"]`).classList.add('active');
-    };
-
-    window.toggleNoteField = function(id) {
-        const field = document.getElementById(id);
-        field.style.display = field.style.display === 'none' ? 'block' : 'none';
-    };
-});
 </script>
 
 <?php $render->component('dashboard_footer'); ?>
