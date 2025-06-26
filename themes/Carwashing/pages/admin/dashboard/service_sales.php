@@ -202,252 +202,200 @@ $services_array = $data['service']->getAllFromDBAsArray();
     </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        /* ================================
-           Общие переменные и функции
-           ================================ */
-        const productLinesContainer = document.getElementById('productLinesContainer');
-        const addProductBtn = document.getElementById('addLineBtn');
-        const productSaveBtn = document.getElementById('saveLineBtn');
-        const productTotalElem = document.getElementById('productTotal');
+ document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOMContentLoaded fired');
+    console.log('jQuery version:', $.fn.jquery); // Должно быть "3.7.1"
+    console.log('Select2 loaded:', typeof $.fn.select2); // Должно быть "function"
+    console.log('Inputmask loaded:', typeof $.fn.inputmask); // Должно быть "function"
 
-        const serviceLinesContainer = document.getElementById('servicesLinesContainer');
-        const addServiceBtn = document.getElementById('addServiceBtn');
-        const serviceTotalElem = document.getElementById('serviceTotal');
-        const stateNumberInput = document.getElementById('stateNumberInput');
-        const carBrandInput = document.getElementById('carBrandInput');
-        const classSelect = document.getElementById('classSelect');
-        let productLineIndex = 0;
-        let serviceLineIndex = 0;
+    const serviceLinesContainer = document.getElementById('servicesLinesContainer');
+    const addServiceBtn = document.getElementById('addServiceBtn');
+    const serviceTotalElem = document.getElementById('serviceTotal');
+    const totalAmountInput = document.getElementById('totalAmountInput');
+    const stateNumberInput = document.getElementById('stateNumberInput');
+    const carBrandInput = document.getElementById('carBrandInput');
+    const classSelect = document.getElementById('classSelect');
+    const productLinesContainer = document.getElementById('productLinesContainer');
+    const addProductBtn = document.getElementById('addLineBtn');
+    const productTotalElem = document.getElementById('productTotal');
+    const productSaveBtn = document.getElementById('saveLineBtn');
+    let serviceLineIndex = 0;
+    let productLineIndex = 0;
 
+    // Проверка наличия элементов
+    if (!serviceLinesContainer) console.error('servicesLinesContainer not found');
+    if (!stateNumberInput) console.error('stateNumberInput not found');
+    if (!classSelect) console.error('classSelect not found');
+    if (!addServiceBtn) console.error('addServiceBtn not found');
+    if (!serviceTotalElem) console.error('serviceTotalElem not found');
+    if (!productLinesContainer) console.error('productLinesContainer not found');
+    if (!addProductBtn) console.error('addProductBtn not found');
+    if (!productTotalElem) console.error('productTotalElem not found');
 
-        /* ================================
-           Логика автозаполнения гос. номеров
-           ================================ */
-        const select2Data = Array.isArray(carsJS) ? carsJS.map(car => ({
-            id: car.state_number,
-            text: car.state_number,
-            car_brand: car.car_brand,
-            class_id: car.class_id
-        })) : [];
+    /* ================================
+       Маска для гос. номера
+       ================================ */
+    if (stateNumberInput) {
+        try {
+            $(stateNumberInput).inputmask({
+                mask: '[AАБЕКМНОРСТУХ][0-9]{3}[AАБЕКМНОРСТУХ]{2}[0-9]{0,3}',
+                placeholder: 'А000АА00',
+                showMaskOnHover: false,
+                greedy: false,
+                definitions: {
+                    'A': {
+                        validator: '[АБЕКМНОРСТУХ]',
+                        casing: 'upper'
+                    }
+                },
+                onBeforePaste: function(pastedValue) {
+                    return pastedValue.toUpperCase();
+                }
+            });
+            console.log('Inputmask initialized for stateNumberInput');
+        } catch (e) {
+            console.error('Error initializing Inputmask:', e);
+        }
+    }
 
-        $(stateNumberInput).select2({
-            ajax: {
-                url: '/admin/cars/autocomplete',
-                dataType: 'json',
-                delay: 250,
-                data: function(params) {
+    /* ================================
+       Автозаполнение гос. номеров
+       ================================ */
+    if (stateNumberInput) {
+        try {
+            $(stateNumberInput).select2({
+                ajax: {
+                    url: '/admin/cars/autocomplete',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return { q: params.term };
+                    },
+                    processResults: function(data) {
+                        console.log('Autocomplete response:', data);
+                        if (data.error) {
+                            console.error('Server error:', data.error);
+                            return { results: [] };
+                        }
+                        return {
+                            results: data.map(car => ({
+                                id: car.state_number,
+                                text: car.state_number,
+                                car_brand: car.car_brand || '',
+                                class_id: car.class_id ? String(car.class_id) : ''
+                            }))
+                        };
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('AJAX error:', textStatus, errorThrown, jqXHR.responseText);
+                        return { results: [] };
+                    }
+                },
+                placeholder: 'А000АА00',
+                minimumInputLength: 2,
+                allowClear: true,
+                tags: true,
+                createTag: function(params) {
+                    const term = params.term.trim().toUpperCase();
+                    const regex = /^[АБЕКМНОРСТУХ][0-9]{3}[АБЕКМНОРСТУХ]{2}[0-9]{0,3}$/;
+                    if (!regex.test(term)) {
+                        return null;
+                    }
                     return {
-                        q: params.term
+                        id: term,
+                        text: term,
+                        car_brand: '',
+                        class_id: ''
                     };
                 },
-                processResults: function(data) {
-                    return {
-                        results: data.map(car => ({
-                            id: car.state_number,
-                            text: car.state_number,
-                            car_brand: car.car_brand,
-                            class_id: car.class_id
-                        }))
-                    };
+                width: '100%',
+                language: {
+                    inputTooShort: () => 'Пожалуйста, введите 2 символа',
+                    noResults: () => 'Номер не найден',
+                    errorLoading: () => 'Ошибка загрузки результатов'
                 }
-            },
-            placeholder: 'A000AA00',
-            minimumInputLength: 2,
-            allowClear: true,
-            tags: true,
-            width: '100%',
-            language: {
-                inputTooShort: function() {
-                    return 'Пожалуйста, введите 2 символа';
-                },
-                noResults: function() {
-                    return 'Номер не найден';
-                }
-            }
-        }).on('select2:select', function(e) {
-            const data = e.params.data;
-            stateNumberInput.value = data.id;
-            carBrandInput.value = data.car_brand || '';
-            classSelect.value = data.class_id || '';
-            updateServiceTotal();
-        }).on('select2:unselect', function() {
-            carBrandInput.value = '';
-            classSelect.value = '';
-            updateServiceTotal();
-        }).on('change', function() {
-            const val = $(this).val();
-            if (!val) {
+            }).on('select2:select', function(e) {
+                const data = e.params.data;
+                console.log('Selected car:', data);
+                stateNumberInput.value = data.id;
+                carBrandInput.value = data.car_brand || '';
+                classSelect.value = data.class_id || '';
+                $(classSelect).trigger('change');
+                updateServiceTotal();
+            }).on('select2:unselect', function() {
                 carBrandInput.value = '';
                 classSelect.value = '';
-            }
-            stateNumberInput.value = val; // синхронизируем input
-            updateServiceTotal();
-        });
-
-        /* ================================
-           Логика для товаров (Кафе)
-           ================================ */
-        function fillProductSelect(selectEl) {
-            selectEl.innerHTML = '<option disabled selected>Выбрать товар</option>';
-            productsJS.forEach(prod => {
-                const opt = document.createElement('option');
-                opt.value = `${prod.id}_${prod.warehouse_id}`;
-                opt.textContent = `${prod.name} [склад ${prod.warehouse_id}]`;
-                opt.dataset.price = prod.sale_price;
-                opt.dataset.amount = prod.amount;
-                opt.dataset.unit = prod.unit_measurement;
-                selectEl.appendChild(opt);
+                $(classSelect).trigger('change');
+                updateServiceTotal();
             });
+            console.log('Select2 initialized for stateNumberInput');
+        } catch (e) {
+            console.error('Error initializing Select2 for stateNumberInput:', e);
         }
+    }
 
-        function initializeProductLine(lineDiv, idx) {
-            const selectEl = lineDiv.querySelector('.productSelect');
-            const inputEl = lineDiv.querySelector('.productAmountInput');
-            const stockLabel = lineDiv.querySelector('.warehouseStockLabel');
-            const errorMsg = document.createElement('div');
-            errorMsg.className = 'input-error';
-            errorMsg.style.color = 'red';
-            inputEl.parentNode.appendChild(errorMsg);
-
-            fillProductSelect(selectEl);
-            $(selectEl).select2({
-                placeholder: 'Выбрать товар',
+    /* ================================
+       Инициализация Select2 для classSelect
+       ================================ */
+    if (classSelect) {
+        try {
+            $(classSelect).select2({
+                placeholder: 'Выбрать класс',
                 allowClear: true,
-                width: '320px',
+                width: '100%',
                 language: {
-                    noResults: () => 'Товар не найден'
+                    noResults: () => 'Класс не найден'
                 }
-            }).on('change', () => {
-                validateProductLine();
-                updateProductTotal();
-            });
-
-            inputEl.addEventListener('input', () => {
-                inputEl.value = inputEl.value.replace(/[^\d]/g, '');
-                validateProductLine();
-                updateProductTotal();
-            });
-
-            lineDiv.querySelector('.removeLineBtn').addEventListener('click', () => {
-                lineDiv.remove();
-                updateProductTotal();
-            });
-
-            function validateProductLine() {
-                const opt = selectEl.selectedOptions[0];
-                if (!opt) {
-                    stockLabel.textContent = 'Всего на складе: ---';
-                    errorMsg.textContent = 'Выберите товар';
-                    disableBtn(productSaveBtn, 'Выберите товар');
-                    return;
-                }
-                const stock = +opt.dataset.amount;
-                const unit = opt.dataset.unit;
-                stockLabel.textContent = `Всего на складе: ${stock} (${unit})`;
-
-                let val = parseInt(inputEl.value, 10);
-                if (isNaN(val) || val < 1) {
-                    errorMsg.textContent = 'Минимум 1';
-                    disableBtn(productSaveBtn, 'Минимум 1');
-                    return;
-                }
-                if (val > stock) {
-                    errorMsg.textContent = `Максимум ${stock}`;
-                    inputEl.value = stock;
-                    disableBtn(productSaveBtn, `Максимум ${stock}`);
-                    return;
-                }
-                errorMsg.textContent = '';
-                enableBtn(productSaveBtn);
-            }
-
-            function disableBtn(btn, text) {
-                btn.disabled = true;
-                btn.textContent = text;
-                btn.style.cursor = 'not-allowed';
-                btn.style.backgroundColor = '#D33B4C';
-            }
-
-            function enableBtn(btn, text = 'Сохранить') {
-                btn.disabled = false;
-                btn.textContent = text;
-                btn.style.cursor = 'pointer';
-                btn.style.backgroundColor = '#707FDD';
-            }
+            }).on('change', updateServiceTotal);
+            console.log('Select2 initialized for classSelect');
+        } catch (e) {
+            console.error('Error initializing Select2 for classSelect:', e);
         }
+    }
 
-        function updateProductTotal() {
-            let total = 0;
-            document.querySelectorAll('.product-line').forEach(line => {
-                const sel = line.querySelector('.productSelect');
-                const inp = line.querySelector('.productAmountInput');
-                const opt = sel.selectedOptions[0];
-                if (!opt) return;
-                total += (+opt.dataset.price) * (+inp.value || 0);
-            });
-            productTotalElem.textContent = `${total} руб`;
+    document.getElementById('clearClassBtn')?.addEventListener('click', () => {
+        $(classSelect).val('').trigger('change');
+        updateServiceTotal();
+    });
+
+    /* ================================
+       Логика для услуг (Автомойка)
+       ================================ */
+    function fillServiceSelect(selectEl) {
+        console.log('Filling service select, servicesJS:', servicesJS);
+        selectEl.innerHTML = '<option disabled selected>Выбрать услугу</option>';
+        if (!Array.isArray(servicesJS)) {
+            console.error('servicesJS is not an array:', servicesJS);
+            return;
         }
+        servicesJS.forEach(srv => {
+            const opt = document.createElement('option');
+            opt.value = srv.id;
+            opt.textContent = srv.name;
+            opt.dataset.price = srv.price;
+            selectEl.appendChild(opt);
+        });
+        console.log('Service select options:', selectEl.innerHTML);
+    }
 
-        function addProductLine() {
-            const idx = productLineIndex++;
-            const div = document.createElement('div');
-            div.className = 'product-line';
-            div.dataset.index = idx;
-            div.innerHTML = `
-            <div class="product-line-good">
-                <label>Товар</label>
-                <select name="products[${idx}][product_warehouse]" class="productSelect"></select>
-            </div>
-            <div class="product-line-count">
-                <label>Кол-во</label>
-                <input type="number" name="products[${idx}][amount]" class="productAmountInput" value="1" min="1">
-            </div>
-            <div class="product-line-btn">
-                <label class="warehouseStockLabel">Всего на складе:</label>
-                <button type="button" class="removeLineBtn">
-                    <img src="/assets/themes/Carwashing/img/trash-icon.svg" alt="">
-                </button>
-            </div>`;
-            productLinesContainer.appendChild(div);
-            initializeProductLine(div, idx);
-            updateProductTotal();
+    function initializeServiceLine(lineDiv, idx) {
+        const selectEl = lineDiv.querySelector('.serviceSelect');
+        if (!selectEl) {
+            console.error('serviceSelect not found in lineDiv:', lineDiv);
+            return;
         }
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'input-error';
+        errorMsg.style.color = 'red';
+        lineDiv.appendChild(errorMsg);
 
-        addProductBtn.addEventListener('click', addProductLine);
-        const firstProd = productLinesContainer.querySelector('.product-line');
-        if (firstProd) {
-            initializeProductLine(firstProd, 0);
-            productLineIndex = 1;
-        } else addProductLine();
-        updateProductTotal();
-
-        /* ================================
-           Логика для услуг (Автомойка)
-           ================================ */
-        function fillServiceSelect(selectEl) {
-            selectEl.innerHTML = '<option disabled selected>Выбрать услугу</option>';
-            servicesJS.forEach(srv => {
-                const opt = document.createElement('option');
-                opt.value = srv.id;
-                opt.textContent = srv.name;
-                opt.dataset.price = srv.price;
-                selectEl.appendChild(opt);
-            });
-        }
-
-        function initializeServiceLine(lineDiv, idx) {
-            const selectEl = lineDiv.querySelector('.serviceSelect');
-            const errorMsg = document.createElement('div');
-            errorMsg.className = 'input-error';
-            errorMsg.style.color = 'red';
-            lineDiv.appendChild(errorMsg);
-
-            fillServiceSelect(selectEl);
+        fillServiceSelect(selectEl);
+        try {
             $(selectEl).select2({
                 placeholder: 'Выбрать услугу',
                 allowClear: true,
-                width: 'auto',
+                width: 'auto', // Увеличено для лучшей видимости
+                dropdownParent: $(lineDiv),
                 language: {
                     noResults: () => 'Услуга не найдена'
                 }
@@ -455,67 +403,273 @@ $services_array = $data['service']->getAllFromDBAsArray();
                 validateServiceLine();
                 updateServiceTotal();
             });
+            console.log('Select2 initialized for serviceSelect:', selectEl);
+        } catch (e) {
+            console.error('Error initializing Select2 for serviceSelect:', e);
+        }
 
-            lineDiv.querySelector('.removeServiceBtn').addEventListener('click', () => {
+        const removeBtn = lineDiv.querySelector('.removeServiceBtn');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+                try {
+                    $(selectEl).select2('destroy');
+                } catch (e) {
+                    console.error('Error destroying Select2:', e);
+                }
                 lineDiv.remove();
                 updateServiceTotal();
             });
-
-            function validateServiceLine() {
-                const opt = selectEl.selectedOptions[0];
-                if (!opt) {
-                    errorMsg.textContent = 'Выберите услугу';
-                    return;
-                }
-                errorMsg.textContent = '';
-            }
+        } else {
+            console.error('removeServiceBtn not found in lineDiv:', lineDiv);
         }
 
-        function updateServiceTotal() {
-            let sum = 0;
-            const percent = +classSelect.value ? +classSelect.selectedOptions[0].dataset.percent : 0;
-
-            document.querySelectorAll('.service-line').forEach(line => {
-                const opt = line.querySelector('.serviceSelect')?.selectedOptions[0];
-                if (!opt) return;
-                const basePrice = +opt.dataset.price;
-                const markup = percent;
-                sum += basePrice + markup;
-            });
-
-            serviceTotalElem.textContent = `${Math.round(sum)} руб`;
+        function validateServiceLine() {
+            const opt = selectEl.selectedOptions[0];
+            errorMsg.textContent = opt ? '' : 'Выберите услугу';
         }
+    }
 
-        function addServiceLine() {
-            const idx = serviceLineIndex++;
-            const div = document.createElement('div');
-            div.className = 'service-line';
-            div.dataset.index = idx;
-            div.innerHTML = `
+    function updateServiceTotal() {
+        let total = 0;
+        const selectedOption = classSelect?.selectedOptions[0];
+        const markup = selectedOption && classSelect?.value ? parseFloat(selectedOption.dataset.markup) || 0 : 0;
+
+        console.log('Selected class:', classSelect?.value, 'Markup:', markup);
+
+        document.querySelectorAll('.service-line').forEach(line => {
+            const opt = line.querySelector('.serviceSelect')?.selectedOptions[0];
+            if (!opt) return;
+            const basePrice = parseFloat(opt.dataset.price) || 0;
+            const adjustedPrice = basePrice + markup;
+            total += adjustedPrice;
+            console.log('Service:', opt.textContent, 'Base Price:', basePrice, 'Adjusted Price:', adjustedPrice);
+        });
+
+        total = Math.round(total * 100) / 100;
+        if (serviceTotalElem) {
+            serviceTotalElem.textContent = `${total} руб`;
+        }
+        if (totalAmountInput) {
+            totalAmountInput.value = total;
+            console.log('Total Amount Input:', totalAmountInput.value);
+        }
+    }
+
+    function addServiceLine() {
+        const idx = serviceLineIndex++;
+        const div = document.createElement('div');
+        div.className = 'service-line';
+        div.dataset.index = idx;
+        div.innerHTML = `
             <div class="service-line-service">
                 <label>Услуга</label>
-                <select name="services[${idx}][service_id]" class="serviceSelect" style="width:auto;"></select>
+                <select name="services[${idx}][service_id]" class="serviceSelect"></select>
             </div>
             <div class="service-line-btn">
                 <label>ㅤ</label>
                 <button type="button" class="removeServiceBtn">
-                    <img src="/assets/themes/Carwashing/img/trash-icon.svg" alt="">
+                    <img src="/assets/themes/Carwashing/img/trash-icon.svg" alt="Удалить">
                 </button>
             </div>`;
-            serviceLinesContainer.appendChild(div);
-            initializeServiceLine(div, idx);
-            updateServiceTotal();
+        serviceLinesContainer.appendChild(div);
+        console.log('Added service line:', div);
+        initializeServiceLine(div, idx);
+        updateServiceTotal();
+    }
+
+    if (serviceLinesContainer && addServiceBtn) {
+        try {
+            addServiceBtn.addEventListener('click', addServiceLine);
+            const firstServ = serviceLinesContainer.querySelector('.service-line');
+            if (firstServ) {
+                console.log('Found existing service line:', firstServ);
+                initializeServiceLine(firstServ, 0);
+                serviceLineIndex = 1;
+            } else {
+                console.log('No existing service line, adding new one');
+                addServiceLine();
+            }
+        } catch (e) {
+            console.error('Error setting up service lines:', e);
+        }
+    }
+
+    /* ================================
+       Логика для товаров (Кафе)
+       ================================ */
+    function fillProductSelect(selectEl) {
+        console.log('Filling product select, productsJS:', productsJS);
+        selectEl.innerHTML = '<option disabled selected>Выбрать товар</option>';
+        if (!Array.isArray(productsJS)) {
+            console.error('productsJS is not an array:', productsJS);
+            return;
+        }
+        productsJS.forEach(prod => {
+            const opt = document.createElement('option');
+            opt.value = `${prod.id}_${prod.warehouse_id}`;
+            opt.textContent = `${prod.name} [склад ${prod.warehouse_id}]`;
+            opt.dataset.price = prod.sale_price;
+            opt.dataset.amount = prod.amount;
+            opt.dataset.unit = prod.unit_measurement;
+            selectEl.appendChild(opt);
+        });
+        console.log('Product select options:', selectEl.innerHTML);
+    }
+
+    function initializeProductLine(lineDiv, idx) {
+        const selectEl = lineDiv.querySelector('.productSelect');
+        const inputEl = lineDiv.querySelector('.productAmountInput');
+        const stockLabel = lineDiv.querySelector('.warehouseStockLabel');
+        if (!selectEl || !inputEl || !stockLabel) {
+            console.error('productSelect, productAmountInput, or warehouseStockLabel not found in lineDiv:', lineDiv);
+            return;
+        }
+        const errorMsg = document.createElement('div');
+        errorMsg.className = 'input-error';
+        errorMsg.style.color = 'red';
+        inputEl.parentNode.appendChild(errorMsg);
+
+        fillProductSelect(selectEl);
+        try {
+            $(selectEl).select2({
+                placeholder: 'Выбрать товар',
+                allowClear: true,
+                width: '400px', // Увеличено для лучшей видимости
+                dropdownParent: $(lineDiv),
+                language: {
+                    noResults: () => 'Товар не найден'
+                }
+            }).on('change', () => {
+                validateProductLine();
+                updateProductTotal();
+            });
+            console.log('Select2 initialized for productSelect:', selectEl);
+        } catch (e) {
+            console.error('Error initializing Select2 for productSelect:', e);
         }
 
-        addServiceBtn.addEventListener('click', addServiceLine);
-        classSelect.addEventListener('change', updateServiceTotal);
-        const firstServ = serviceLinesContainer.querySelector('.service-line');
-        if (firstServ) {
-            initializeServiceLine(firstServ, 0);
-            serviceLineIndex = 1;
-        } else addServiceLine();
-        updateServiceTotal();
-    });
+        inputEl.addEventListener('input', () => {
+            inputEl.value = inputEl.value.replace(/[^\d]/g, '');
+            validateProductLine();
+            updateProductTotal();
+        });
+
+        const removeBtn = lineDiv.querySelector('.removeLineBtn');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', () => {
+                try {
+                    $(selectEl).select2('destroy');
+                } catch (e) {
+                    console.error('Error destroying Select2:', e);
+                }
+                lineDiv.remove();
+                updateProductTotal();
+            });
+        } else {
+            console.error('removeLineBtn not found in lineDiv:', lineDiv);
+        }
+
+        function validateProductLine() {
+            const opt = selectEl.selectedOptions[0];
+            if (!opt) {
+                stockLabel.textContent = 'Всего на складе: ---';
+                errorMsg.textContent = 'Выберите товар';
+                if (productSaveBtn) disableBtn(productSaveBtn, 'Выберите товар');
+                return;
+            }
+            const stock = parseInt(opt.dataset.amount, 10);
+            const unit = opt.dataset.unit;
+            stockLabel.textContent = `Всего на складе: ${stock} (${unit})`;
+
+            let val = parseInt(inputEl.value, 10);
+            if (isNaN(val) || val < 1) {
+                errorMsg.textContent = 'Минимум 1';
+                if (productSaveBtn) disableBtn(productSaveBtn, 'Минимум 1');
+                return;
+            }
+            if (val > stock) {
+                errorMsg.textContent = `Максимум ${stock}`;
+                inputEl.value = stock;
+                if (productSaveBtn) disableBtn(productSaveBtn, `Максимум ${stock}`);
+                return;
+            }
+            errorMsg.textContent = '';
+            if (productSaveBtn) enableBtn(productSaveBtn);
+        }
+
+        function disableBtn(btn, text) {
+            btn.disabled = true;
+            btn.textContent = text;
+            btn.style.cursor = 'not-allowed';
+            btn.style.backgroundColor = '#D33B4C';
+        }
+
+        function enableBtn(btn, text = 'Сохранить') {
+            btn.disabled = false;
+            btn.textContent = text;
+            btn.style.cursor = 'pointer';
+            btn.style.backgroundColor = '#707FDD';
+        }
+    }
+
+    function updateProductTotal() {
+        let total = 0;
+        document.querySelectorAll('.product-line').forEach(line => {
+            const sel = line.querySelector('.productSelect');
+            const inp = line.querySelector('.productAmountInput');
+            const opt = sel?.selectedOptions[0];
+            if (!opt) return;
+            total += (parseFloat(opt.dataset.price) || 0) * (parseInt(inp.value, 10) || 0);
+        });
+        total = Math.round(total * 100) / 100;
+        if (productTotalElem) {
+            productTotalElem.textContent = `${total} руб`;
+        }
+    }
+
+    function addProductLine() {
+        const idx = productLineIndex++;
+        const div = document.createElement('div');
+        div.className = 'product-line';
+        div.dataset.index = idx;
+        div.innerHTML = `
+            <div class="product-line-good">
+                <label>Товар</label>
+                <select name="products[${idx}][product_warehouse]" class="productSelect"></select>
+            </div>
+            <div class="product-line-count">
+                <label>Кол-во</label>
+                <input type="number" name="products[${idx}][amount]" class="productAmountInput" value="1" min="1" style="width: 100px;">
+            </div>
+            <div class="product-line-btn">
+                <label class="warehouseStockLabel">Всего на складе:</label>
+                <button type="button" class="removeLineBtn">
+                    <img src="/assets/themes/Carwashing/img/trash-icon.svg" alt="Удалить">
+                </button>
+            </div>`;
+        productLinesContainer.appendChild(div);
+        console.log('Added product line:', div);
+        initializeProductLine(div, idx);
+        updateProductTotal();
+    }
+
+    if (productLinesContainer && addProductBtn) {
+        try {
+            addProductBtn.addEventListener('click', addProductLine);
+            const firstProd = productLinesContainer.querySelector('.product-line');
+            if (firstProd) {
+                console.log('Found existing product line:', firstProd);
+                initializeProductLine(firstProd, 0);
+                productLineIndex = 1;
+            } else {
+                console.log('No existing product line, adding new one');
+                addProductLine();
+            }
+        } catch (e) {
+            console.error('Error setting up product lines:', e);
+        }
+    }
+});
 </script>
 
 

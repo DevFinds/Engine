@@ -33,28 +33,46 @@ class ServiceController extends Controller
 
     public function autocompleteCars()
     {
-        $query = $this->request()->input('q', '');
-        $serviceService = new ServiceService($this->getDatabase());
-        $cars = $serviceService->getAllCarsAsArray();
+        try {
+            $query = $this->request()->input('q', '');
+            if (strlen($query) < 2) {
+                $this->jsonResponse([]);
+                return;
+            }
 
-        // Фильтруем машины по state_number
-        $filteredCars = array_filter($cars, function ($car) use ($query) {
-            return stripos($car['state_number'], $query) !== false;
-        });
+            $query = strtoupper($query);
+            $sql = "SELECT state_number, car_brand, class_id FROM Car WHERE state_number LIKE :query";
+            $cars = $this->getDatabase()->query($sql, ['query' => '%' . $query . '%']);
 
-        // Форматируем ответ для Select2
-        $response = array_map(function ($car) {
-            return [
-                'id' => $car['state_number'],
-                'state_number' => $car['state_number'],
-                'car_brand' => $car['car_brand'],
-                'class_id' => $car['class_id'],
-                'client_id' => $car['client_id'],
-            ];
-        }, $filteredCars);
+            error_log('Cars found for query ' . $query . ': ' . json_encode($cars, JSON_UNESCAPED_UNICODE));
 
-        header('Content-Type: application/json');
-        echo json_encode($response);
+            if (!$cars) {
+                $this->jsonResponse([]);
+                return;
+            }
+
+            $response = array_map(function ($car) {
+                return [
+                    'id' => $car['state_number'],
+                    'text' => $car['state_number'], // Для Select2
+                    'state_number' => $car['state_number'],
+                    'car_brand' => $car['car_brand'] ?? '',
+                    'class_id' => $car['class_id'] ? (string)$car['class_id'] : ''
+                ];
+            }, $cars);
+
+            $this->jsonResponse($response);
+        } catch (\Exception $e) {
+            error_log('Error in autocompleteCars: ' . $e->getMessage());
+            $this->jsonResponse(['error' => 'Server error: ' . $e->getMessage()], 500);
+        }
+    }
+
+    protected function jsonResponse($data, $status = 200)
+    {
+        header('Content-Type: application/json; charset=utf-8');
+        http_response_code($status);
+        echo json_encode($data, JSON_UNESCAPED_UNICODE);
         exit;
     }
 }
