@@ -70,23 +70,26 @@ class ReportService
         $endDate = $filters['end_date'] ?? null;
 
         $query = "
-        SELECT 
-            Service.name AS name,
-            checks.car_brand AS car_brand,
-            checks.car_number AS car_number,
-            checks.date AS sale_date,
-            CASE 
-                WHEN checks.cash > 0 AND checks.card <= 0 THEN 'cash'
-                WHEN checks.card > 0 AND checks.cash <= 0 THEN 'card'
-                WHEN checks.cash > 0 AND checks.card > 0 THEN 'cash'
-                ELSE 'unknown'
-            END AS payment_method,
-            check_items.total AS total
-        FROM checks
-        JOIN check_items ON check_items.check_id = checks.id
-        JOIN Service ON check_items.name COLLATE utf8mb4_unicode_ci = Service.name COLLATE utf8mb4_unicode_ci
-        WHERE checks.report_type = 'service'
-    ";
+            SELECT 
+                Service.name AS name,
+                checks.car_brand AS car_brand,
+                checks.car_number AS car_number,
+                Car_Classes.name AS car_class, -- Добавляем имя класса
+                checks.date AS sale_date,
+                CASE 
+                    WHEN checks.cash > 0 AND checks.card <= 0 THEN 'cash'
+                    WHEN checks.card > 0 AND checks.cash <= 0 THEN 'card'
+                    WHEN checks.cash > 0 AND checks.card > 0 THEN 'cash'
+                    ELSE 'unknown'
+                END AS payment_method,
+                check_items.total AS total
+            FROM checks
+            JOIN check_items ON check_items.check_id = checks.id
+            JOIN Service ON check_items.name COLLATE utf8mb4_unicode_ci = Service.name COLLATE utf8mb4_unicode_ci
+            LEFT JOIN Car ON checks.car_number = Car.state_number -- Присоединяем таблицу Car
+            LEFT JOIN Car_Classes ON Car.class_id = Car_Classes.id -- Присоединяем таблицу Car_Classes
+            WHERE checks.report_type = 'service'
+        ";
 
         $params = [];
         if ($serviceId) {
@@ -117,6 +120,7 @@ class ReportService
                 $report['name'],
                 $report['car_brand'] ?? '',
                 $report['car_number'] ?? '',
+                $report['car_class'] ?? 'Не указан', // Передаем класс или значение по умолчанию
                 $report['sale_date'],
                 $report['payment_method'],
                 $report['total'] ?? 0.0

@@ -283,10 +283,6 @@ $employees = $employees_service->getAllFromDB();
                                 <label for="name" class="car-class-form-label">Название класса</label>
                                 <input type="text" name="name" placeholder="Название класса" required>
                             </div>
-                            <div class="car-class-form-fields">
-                                <label for="markup" class="car-class-form-label">Наценка</label>
-                                <input type="number" step="0.1" name="markup" placeholder="100" required>
-                            </div>
                             <div class="car-class-form-buttons">
                                 <button type="submit" class="car-class-form-button-save">Сохранить</button>
                                 <button type="button" class="car-class-form-button-clear" onclick="this.form.reset()">Очистить</button>
@@ -303,7 +299,6 @@ $employees = $employees_service->getAllFromDB();
                                     <tr>
                                         <th>ID</th>
                                         <th>Название</th>
-                                        <th>Наценка</th>
                                         
                                     </tr>
                                 </thead>
@@ -312,7 +307,6 @@ $employees = $employees_service->getAllFromDB();
                                         <tr>
                                             <td><?php echo $car_classData->id(); ?></td>
                                             <td><?php echo $car_classData->name(); ?></td>
-                                            <td><?php echo $car_classData->markup(); ?></td>
                                             <td>
                                                 <button class="financial-accounting-first__edit-button" onclick="openCarClassEditModal(<?php echo $car_classData->id(); ?>)">
                                                     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -337,8 +331,6 @@ $employees = $employees_service->getAllFromDB();
                             <input type="hidden" name="id" id="carClassEditId">
                             <label for="carClassEditName">Название</label>
                             <input type="text" name="name" id="carClassEditName" required>
-                            <label for="carClassEditMarkup">Наценка (руб.)</label>
-                            <input type="number" step="0.01" name="markup" id="carClassEditMarkup" required>
                             <button type="submit" class="company-button">Сохранить изменения</button>
                             <button class="car-class-delete-button" onclick="confirmCarClassDelete(document.getElementById('carClassEditId').value)">Удалить</button>
                         </form>
@@ -362,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             console.log('Add form submitted, sending AJAX request');
             const submitButton = this.querySelector('button[type="submit"]');
-            submitButton.disabled = true; // Отключаем кнопку
+            submitButton.disabled = true;
             const formData = new FormData(this);
             fetch(this.action, {
                 method: 'POST',
@@ -394,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Ошибка при добавлении: ' + error.message);
             })
             .finally(() => {
-                submitButton.disabled = false; // Включаем кнопку
+                submitButton.disabled = false;
             });
         });
     } else {
@@ -409,7 +401,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             console.log('Edit form submitted, sending AJAX request');
             const submitButton = this.querySelector('button[type="submit"]');
-            submitButton.disabled = true; // Отключаем кнопку
+            submitButton.disabled = true;
             const formData = new FormData(this);
             fetch(this.action, {
                 method: 'POST',
@@ -442,47 +434,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 alert('Ошибка при редактировании: ' + error.message);
             })
             .finally(() => {
-                submitButton.disabled = false; // Включаем кнопку
+                submitButton.disabled = false;
             });
         });
     } else {
         console.error('Edit form not found');
     }
 
-    // Функция открытия модального окна
+    // Функция открытия модального окна для редактирования
     window.openCarClassEditModal = function(id) {
         console.log('Opening edit modal for ID:', id);
         fetch(`/admin/dashboard/company_managments/getCarClass/${id}`, {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' }
         })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(text => {
+            try {
+                const data = JSON.parse(text);
+                console.log('Get car class response:', data);
+                if (data.error) {
+                    alert('Ошибка: ' + data.error);
+                    return;
                 }
-                return response.text();
-            })
-            .then(text => {
-                try {
-                    const data = JSON.parse(text);
-                    console.log('Get car class response:', data);
-                    if (data.error) {
-                        alert('Ошибка: ' + data.error);
-                        return;
-                    }
-                    document.getElementById('carClassEditId').value = data.id;
-                    document.getElementById('carClassEditName').value = data.name;
-                    document.getElementById('carClassEditMarkup').value = data.markup;
-                    document.getElementById('carClassEditModal').style.display = 'block';
-                } catch (e) {
-                    console.error('Invalid JSON:', text);
-                    alert('Ошибка: Неверный формат ответа сервера');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Ошибка при загрузке данных класса автомобиля: ' + error.message);
-            });
+                document.getElementById('carClassEditId').value = data.id;
+                document.getElementById('carClassEditName').value = data.name;
+                document.getElementById('carClassEditModal').style.display = 'block';
+            } catch (e) {
+                console.error('Invalid JSON:', text);
+                alert('Ошибка: Неверный формат ответа сервера');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ошибка при загрузке данных класса автомобиля: ' + error.message);
+        });
     };
 
     // Функция закрытия модального окна
@@ -491,13 +482,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('carClassEditModal').style.display = 'none';
     };
 
-    // Функция удаления
+    // Функция подтверждения и удаления
     window.confirmCarClassDelete = function(id) {
-        if (confirm('Вы уверены, что хотите удалить этот класс автомобиля?')) {
+        if (confirm('Вы уверены, что хотите удалить этот класс автомобиля? Внимание: все связанные услуги также будут удалены!')) {
             console.log('Deleting car class with ID:', id);
             const deleteButton = document.querySelector('.car-class-delete-button');
             if (deleteButton) {
-                deleteButton.disabled = true; // Отключаем кнопку
+                deleteButton.disabled = true;
             }
             fetch(`/admin/dashboard/company_managments/deleteCarClass/${id}`, {
                 method: 'POST',
@@ -514,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = JSON.parse(text);
                     console.log('Delete response:', data);
                     if (data.status === 'success') {
-                        alert('Класс автомобиля успешно удален');
+                        alert('Класс автомобиля и связанные услуги успешно удалены');
                         closeCarClassEditModal();
                         location.reload();
                     } else {
@@ -531,7 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .finally(() => {
                 if (deleteButton) {
-                    deleteButton.disabled = false; // Включаем кнопку
+                    deleteButton.disabled = false;
                 }
             });
         }

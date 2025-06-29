@@ -1,5 +1,4 @@
 <?php
-
 use \Source\Models\Service;
 
 /**
@@ -26,8 +25,6 @@ $car_classes_service = $data['car_classes_service'];
 $car_classes = $car_classes_service->getAllFromDB();
 
 $services_array = $data['service']->getAllFromDBAsArray();
-
-
 ?>
 
 <?php $render->component('dashboard_header'); ?>
@@ -41,12 +38,10 @@ $services_array = $data['service']->getAllFromDBAsArray();
 
         <?php $render->component('pagecontent_header'); ?>
 
-
         <!-- Содержимое страницы -->
         <div class=page-content-body>
 
             <div class="tabs-container">
-
                 <div class="tabs">
                     <div class="tab active" data-tab="carWash" onclick="switchTab('carWash', 'tabs')">Автомойка</div>
                     <div class="tab" data-tab="cafe" onclick="switchTab('cafe')">Кафе</div>
@@ -60,8 +55,21 @@ $services_array = $data['service']->getAllFromDBAsArray();
 
             <form id="carWashContainer" action="/admin/dashboard/service_sales/addNewServiceSale" method="post" class="tab-content" style="display: block;">
                 <!-- Блок с множеством услуг -->
-                <div id="servicesLinesContainer">
+                <div id="servicesLinesContainer" >
                     <!-- Одна строка (пример) -->
+                    
+                        <div class="service-line-service">
+                            <label class="about-service-form-label">Класс автомобиля</label>
+                            <select class="about-service-form" name="class_id" id="classSelect" required>
+                                <option disabled selected>Выбрать класс</option>
+                                <?php foreach ($car_classes as $class) : ?>
+                                    <option value="<?= $class->id() ?>">
+                                        <?= $class->name() ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    
                     <div class="service-line" data-index="0">
                         <div class="service-line-service">
                             <label>Услуга</label>
@@ -95,25 +103,12 @@ $services_array = $data['service']->getAllFromDBAsArray();
                     </ul>
                     <ul class="about-service-forms-second-column">
                         <li>
-                        <li>
                             <label class="about-service-form-label">Гос.номер автомобиля</label>
                             <select name="state_number" id="stateNumberInput" class="about-service-form" required></select>
-                        </li>
                         </li>
                         <li>
                             <label class="about-service-form-label">Марка автомобиля</label>
                             <input type="text" name="car_brand" id="carBrandInput" placeholder="Ввести марку" required>
-                        </li>
-                        <li>
-                            <label class="about-service-form-label">Класс автомобиля</label>
-                            <select class="about-service-form" name="class_id" id="classSelect" required>
-                                <option disabled selected>Выбрать класс</option>
-                                <?php foreach ($car_classes as $class) : ?>
-                                    <option value="<?= $class->id() ?>" data-percent="<?= $class->markup() ?>">
-                                        <?= $class->name() ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
                         </li>
                     </ul>
                 </div>
@@ -196,17 +191,15 @@ $services_array = $data['service']->getAllFromDBAsArray();
 
                 <button type="submit" id="saveLineBtn">Сохранить</button>
             </form>
-
-
         </div>
     </div>
 </div>
 <script>
- document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     console.log('DOMContentLoaded fired');
-    console.log('jQuery version:', $.fn.jquery); // Должно быть "3.7.1"
-    console.log('Select2 loaded:', typeof $.fn.select2); // Должно быть "function"
-    console.log('Inputmask loaded:', typeof $.fn.inputmask); // Должно быть "function"
+    console.log('jQuery version:', $.fn.jquery);
+    console.log('Select2 loaded:', typeof $.fn.select2);
+    console.log('Inputmask loaded:', typeof $.fn.inputmask);
 
     const serviceLinesContainer = document.getElementById('servicesLinesContainer');
     const addServiceBtn = document.getElementById('addServiceBtn');
@@ -238,18 +231,23 @@ $services_array = $data['service']->getAllFromDBAsArray();
     if (stateNumberInput) {
         try {
             $(stateNumberInput).inputmask({
-                mask: '[AАБЕКМНОРСТУХ][0-9]{3}[AАБЕКМНОРСТУХ]{2}[0-9]{0,3}',
+                mask: '[АВЕКМНОРСТУХ][0-9]{3}[АВЕКМНОРСТУХ]{2}[0-9]{0,3}',
                 placeholder: 'А000АА00',
                 showMaskOnHover: false,
                 greedy: false,
                 definitions: {
                     'A': {
-                        validator: '[АБЕКМНОРСТУХ]',
+                        validator: '[АВЕКМНОРСТУХ]',
                         casing: 'upper'
                     }
                 },
                 onBeforePaste: function(pastedValue) {
+                    console.log('Pasted value:', pastedValue);
                     return pastedValue.toUpperCase();
+                },
+                onBeforeWrite: function(e, buffer, caretPos, opts) {
+                    console.log('Input value:', buffer.join(''));
+                    return true;
                 }
             });
             console.log('Inputmask initialized for stateNumberInput');
@@ -269,6 +267,7 @@ $services_array = $data['service']->getAllFromDBAsArray();
                     dataType: 'json',
                     delay: 250,
                     data: function(params) {
+                        console.log('Select2 search term:', params.term);
                         return { q: params.term };
                     },
                     processResults: function(data) {
@@ -296,9 +295,11 @@ $services_array = $data['service']->getAllFromDBAsArray();
                 allowClear: true,
                 tags: true,
                 createTag: function(params) {
-                    const term = params.term.trim().toUpperCase();
-                    const regex = /^[АБЕКМНОРСТУХ][0-9]{3}[АБЕКМНОРСТУХ]{2}[0-9]{0,3}$/;
+                    const term = params.term.trim().toUpperCase().replace(/[^АВЕКМНОРСТУХ0-9]/g, '');
+                    console.log('createTag term:', term);
+                    const regex = /^[АВЕКМНОРСТУХ][0-9]{3}[АВЕКМНОРСТУХ]{2}[0-9]{0,3}$/;
                     if (!regex.test(term)) {
+                        console.log('createTag failed validation:', term);
                         return null;
                     }
                     return {
@@ -321,12 +322,10 @@ $services_array = $data['service']->getAllFromDBAsArray();
                 carBrandInput.value = data.car_brand || '';
                 classSelect.value = data.class_id || '';
                 $(classSelect).trigger('change');
-                updateServiceTotal();
             }).on('select2:unselect', function() {
                 carBrandInput.value = '';
                 classSelect.value = '';
                 $(classSelect).trigger('change');
-                updateServiceTotal();
             });
             console.log('Select2 initialized for stateNumberInput');
         } catch (e) {
@@ -335,27 +334,40 @@ $services_array = $data['service']->getAllFromDBAsArray();
     }
 
     /* ================================
-       Инициализация Select2 для classSelect
-       ================================ */
-    if (classSelect) {
-        try {
-            $(classSelect).select2({
-                placeholder: 'Выбрать класс',
-                allowClear: true,
-                width: '100%',
-                language: {
-                    noResults: () => 'Класс не найден'
-                }
-            }).on('change', updateServiceTotal);
-            console.log('Select2 initialized for classSelect');
-        } catch (e) {
-            console.error('Error initializing Select2 for classSelect:', e);
-        }
+   Инициализация Select2 для classSelect
+   ================================ */
+if (classSelect) {
+    try {
+        $(classSelect).select2({
+            placeholder: 'Выбрать класс',
+            allowClear: true,
+            width: 'auto',
+            dropdownParent: $('#carWashContainer'),
+            language: { noResults: () => 'Класс не найден' }
+        }).on('change', () => {
+            // Обновляем все .serviceSelect при изменении класса
+            document.querySelectorAll('.service-line').forEach(line => {
+                const selectEl = line.querySelector('.serviceSelect');
+                $(selectEl).select2('destroy');
+                fillServiceSelect(selectEl);
+                $(selectEl).select2({
+                    placeholder: 'Выбрать услугу',
+                    allowClear: true,
+                    width: 'auto',
+                    dropdownParent: $(line),
+                    language: { noResults: () => 'Услуга не найдена' }
+                });
+            });
+            updateServiceTotal();
+        }).val('').trigger('change'); // Изменение здесь
+        console.log('Select2 initialized for classSelect');
+    } catch (e) {
+        console.error('Error initializing Select2 for classSelect:', e);
     }
+}
 
     document.getElementById('clearClassBtn')?.addEventListener('click', () => {
         $(classSelect).val('').trigger('change');
-        updateServiceTotal();
     });
 
     /* ================================
@@ -368,12 +380,16 @@ $services_array = $data['service']->getAllFromDBAsArray();
             console.error('servicesJS is not an array:', servicesJS);
             return;
         }
+        const selectedClass = classSelect?.value; // Используем ID класса как фильтр
         servicesJS.forEach(srv => {
-            const opt = document.createElement('option');
-            opt.value = srv.id;
-            opt.textContent = srv.name;
-            opt.dataset.price = srv.price;
-            selectEl.appendChild(opt);
+            // Проверяем, что category совпадает с selectedClass или показываем все, если класс не выбран
+            if (!selectedClass || String(srv.category) === selectedClass) {
+                const opt = document.createElement('option');
+                opt.value = srv.id;
+                opt.textContent = srv.name;
+                opt.dataset.price = srv.price;
+                selectEl.appendChild(opt);
+            }
         });
         console.log('Service select options:', selectEl.innerHTML);
     }
@@ -394,11 +410,9 @@ $services_array = $data['service']->getAllFromDBAsArray();
             $(selectEl).select2({
                 placeholder: 'Выбрать услугу',
                 allowClear: true,
-                width: 'auto', // Увеличено для лучшей видимости
+                width: 'auto',
                 dropdownParent: $(lineDiv),
-                language: {
-                    noResults: () => 'Услуга не найдена'
-                }
+                language: { noResults: () => 'Услуга не найдена' }
             }).on('change', () => {
                 validateServiceLine();
                 updateServiceTotal();
@@ -431,18 +445,12 @@ $services_array = $data['service']->getAllFromDBAsArray();
 
     function updateServiceTotal() {
         let total = 0;
-        const selectedOption = classSelect?.selectedOptions[0];
-        const markup = selectedOption && classSelect?.value ? parseFloat(selectedOption.dataset.markup) || 0 : 0;
-
-        console.log('Selected class:', classSelect?.value, 'Markup:', markup);
-
         document.querySelectorAll('.service-line').forEach(line => {
             const opt = line.querySelector('.serviceSelect')?.selectedOptions[0];
             if (!opt) return;
             const basePrice = parseFloat(opt.dataset.price) || 0;
-            const adjustedPrice = basePrice + markup;
-            total += adjustedPrice;
-            console.log('Service:', opt.textContent, 'Base Price:', basePrice, 'Adjusted Price:', adjustedPrice);
+            total += basePrice;
+            console.log('Service:', opt.textContent, 'Base Price:', basePrice);
         });
 
         total = Math.round(total * 100) / 100;
@@ -534,11 +542,9 @@ $services_array = $data['service']->getAllFromDBAsArray();
             $(selectEl).select2({
                 placeholder: 'Выбрать товар',
                 allowClear: true,
-                width: '400px', // Увеличено для лучшей видимости
+                width: '400px',
                 dropdownParent: $(lineDiv),
-                language: {
-                    noResults: () => 'Товар не найден'
-                }
+                language: { noResults: () => 'Товар не найден' }
             }).on('change', () => {
                 validateProductLine();
                 updateProductTotal();
@@ -671,6 +677,5 @@ $services_array = $data['service']->getAllFromDBAsArray();
     }
 });
 </script>
-
 
 <?php $render->component('dashboard_footer'); ?>

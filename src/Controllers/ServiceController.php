@@ -19,7 +19,6 @@ class ServiceController extends Controller
         $warehouse_service = new WarehouseService($this->getDatabase());
         $carClassesService = new CarClassesService($this->getDatabase());
 
-
         $this->render('/admin/dashboard/service_sales', [
             'service' => $serviceService,
             'users' => $userService,

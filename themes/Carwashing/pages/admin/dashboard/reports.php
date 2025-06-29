@@ -109,7 +109,8 @@
                                         <?php if (($reportType ?? 'product') === 'service'): ?>
                                             <th>Марка машины</th>
                                             <th>Номер</th>
-                                            <th>Наименование</th>
+                                            <th>Наименование услуги</th> <!-- Заменяем на "Наименование услуги" -->
+                                            <th>Класс автомобиля</th> <!-- Добавляем новый столбец -->
                                             <th>Дата время</th>
                                             <th>Тип оплаты</th>
                                             <th>Сумма</th>
@@ -126,7 +127,7 @@
                                 <tbody id="reportBody">
                                     <?php if (empty($reports)): ?>
                                         <tr>
-                                            <td colspan="<?= ($reportType ?? 'product') === 'service' ? 6 : 6 ?>">Выберите параметры и нажмите "Сформировать" для отображения отчета</td>
+                                            <td colspan="<?= ($reportType ?? 'product') === 'service' ? 7 : 6 ?>">Выберите параметры и нажмите "Сформировать" для отображения отчета</td>
                                         </tr>
                                     <?php else: ?>
                                         <?php foreach ($reports as $report): ?>
@@ -135,6 +136,7 @@
                                                     <td><?= htmlspecialchars($report['car_brand'] ?? '') ?></td>
                                                     <td><?= htmlspecialchars($report['car_number'] ?? '') ?></td>
                                                     <td><?= htmlspecialchars($report['name'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['car_class'] ?? '') ?></td> <!-- Новый столбец с классом -->
                                                     <td><?= htmlspecialchars($report['sale_date'] ?? '') ?></td>
                                                     <td><?= htmlspecialchars($report['payment_method'] ?? '') ?></td>
                                                     <td><?= htmlspecialchars($report['total'] ?? '') ?></td>

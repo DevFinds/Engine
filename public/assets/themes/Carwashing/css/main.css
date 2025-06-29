@@ -3115,6 +3115,7 @@ input[type="number"]::-webkit-outer-spin-button {
   padding: 8px 16px;
   height: auto;
   width: auto;
+  gap: 8px;
 }
 
 .select2-container--default .select2-results__option--selected {
@@ -3126,6 +3127,14 @@ input[type="number"]::-webkit-outer-spin-button {
   display: flex;
   flex-direction: row;
   align-items: bottom;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+#servicesLinesContainer
+{
+  display: flex;
+  flex-direction: column;
   gap: 16px;
   margin-bottom: 16px;
 }

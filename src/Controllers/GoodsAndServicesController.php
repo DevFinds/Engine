@@ -14,33 +14,32 @@ use Source\Services\ServiceService;
 use Source\Services\WarehouseService;
 use Source\Services\CompanyTypeService;
 use Source\Services\SupplierService;
+use Source\Services\CarClassesService;
 
 class GoodsAndServicesController extends Controller
 {
 
     public function index()
     {
-
         $company_service = new CompanyService($this->getDatabase());
         $company_type_service = new CompanyTypeService($this->getDatabase());
         $suppliers_service = new SupplierService($this->getDatabase());
         $warehouse_service = new WarehouseService($this->getDatabase());
         $product_service = new ProductService($this->getDatabase());
         $service_service = new ServiceService($this->getDatabase());
-
-
+        $car_classes_service = new CarClassesService($this->getDatabase()); // Добавлен сервис
 
         $field_error_event = $this->FieldErrorEventDispath('error', 'error', 'error');
         $error_array = $field_error_event->getPayload();
 
         $this->render('/admin/dashboard/goods_and_services', [
-
             'company_service' => $company_service,
             'company_type_service' => $company_type_service,
             'warehouse_service' => $warehouse_service,
             'product_service' => $product_service,
             'service_service' => $service_service,
-            'suppliers_service' => $suppliers_service
+            'suppliers_service' => $suppliers_service,
+            'car_classes_service' => $car_classes_service // Добавлено в массив данных
         ]);
     }
 
@@ -145,28 +144,35 @@ class GoodsAndServicesController extends Controller
             return;
         }
 
-        $existingService = $this->getDatabase()->first_found_in_db('Service', ['name' => $this->request()->input('name')]);
+        $name = $this->request()->input('name');
+        $category = $this->request()->input('category');
+
+        // Проверка на уникальность наименования в рамках категории
+        $existingService = $this->getDatabase()->first_found_in_db('Service', [
+            'name' => $name,
+            'category' => $category
+        ]);
 
         if ($existingService) {
-            $this->session()->set('error', 'Такая услуга уже существует');
+            $this->session()->set('error', 'Услуга с таким наименованием уже существует в данном классе.');
             $this->redirect('/admin/dashboard/goods_and_services');
             return;
         }
 
         $this->getDatabase()->insert('Service', [
-            'name' => $this->request()->input('name'),
+            'name' => $name,
             'description' => $this->request()->input('description'),
             'price' => $this->request()->input('price'),
-            'category' => $this->request()->input('category')
+            'category' => $category
         ]);
 
         $payload = [
             'action_name' => 'Добавление услуги',
             'actor_id' => $this->getAuth()->getUser()->id(),
             'action_info' => [
-                'Услуга' => $this->request()->input('name'),
+                'Услуга' => $name,
                 'Цена' => $this->request()->input('price'),
-                'Категория' => $this->request()->input('category'),
+                'Категория' => $category,
                 'Описание' => $this->request()->input('description'),
                 'Пользователь' => $this->getAuth()->getRole()->name() . " " . $this->getAuth()->getUser()->username() . " " . $this->getAuth()->getUser()->lastname()
             ]
@@ -316,19 +322,25 @@ class GoodsAndServicesController extends Controller
 
         // Поиск или создание машины
         $stateNumber = $this->request()->input('state_number');
+        $newClassId = $this->request()->input('class_id'); // Новый класс из формы
         $car = $this->getDatabase()->first_found_in_db('Car', ['state_number' => $stateNumber]);
+
         if (!$car) {
             $carId = $this->getDatabase()->insert('Car', [
                 'state_number' => $stateNumber,
                 'car_brand' => $this->request()->input('car_brand'),
                 'car_model' => null,
-                'class_id' => $this->request()->input('class_id'),
+                'class_id' => $newClassId,
                 'client_id' => null,
-
             ]);
             $car = $this->getDatabase()->first_found_in_db('Car', ['id' => $carId]);
         } else {
             $carId = $car['id'];
+            // Проверяем и обновляем класс, если он изменился
+            if ($car['class_id'] != $newClassId) {
+                $this->getDatabase()->update('Car', ['class_id' => $newClassId], ['id' => $carId]);
+                $car['class_id'] = $newClassId; // Обновляем данные в $car для последующих расчетов
+            }
         }
 
         $employeeId = $this->request()->input('employee_id');
@@ -349,9 +361,8 @@ class GoodsAndServicesController extends Controller
             $serviceRow = $this->getDatabase()->first_found_in_db('Service', ['id' => $servId]);
             if (!$serviceRow) continue;
 
-
             $price = (float)$serviceRow['price'];
-            $grandTotal = (float)$price + (float)$percent;
+            $grandTotal = (float)$price + (float)$percent; // Добавляем наценку от класса
 
             $items[] = [
                 'name' => $serviceRow['name'],
@@ -359,7 +370,6 @@ class GoodsAndServicesController extends Controller
                 'price' => $price,
                 'total' => $grandTotal
             ];
-
 
             $this->getDatabase()->insert('Service_Sale', [
                 'service_id' => $servId,
@@ -582,25 +592,35 @@ class GoodsAndServicesController extends Controller
             'description' => $this->request()->input('description')
         ];
 
-        $this->getDatabase()->update('Service', $data, ['id' => $id]);
+        try {
+            $result = $this->getDatabase()->update('Service', $data, ['id' => $id]);
+            if ($result === false) {
+                throw new Exception('Не удалось обновить услугу в базе данных');
+            }
 
-        $payload = [
-            'action_name' => 'Редактирование услуги',
-            'actor_id' => $this->getAuth()->getUser()->id(),
-            'action_info' => [
-                'Услуга' => $this->request()->input('name'),
-                'Цена' => $this->request()->input('price'),
-                'Категория' => $this->request()->input('category'),
-                'Описание' => $this->request()->input('description'),
-                'Пользователь' => $this->getAuth()->getRole()->name() . " " .
-                    $this->getAuth()->getUser()->username() . " " .
-                    $this->getAuth()->getUser()->lastname()
-            ]
-        ];
-        $event = new LogActionEvent($payload);
-        $this->getEventManager()->dispatch($event);
+            // Логирование успешного редактирования
+            $payload = [
+                'action_name' => 'Редактирование услуги',
+                'actor_id' => $this->getAuth()->getUser()->id(),
+                'action_info' => [
+                    'Услуга' => $this->request()->input('name'),
+                    'Цена' => $this->request()->input('price'),
+                    'Категория' => $this->request()->input('category'),
+                    'Описание' => $this->request()->input('description'),
+                    'Пользователь' => $this->getAuth()->getRole()->name() . " " .
+                        $this->getAuth()->getUser()->username() . " " .
+                        $this->getAuth()->getUser()->lastname()
+                ]
+            ];
+            $event = new LogActionEvent($payload);
+            $this->getEventManager()->dispatch($event);
 
-        $this->redirect('/admin/dashboard/goods_and_services');
+            $this->session()->set('success', 'Услуга успешно обновлена'); // Добавляем сообщение об успехе
+            $this->redirect('/admin/dashboard/goods_and_services');
+        } catch (Exception $e) {
+            $this->session()->set('error', 'Ошибка при обновлении услуги: ' . $e->getMessage());
+            $this->redirect('/admin/dashboard/goods_and_services');
+        }
     }
 
     public function deleteService()
@@ -633,6 +653,10 @@ class GoodsAndServicesController extends Controller
                 ob_end_flush();
                 return;
             }
+
+            // Удаляем связанные записи в таблице Task
+            $deletedTasks = $this->getDatabase()->delete('Task', ['service_id' => $id]);
+            error_log('deleteService: Deleted related Tasks for service ID ' . $id . ': ' . $deletedTasks);
 
             // Удаление связанных записей в Service_Sale
             $this->getDatabase()->delete('Service_Sale', ['service_id' => $id]);

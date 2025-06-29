@@ -20,8 +20,7 @@ class CarClassesService
         foreach ($results as $result) {
             $carClasses[] = new CarClasses(
                 $result['id'],
-                $result['name'],
-                $result['markup']
+                $result['name']
             );
         }
         return $carClasses;
@@ -33,8 +32,7 @@ class CarClassesService
         if ($result) {
             return new CarClasses(
                 $result['id'],
-                $result['name'],
-                $result['markup']
+                $result['name']
             );
         }
         return null;
@@ -43,16 +41,14 @@ class CarClassesService
     public function add(array $data): bool
     {
         return $this->database->insert('Car_Classes', [
-            'name' => $data['name'],
-            'markup' => $data['markup']
+            'name' => $data['name']
         ]);
     }
 
     public function update(int $id, array $data): bool
     {
         return $this->database->update('Car_Classes', [
-            'name' => $data['name'],
-            'markup' => $data['markup']
+            'name' => $data['name']
         ], ['id' => $id]);
     }
 

@@ -7,6 +7,7 @@ class ServiceReport
     private string $serviceName;
     private string $carBrand;
     private string $carNumber;
+    private string $carClass; // Добавляем поле для класса
     private string $saleDate;
     private string $paymentMethod;
     private float $total;
@@ -15,6 +16,7 @@ class ServiceReport
         string $serviceName,
         string $carBrand,
         string $carNumber,
+        string $carClass, // Добавляем параметр
         string $saleDate,
         string $paymentMethod,
         float $total
@@ -22,6 +24,7 @@ class ServiceReport
         $this->serviceName = $serviceName;
         $this->carBrand = $carBrand;
         $this->carNumber = $carNumber;
+        $this->carClass = $carClass; // Инициализируем
         $this->saleDate = $saleDate;
         $this->paymentMethod = $paymentMethod;
         $this->total = $total;
@@ -40,6 +43,11 @@ class ServiceReport
     public function carNumber(): string
     {
         return $this->carNumber;
+    }
+
+    public function carClass(): string // Добавляем метод
+    {
+        return $this->carClass;
     }
 
     public function saleDate(): string

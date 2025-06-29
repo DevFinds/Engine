@@ -66,9 +66,7 @@ class ServiceService
     {
         $cars = $this->db->get('Car');
         return array_map(function ($car) {
-            $class = $this->db->first_found_in_db('Car_Classes', ['id' => $car['class_id']]);
-            $car['markup'] = $class ? $class['markup'] : 0.00;
-            return $car;
+            return $car; // Убрали расчет markup
         }, $cars);
     }
 

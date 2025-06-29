@@ -62,6 +62,7 @@ class ReportsController extends Controller
             if ($reportType === 'service') {
                 return [
                     'name' => htmlspecialchars($r->serviceName()),
+                    'car_class' => htmlspecialchars($r->carClass() ?? 'Не указан'), // Добавляем класс автомобиля
                     'car_brand' => htmlspecialchars($r->carBrand()),
                     'car_number' => htmlspecialchars($r->carNumber()),
                     'sale_date' => htmlspecialchars($r->saleDate()),
@@ -142,6 +143,7 @@ class ReportsController extends Controller
                 if ($reportType === 'service') {
                     return [
                         'name' => $r->serviceName(),
+                        'car_class' => $r->carClass() ?? 'Не указан', // Добавляем класс автомобиля
                         'car_brand' => $r->carBrand(),
                         'car_number' => $r->carNumber(),
                         'sale_date' => $r->saleDate(),
@@ -162,7 +164,8 @@ class ReportsController extends Controller
             $this->getEventManager()->addListener('log.action', new LogActionListener());
 
             $columns = $reportType === 'service' ? [
-                ['header' => 'Услуга', 'key' => 'name', 'format' => 'string'],
+                ['header' => 'Наименование услуги', 'key' => 'name', 'format' => 'string'], // Заменяем на "Наименование услуги"
+                ['header' => 'Класс автомобиля', 'key' => 'car_class', 'format' => 'string'], // Добавляем новый столбец
                 ['header' => 'Марка машины', 'key' => 'car_brand', 'format' => 'string'],
                 ['header' => 'Номер', 'key' => 'car_number', 'format' => 'string'],
                 ['header' => 'Дата', 'key' => 'sale_date', 'format' => 'string'],

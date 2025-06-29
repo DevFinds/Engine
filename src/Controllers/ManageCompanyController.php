@@ -34,13 +34,11 @@ class ManageCompanyController extends Controller
     public function addCarClass()
     {
         $labels = [
-            'name' => 'Название',
-            'markup' => 'Доплата (руб.)'
+            'name' => 'Название'
         ];
 
         $validation = $this->request()->validate([
-            'name' => ['required'],
-            'markup' => ['required', 'numeric', 'min:0']
+            'name' => ['required']
         ], $labels);
 
         if (!$validation) {
@@ -52,8 +50,7 @@ class ManageCompanyController extends Controller
             $this->getDatabase()->beginTransaction();
             $car_classes_service = new CarClassesService($this->getDatabase());
             $result = $car_classes_service->add([
-                'name' => $this->request()->input('name'),
-                'markup' => $this->request()->input('markup')
+                'name' => $this->request()->input('name')
             ]);
 
             $this->getDatabase()->commit();
@@ -77,8 +74,7 @@ class ManageCompanyController extends Controller
 
             return $this->jsonResponse([
                 'id' => $car_class->id(),
-                'name' => $car_class->name(),
-                'markup' => $car_class->markup()
+                'name' => $car_class->name()
             ]);
         } catch (\Exception $e) {
             error_log("ManageCompanyController::getCarClass - Ошибка: " . $e->getMessage());
@@ -90,14 +86,12 @@ class ManageCompanyController extends Controller
     {
         $labels = [
             'id' => 'ID',
-            'name' => 'Название',
-            'markup' => 'Доплата (руб.)'
+            'name' => 'Название'
         ];
 
         $validation = $this->request()->validate([
             'id' => ['required', 'numeric'],
-            'name' => ['required'],
-            'markup' => ['required', 'numeric', 'min:0']
+            'name' => ['required']
         ], $labels);
 
         if (!$validation) {
@@ -109,8 +103,7 @@ class ManageCompanyController extends Controller
             $this->getDatabase()->beginTransaction();
             $car_classes_service = new CarClassesService($this->getDatabase());
             $result = $car_classes_service->update($this->request()->input('id'), [
-                'name' => $this->request()->input('name'),
-                'markup' => $this->request()->input('markup')
+                'name' => $this->request()->input('name')
             ]);
 
             if (!$result) {
@@ -131,17 +124,33 @@ class ManageCompanyController extends Controller
         try {
             $this->getDatabase()->beginTransaction();
             $car_classes_service = new CarClassesService($this->getDatabase());
-            $result = $car_classes_service->delete($id);
 
-            if (!$result) {
+            // Проверяем существование класса
+            $car_class = $car_classes_service->getById($id);
+            if (!$car_class) {
+                error_log("ManageCompanyController::deleteCarClass - Класс с ID $id не найден");
                 return $this->jsonResponse(['error' => 'Класс автомобиля не найден'], 404);
             }
 
+            // Логируем данные класса перед удалением
+            error_log("ManageCompanyController::deleteCarClass - Класс: ID $id, Name: " . $car_class->name());
+
+            // Удаляем связанные услуги по категории (имени класса)
+            $deletedServices = $this->getDatabase()->delete('Service', ['category' => $car_class->name()]);
+            error_log("ManageCompanyController::deleteCarClass - Удалено услуг: " . $deletedServices);
+
+            // Удаляем сам класс
+            $result = $car_classes_service->delete($id);
+            if (!$result) {
+                throw new \Exception('Не удалось удалить класс автомобиля');
+            }
+
             $this->getDatabase()->commit();
+            error_log("ManageCompanyController::deleteCarClass - Успешно удален класс ID $id");
             return $this->jsonResponse(['status' => 'success']);
         } catch (\Exception $e) {
             $this->getDatabase()->rollBack();
-            error_log("ManageCompanyController::deleteCarClass - Ошибка: " . $e->getMessage());
+            error_log("ManageCompanyController::deleteCarClass - Ошибка для ID $id: " . $e->getMessage());
             return $this->jsonResponse(['error' => 'Ошибка при удалении: ' . $e->getMessage()], 500);
         }
     }
