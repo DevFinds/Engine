@@ -12,6 +12,7 @@ class EventManager
     // Регистрируем слушателя для определенного события
     public function addListener(string $eventName, EventListenerInterface $listener): void
     {
+        error_log('EventManager::addListener called for event: ' . $eventName);
         $this->listeners[$eventName][] = $listener;
     }
 
@@ -35,6 +36,7 @@ class EventManager
     public function dispatch(EventInterface $event): void
     {
         $eventName = $event->getName();
+        error_log('EventManager::dispatch called for event: ' . $eventName);
         foreach ($this->getListeners($eventName) as $listener) {
             $listener->handle($event);
         }
