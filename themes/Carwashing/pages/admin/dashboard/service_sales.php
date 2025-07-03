@@ -113,7 +113,7 @@ $services_array = $data['service']->getAllFromDBAsArray();
                     </ul>
                 </div>
 
-                <div class="payment-section">
+                <div class="payment-section" id="paymentSectionService">
                     <div class="payment-options">
                         <label>Выбрать расчет</label>
                         <fieldset>
@@ -123,13 +123,33 @@ $services_array = $data['service']->getAllFromDBAsArray();
                             <label>
                                 <input value="card" name="payment_type" type="radio"> Безналичный
                             </label>
+                            <label>
+                                <input value="cash_card" name="payment_type" type="radio"> Нал + безнал
+                            </label>
                         </fieldset>
+                    </div>
+                    <div id="splitPaymentFieldsService" class="split-payment-fields about-service-forms" style="display:none; margin-bottom: 10px; margin-right: 80px;">
+                        <ul class="about-service-forms-first-column">
+                            <li>
+                                <label class="about-service-form-label">Сумма по налу</label>
+                                <input type="number" min="0" step="0.01" name="cash_amount" class="about-service-form" placeholder="0 руб">
+                            </li>
+                        </ul>
+                        <ul class="about-service-forms-second-column">
+                            <li>
+                                <label class="about-service-form-label">Сумма по безналу</label>
+                                <input type="number" min="0" step="0.01" name="card_amount" class="about-service-form" placeholder="0 руб">
+                            </li>
+                        </ul>
                     </div>
                     <div class="total-amount">
                         <label class="total-amount-label">Итоговая сумма</label>
                         <div name="total_amount_service" class="total-amount-value" id="serviceTotal">0 руб</div>
                     </div>
+
+                    
                 </div>
+                
                 <button type="submit" class="save-button">Сохранить</button>
             </form>
 
@@ -171,7 +191,7 @@ $services_array = $data['service']->getAllFromDBAsArray();
                 <!-- Кнопка добавления новой строки (ещё один товар) -->
                 <button type="button" id="addLineBtn">Добавить товар</button>
 
-                <div class="payment-section">
+                <div class="payment-section" id="paymentSectionProduct">
                     <div class="payment-options">
                         <label>Выбрать расчет</label>
                         <fieldset>
@@ -181,7 +201,24 @@ $services_array = $data['service']->getAllFromDBAsArray();
                             <label>
                                 <input value="card" name="payment_type" type="radio"> Безналичный
                             </label>
+                            <label>
+                                <input value="cash_card" name="payment_type" type="radio"> Комбинированная
+                            </label>
                         </fieldset>
+                    </div>
+                    <div id="splitPaymentFieldsProduct" class="split-payment-fields about-service-forms" style="display:none; margin-bottom: 10px;">
+                        <ul class="about-service-forms-first-column">
+                            <li>
+                                <label class="about-service-form-label">Сумма наличными</label>
+                                <input type="number" min="0" step="0.01" name="cash_amount" class="about-service-form" placeholder="0 руб">
+                            </li>
+                        </ul>
+                        <ul class="about-service-forms-second-column">
+                            <li>
+                                <label class="about-service-form-label">Сумма безналичными</label>
+                                <input type="number" min="0" step="0.01" name="card_amount" class="about-service-form" placeholder="0 руб">
+                            </li>
+                        </ul>
                     </div>
                     <div class="total-amount">
                         <label>Итоговая сумма</label>
@@ -675,6 +712,93 @@ if (classSelect) {
             console.error('Error setting up product lines:', e);
         }
     }
+
+    // ================================
+    // Split Payment (нал + безнал)
+    // ================================
+    function setupSplitPayment(paymentSectionId, splitFieldsId, totalElemId, formId) {
+        const section = document.getElementById(paymentSectionId);
+        const splitFields = document.getElementById(splitFieldsId);
+        const totalElem = document.getElementById(totalElemId);
+        const form = document.getElementById(formId);
+        if (!section || !splitFields || !totalElem || !form) return;
+        const cashInput = splitFields.querySelector('input[name="cash_amount"]');
+        const cardInput = splitFields.querySelector('input[name="card_amount"]');
+        if (!cashInput || !cardInput) return;
+
+        function getTotal() {
+            return parseFloat((totalElem.textContent || '0').replace(/[^\d.]/g, '')) || 0;
+        }
+
+        function showSplit(show) {
+            splitFields.style.display = show ? 'block' : 'none';
+            if (!show) {
+                cashInput.value = '';
+                cardInput.value = '';
+            }
+        }
+
+        // Показывать/скрывать поля при выборе типа оплаты
+        section.querySelectorAll('input[name="payment_type"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                showSplit(this.value === 'cash_card');
+            });
+        });
+        // При загрузке страницы
+        const checkedRadio = section.querySelector('input[name="payment_type"]:checked');
+        showSplit(checkedRadio && checkedRadio.value === 'cash_card');
+
+        // Валидация и автозаполнение
+        function validateAndSync(e) {
+            const total = getTotal();
+            let cash = parseFloat(cashInput.value) || 0;
+            let card = parseFloat(cardInput.value) || 0;
+            if (e && e.target === cashInput) {
+                if (cash > total) cash = total;
+                if (cash < 0) cash = 0;
+                cashInput.value = cash;
+                cardInput.value = (total - cash).toFixed(2);
+            } else if (e && e.target === cardInput) {
+                if (card > total) card = total;
+                if (card < 0) card = 0;
+                cardInput.value = card;
+                cashInput.value = (total - card).toFixed(2);
+            }
+            if (parseFloat(cashInput.value) < 0) cashInput.value = 0;
+            if (parseFloat(cardInput.value) < 0) cardInput.value = 0;
+            if (parseFloat(cashInput.value) > total) cashInput.value = total;
+            if (parseFloat(cardInput.value) > total) cardInput.value = total;
+            if ((parseFloat(cashInput.value) + parseFloat(cardInput.value)).toFixed(2) != total.toFixed(2)) {
+                cashInput.style.borderColor = '#D33B4C';
+                cardInput.style.borderColor = '#D33B4C';
+            } else {
+                cashInput.style.borderColor = '';
+                cardInput.style.borderColor = '';
+            }
+        }
+        cashInput.addEventListener('input', validateAndSync);
+        cardInput.addEventListener('input', validateAndSync);
+        // При изменении итоговой суммы тоже обновлять split
+        const observer = new MutationObserver(validateAndSync);
+        observer.observe(totalElem, { childList: true, subtree: true });
+
+        form.addEventListener('submit', function(e) {
+            const selected = section.querySelector('input[name="payment_type"]:checked');
+            if (selected && selected.value === 'cash_card') {
+                const total = getTotal();
+                const cash = parseFloat(cashInput.value) || 0;
+                const card = parseFloat(cardInput.value) || 0;
+                if ((cash + card).toFixed(2) != total.toFixed(2)) {
+                    e.preventDefault();
+                    alert('Сумма по налу и безналу должна быть равна итоговой сумме!');
+                    cashInput.style.borderColor = '#D33B4C';
+                    cardInput.style.borderColor = '#D33B4C';
+                }
+            }
+        });
+    }
+    setupSplitPayment('paymentSectionService', 'splitPaymentFieldsService', 'serviceTotal', 'carWashContainer');
+    setupSplitPayment('paymentSectionProduct', 'splitPaymentFieldsProduct', 'productTotal', 'cafeContainer');
 });
 </script>
 

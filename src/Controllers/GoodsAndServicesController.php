@@ -255,8 +255,14 @@ class GoodsAndServicesController extends Controller
             ];
         }
 
-        $cash = $paymentType === 'cash' ? $grandTotal : 0;
-        $card = $paymentType === 'card' ? $grandTotal : 0;
+        if ($paymentType === 'cash') {
+            $cash = $grandTotal;
+        } elseif ($paymentType === 'card') {
+            $card = $grandTotal;
+        } elseif ($paymentType === 'cash_card') {
+            $cash = (float)($this->request()->input('cash_amount') ?? 0);
+            $card = (float)($this->request()->input('card_amount') ?? 0);
+        }
 
         try {
             $checkId = $this->createCheck([
@@ -349,11 +355,6 @@ class GoodsAndServicesController extends Controller
         $grandTotal = 0;
         $items = [];
 
-        // Получаем класс автомобиля и процент наценки
-        $classId = $car['class_id'];
-        $carClass = $this->getDatabase()->first_found_in_db('Car_Classes', ['id' => $classId]);
-        $percent = $carClass ? (float)$carClass['markup'] : 0.00;
-
         foreach ($serviceLines as $line) {
             $servId = $line['service_id'] ?? null;
             if (!$servId) continue;
@@ -362,26 +363,43 @@ class GoodsAndServicesController extends Controller
             if (!$serviceRow) continue;
 
             $price = (float)$serviceRow['price'];
-            $grandTotal = (float)$price + (float)$percent; // Добавляем наценку от класса
+            $grandTotal += $price;
 
             $items[] = [
                 'name' => $serviceRow['name'],
                 'quantity' => 1,
                 'price' => $price,
-                'total' => $grandTotal
+                'total' => $price
             ];
+        }
 
+        // Определяем суммы оплаты ДО вставки Service_Sale
+        $cash = 0;
+        $card = 0;
+        if ($paymentType === 'cash') {
+            $cash = $grandTotal;
+        } elseif ($paymentType === 'card') {
+            $card = $grandTotal;
+        } elseif ($paymentType === 'cash_card') {
+            $cash = (float)($this->request()->input('cash_amount') ?? 0);
+            $card = (float)($this->request()->input('card_amount') ?? 0);
+        }
+
+        // Вставляем Service_Sale для каждой услуги
+        foreach ($serviceLines as $line) {
+            $servId = $line['service_id'] ?? null;
+            if (!$servId) continue;
+            $serviceRow = $this->getDatabase()->first_found_in_db('Service', ['id' => $servId]);
+            if (!$serviceRow) continue;
+            $price = (float)$serviceRow['price'];
             $this->getDatabase()->insert('Service_Sale', [
                 'service_id' => $servId,
                 'employee_id' => $employeeId,
                 'car_id' => $carId,
-                'total_amount' => $grandTotal,
+                'total_amount' => $price,
                 'payment_method' => $paymentType
             ]);
         }
-
-        $cash = $paymentType === 'cash' ? $grandTotal : 0;
-        $card = $paymentType === 'card' ? $grandTotal : 0;
 
         try {
             $checkId = $this->createCheck([
