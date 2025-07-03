@@ -104,7 +104,17 @@
                         <label class="financial-accounting-first__list-label">Создан отчет</label>
                         <div class="financial-accounting-first__list">
                             <table id="reportTable">
-                                <div id="reportSums" style="margin-top: 1em; font-weight: bold; display: flex;" ></div>
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <div id="reportSums" style="font-weight: 500; display: flex; justify-content: space-between;" >
+                                    
+                                    </div>
+                                    <div id="reportControls" style="margin-left: 24px;">
+                                            <input type="text" id="reportSearchInput" placeholder="Поиск по отчету..." style="padding: 5px; width: 300px; border: 1px solid #ccc;">
+                                            <div id="reportSums" style="font-weight: bold;"></div>
+                                    </div>
+                                </div>
+                                
+                                
                                 <thead>
                                     <tr>
                                         <?php if (($reportType ?? 'product') === 'service'): ?>
@@ -292,6 +302,71 @@
     }
 
     document.addEventListener('DOMContentLoaded', calculateReportSums);
+</script>
+
+<script>
+    function formatCurrency(value) {
+        return Number(value).toFixed(2) + ' ₽';
+    }
+
+    function calculateReportSums() {
+        const rows = document.querySelectorAll('#reportTable tbody tr');
+        let cashTotal = 0, cardTotal = 0, grandTotal = 0;
+
+        const headers = Array.from(document.querySelectorAll('#reportTable thead th')).map(h => h.textContent.trim());
+        const isServiceReport = headers.includes('Марка машины');
+
+        rows.forEach(row => {
+            if (row.style.display === 'none') return; // пропускаем скрытые строки
+
+            const cells = row.querySelectorAll('td');
+            if (!cells.length || cells[0].textContent.includes('Выберите параметры')) return;
+
+            let cash = 0, card = 0, total = 0;
+
+            try {
+                if (isServiceReport) {
+                    cash = parseFloat(cells[6]?.innerText.replace(',', '.')) || 0;
+                    card = parseFloat(cells[7]?.innerText.replace(',', '.')) || 0;
+                    total = parseFloat(cells[8]?.innerText.replace(',', '.')) || 0;
+                } else {
+                    cash = parseFloat(cells[3]?.innerText.replace(',', '.')) || 0;
+                    card = parseFloat(cells[4]?.innerText.replace(',', '.')) || 0;
+                    total = parseFloat(cells[5]?.innerText.replace(',', '.')) || 0;
+                }
+            } catch {}
+
+            cashTotal += cash;
+            cardTotal += card;
+            grandTotal += total;
+        });
+
+        const reportSums = document.getElementById('reportSums');
+        reportSums.innerHTML = `
+            <div style="margin-left: 12px;">Всего наличными: ${formatCurrency(cashTotal)}</div>
+            <div style="margin-left: 12px;">Всего картой: ${formatCurrency(cardTotal)}</div>
+            <div style="margin-left: 12px;">Общая сумма: ${formatCurrency(grandTotal)}</div>
+        `;
+    }
+
+    function filterReportRows() {
+        const input = document.getElementById('reportSearchInput');
+        const filter = input.value.toLowerCase();
+        const rows = document.querySelectorAll('#reportTable tbody tr');
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(filter) ? '' : 'none';
+        });
+
+        calculateReportSums(); // обновим суммы только по видимым строкам
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        calculateReportSums();
+        const searchInput = document.getElementById('reportSearchInput');
+        searchInput.addEventListener('input', filterReportRows);
+    });
 </script>
 
 
