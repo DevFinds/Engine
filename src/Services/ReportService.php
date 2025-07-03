@@ -21,6 +21,8 @@ class ReportService
             check_items.name AS product_name,
             check_items.quantity AS quantity,
             check_items.price AS price,
+            checks.card AS card,
+            checks.cash AS cash,
             check_items.total AS total,
             users.username AS employee_name,
             checks.date AS sale_date
@@ -51,16 +53,20 @@ class ReportService
             return [];
         }
 
-        return array_map(function ($report) {
+        $reports = array_map(function ($report) {
             return new ProductReport(
                 $report['product_name'],
                 $report['quantity'],
                 $report['price'],
+                $report['card'],
+                $report['cash'],
                 $report['total'],
                 $report['employee_name'],
                 $report['sale_date']
             );
         }, $reports);
+
+        return $reports;
     }
 
     public function generateServiceReport(array $filters): array
@@ -76,6 +82,8 @@ class ReportService
                 checks.car_number AS car_number,
                 Car_Classes.name AS car_class, -- Добавляем имя класса
                 checks.date AS sale_date,
+                checks.card AS card,
+                checks.cash AS cash,
                 CASE 
                     WHEN checks.cash > 0 AND checks.card <= 0 THEN 'cash'
                     WHEN checks.card > 0 AND checks.cash <= 0 THEN 'card'
@@ -114,8 +122,8 @@ class ReportService
             error_log('SQL Error: ' . $e->getMessage());
             return [];
         }
-
-        return array_map(function ($report) {
+        
+        $reports = array_map(function ($report) {
             return new ServiceReport(
                 $report['name'],
                 $report['car_brand'] ?? '',
@@ -123,8 +131,11 @@ class ReportService
                 $report['car_class'] ?? 'Не указан', // Передаем класс или значение по умолчанию
                 $report['sale_date'],
                 $report['payment_method'],
-                $report['total'] ?? 0.0
+                $report['total'] ?? 0.0,
+                $report['card'] ?? 0.0,
+                $report['cash'] ?? 0.0
             );
         }, $reports);
+        return $reports;
     }
 }

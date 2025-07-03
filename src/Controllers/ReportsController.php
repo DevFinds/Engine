@@ -67,6 +67,8 @@ class ReportsController extends Controller
                     'car_number' => htmlspecialchars($r->carNumber()),
                     'sale_date' => htmlspecialchars($r->saleDate()),
                     'payment_method' => htmlspecialchars($r->paymentMethod()),
+                    'cash' => number_format($r->cash(), 2),
+                    'card' => number_format($r->card(), 2),
                     'total' => number_format($r->total(), 2),
                 ];
             }
@@ -74,6 +76,8 @@ class ReportsController extends Controller
                 'product_name' => htmlspecialchars($r->productName()),
                 'quantity' => $r->quantity(),
                 'price' => number_format($r->price(), 2),
+                'cash' => number_format($r->cash(), 2),
+                'card' => number_format($r->card(), 2),
                 'total' => number_format($r->total(), 2),
                 'employee_name' => htmlspecialchars($r->employeeName()),
                 'sale_date' => htmlspecialchars($r->saleDate()),
@@ -148,6 +152,8 @@ class ReportsController extends Controller
                         'car_number' => $r->carNumber(),
                         'sale_date' => $r->saleDate(),
                         'payment_method' => $r->paymentMethod(),
+                        'cash' => $r->cash(),
+                        'card' => $r->card(),
                         'total' => $r->total(),
                     ];
                 }
@@ -170,11 +176,15 @@ class ReportsController extends Controller
                 ['header' => 'Номер', 'key' => 'car_number', 'format' => 'string'],
                 ['header' => 'Дата', 'key' => 'sale_date', 'format' => 'string'],
                 ['header' => 'Тип оплаты', 'key' => 'payment_method', 'format' => 'string'],
+                ['header' => 'Сумма нал.', 'key' => 'cash', 'format' => 'number', 'number_format' => '#,##0.00'],
+                ['header' => 'Сумма безнал.', 'key' => 'card', 'format' => 'number', 'number_format' => '#,##0.00'],
                 ['header' => 'Сумма', 'key' => 'total', 'format' => 'number', 'number_format' => '#,##0.00'],
             ] : [
                 ['header' => 'Товар', 'key' => 'product_name', 'format' => 'string'],
                 ['header' => 'Кол-во', 'key' => 'quantity', 'format' => 'number', 'number_format' => '0'],
                 ['header' => 'Цена', 'key' => 'price', 'format' => 'number', 'number_format' => '#,##0.00'],
+                ['header' => 'Сумма нал.', 'key' => 'cash', 'format' => 'number', 'number_format' => '#,##0.00'],
+                ['header' => 'Сумма безнал.', 'key' => 'card', 'format' => 'number', 'number_format' => '#,##0.00'],
                 ['header' => 'Сумма', 'key' => 'total', 'format' => 'number', 'number_format' => '#,##0.00'],
                 ['header' => 'Сотрудник', 'key' => 'employee_name', 'format' => 'string'],
                 ['header' => 'Дата', 'key' => 'sale_date', 'format' => 'string'],

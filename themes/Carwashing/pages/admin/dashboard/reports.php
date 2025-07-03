@@ -104,6 +104,7 @@
                         <label class="financial-accounting-first__list-label">Создан отчет</label>
                         <div class="financial-accounting-first__list">
                             <table id="reportTable">
+                                <div id="reportSums" style="margin-top: 1em; font-weight: bold; display: flex;" ></div>
                                 <thead>
                                     <tr>
                                         <?php if (($reportType ?? 'product') === 'service'): ?>
@@ -113,11 +114,15 @@
                                             <th>Класс автомобиля</th> <!-- Добавляем новый столбец -->
                                             <th>Дата время</th>
                                             <th>Тип оплаты</th>
+                                            <th>Сумма нал.</th>
+                                            <th>Сумма безнал.</th>
                                             <th>Сумма</th>
                                         <?php else: ?>
                                             <th>Наименование</th>
                                             <th>Кол-во</th>
                                             <th>Цена</th>
+                                            <th>Сумма нал.</th>
+                                            <th>Сумма безнал.</th>
                                             <th>Сумма</th>
                                             <th>Сотрудник</th>
                                             <th>Дата</th>
@@ -139,15 +144,24 @@
                                                     <td><?= htmlspecialchars($report['car_class'] ?? '') ?></td> <!-- Новый столбец с классом -->
                                                     <td><?= htmlspecialchars($report['sale_date'] ?? '') ?></td>
                                                     <td><?= htmlspecialchars($report['payment_method'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['cash'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['card'] ?? '') ?></td>
                                                     <td><?= htmlspecialchars($report['total'] ?? '') ?></td>
                                                 <?php else: ?>
                                                     <td><?= htmlspecialchars($report['product_name'] ?? '') ?></td>
                                                     <td><?= htmlspecialchars($report['quantity'] ?? '') ?></td>
                                                     <td><?= htmlspecialchars($report['price'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['cash'] ?? '') ?></td>
+                                                    <td><?= htmlspecialchars($report['card'] ?? '') ?></td>
                                                     <td><?= htmlspecialchars($report['total'] ?? '') ?></td>
                                                     <td><?= htmlspecialchars($report['employee_name'] ?? '') ?></td>
                                                     <td><?= htmlspecialchars($report['sale_date'] ?? '') ?></td>
                                                 <?php endif; ?>
+                                                <?php
+
+
+                                                
+                                                ?>
                                             </tr>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
@@ -233,6 +247,53 @@
         </div>
     </div>
 </div>
+<script>
+    function formatCurrency(value) {
+        return Number(value).toFixed(2) + ' ₽';
+    }
+
+    function calculateReportSums() {
+        const rows = document.querySelectorAll('#reportTable tbody tr');
+        let cashTotal = 0, cardTotal = 0, grandTotal = 0;
+
+        // определим тип отчета по заголовкам таблицы
+        const headers = Array.from(document.querySelectorAll('#reportTable thead th')).map(h => h.textContent.trim());
+        const isServiceReport = headers.includes('Марка машины'); // или можно по reportType из PHP
+
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            if (!cells.length || cells[0].textContent.includes('Выберите параметры')) return;
+
+            let cash = 0, card = 0, total = 0;
+
+            try {
+                if (isServiceReport) {
+                    cash = parseFloat(cells[6]?.innerText.replace(',', '.')) || 0;
+                    card = parseFloat(cells[7]?.innerText.replace(',', '.')) || 0;
+                    total = parseFloat(cells[8]?.innerText.replace(',', '.')) || 0;
+                } else {
+                    cash = parseFloat(cells[3]?.innerText.replace(',', '.')) || 0;
+                    card = parseFloat(cells[4]?.innerText.replace(',', '.')) || 0;
+                    total = parseFloat(cells[5]?.innerText.replace(',', '.')) || 0;
+                }
+            } catch {}
+
+            cashTotal += cash;
+            cardTotal += card;
+            grandTotal += total;
+        });
+
+        const reportSums = document.getElementById('reportSums');
+        reportSums.innerHTML = `
+            <div style="margin-left: 12px;">Всего наличными: ${formatCurrency(cashTotal)}</div>
+            <div style="margin-left: 12px;">Всего картой: ${formatCurrency(cardTotal)}</div>
+            <div style="margin-left: 12px;">Общая сумма: ${formatCurrency(grandTotal)}</div>
+        `;
+    }
+
+    document.addEventListener('DOMContentLoaded', calculateReportSums);
+</script>
+
 
 <script>
     // Обработка табов
