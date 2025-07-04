@@ -110,7 +110,32 @@ $services_array = $data['service']->getAllFromDBAsArray();
                             <label class="about-service-form-label">Марка автомобиля</label>
                             <input type="text" name="car_brand" id="carBrandInput" placeholder="Ввести марку" required>
                         </li>
+                        
+                        
+                        
+                        
                     </ul>
+                    <ul class="about-service-forms-third-column">
+                        <li>
+                            <label class="about-service-form-label">Фамилия клиента</label>
+                            <input type="text" name="client_last_name" id="clientLastNameInput" placeholder="Ввести фамилию" required>
+                        </li>
+                        <li>
+                            <label class="about-service-form-label">Имя клиента</label>
+                            <input type="text" name="client_first_name" id="clientFirstNameInput" placeholder="Ввести имя" required>
+                        </li>
+                    </ul>
+                    <ul class="about-service-forms-fourth-column">
+                        <li>
+                            <label class="about-service-form-label">Отчество клиента</label>
+                            <input type="text" name="client_patronymic" id="clientPatronymicInput" placeholder="Ввести отчество">
+                        </li>
+                        <li>
+                            <label class="about-service-form-label">Телефон клиента</label>
+                            <input type="text" name="client_phone" id="clientPhoneInput" placeholder="+7 (___) ___-__-__" required>
+                        </li>
+                    </ul>
+                    
                 </div>
 
                 <div class="payment-section" id="paymentSectionService">
@@ -294,6 +319,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /* ================================
+       Маска для телефона клиента
+       ================================ */
+    const clientPhoneInput = document.getElementById('clientPhoneInput');
+    if (clientPhoneInput) {
+        try {
+            $(clientPhoneInput).inputmask({
+                mask: "+7 (999) 999-99-99",
+                placeholder: "+7 (___) ___-__-__",
+                showMaskOnHover: false,
+                greedy: false
+            });
+            console.log('Inputmask initialized for clientPhoneInput');
+        } catch (e) {
+            console.error('Error initializing Inputmask for clientPhoneInput:', e);
+        }
+    }
+
+    /* ================================
        Автозаполнение гос. номеров
        ================================ */
     if (stateNumberInput) {
@@ -359,10 +402,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 carBrandInput.value = data.car_brand || '';
                 classSelect.value = data.class_id || '';
                 $(classSelect).trigger('change');
+                
+                // Автозаполнение клиента при выборе номера машины
+                if (data.id) {
+                    fetch('/admin/dashboard/service_sales/getClientByCarNumber?state_number=' + encodeURIComponent(data.id))
+                        .then(response => response.json())
+                        .then(clientData => {
+                            if (clientData.success && clientData.client) {
+                                const client = clientData.client;
+                                document.getElementById('clientLastNameInput').value = client.last_name || '';
+                                document.getElementById('clientFirstNameInput').value = client.first_name || '';
+                                document.getElementById('clientPatronymicInput').value = client.patronymic || '';
+                                document.getElementById('clientPhoneInput').value = client.phone || '';
+                                // Делаем телефон readonly, если клиент найден
+                                document.getElementById('clientPhoneInput').readOnly = true;
+                            } else {
+                                // Очищаем поля клиента, если клиент не найден
+                                document.getElementById('clientLastNameInput').value = '';
+                                document.getElementById('clientFirstNameInput').value = '';
+                                document.getElementById('clientPatronymicInput').value = '';
+                                document.getElementById('clientPhoneInput').value = '';
+                                document.getElementById('clientPhoneInput').readOnly = false;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching client data:', error);
+                            // Очищаем поля клиента в случае ошибки
+                            document.getElementById('clientLastNameInput').value = '';
+                            document.getElementById('clientFirstNameInput').value = '';
+                            document.getElementById('clientPatronymicInput').value = '';
+                            document.getElementById('clientPhoneInput').value = '';
+                            document.getElementById('clientPhoneInput').readOnly = false;
+                        });
+                }
             }).on('select2:unselect', function() {
                 carBrandInput.value = '';
                 classSelect.value = '';
                 $(classSelect).trigger('change');
+                
+                // Очищаем поля клиента при отмене выбора номера
+                document.getElementById('clientLastNameInput').value = '';
+                document.getElementById('clientFirstNameInput').value = '';
+                document.getElementById('clientPatronymicInput').value = '';
+                document.getElementById('clientPhoneInput').value = '';
+                document.getElementById('clientPhoneInput').readOnly = false;
             });
             console.log('Select2 initialized for stateNumberInput');
         } catch (e) {

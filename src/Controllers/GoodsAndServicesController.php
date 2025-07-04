@@ -15,6 +15,7 @@ use Source\Services\WarehouseService;
 use Source\Services\CompanyTypeService;
 use Source\Services\SupplierService;
 use Source\Services\CarClassesService;
+use Source\Services\ClientService;
 
 class GoodsAndServicesController extends Controller
 {
@@ -326,9 +327,73 @@ class GoodsAndServicesController extends Controller
             return;
         }
 
-        // Поиск или создание машины
+        // Обработка данных клиента
+        $clientLastName = $this->request()->input('client_last_name');
+        $clientFirstName = $this->request()->input('client_first_name');
+        $clientPatronymic = $this->request()->input('client_patronymic');
+        $clientPhone = $this->request()->input('client_phone');
+        
+        // Очищаем телефон от маски
+        $clientPhone = preg_replace('/[^0-9]/', '', $clientPhone);
+        if (strlen($clientPhone) === 11 && substr($clientPhone, 0, 1) === '7') {
+            $clientPhone = substr($clientPhone, 1);
+        }
+        $clientPhone = '+7' . $clientPhone;
+
+        // Получаем данные из формы
         $stateNumber = $this->request()->input('state_number');
-        $newClassId = $this->request()->input('class_id'); // Новый класс из формы
+        $newClassId = $this->request()->input('class_id');
+
+        // Ищем существующего клиента по номеру машины
+        $existingClient = null;
+        $sql = "SELECT DISTINCT c.id, c.last_name, c.name AS first_name, c.patronymic, c.phone
+                FROM Client c
+                JOIN Client_cars cc ON c.id = cc.client_id
+                JOIN Car car ON cc.car_id = car.id
+                WHERE car.state_number = ?";
+        $clients = $this->getDatabase()->query($sql, [$stateNumber]);
+        
+        if ($clients && count($clients) > 0) {
+            $existingClient = $clients[0];
+        }
+
+        // Создаем или обновляем клиента
+        $clientService = new ClientService($this->getDatabase());
+        $clientId = null;
+        
+        if ($existingClient) {
+            // Обновляем существующего клиента, если ФИО изменились
+            $needUpdate = false;
+            $updateData = [];
+            
+            if ($existingClient['last_name'] !== $clientLastName) {
+                $updateData['last_name'] = $clientLastName;
+                $needUpdate = true;
+            }
+            if ($existingClient['first_name'] !== $clientFirstName) {
+                $updateData['name'] = $clientFirstName;
+                $needUpdate = true;
+            }
+            if ($existingClient['patronymic'] !== $clientPatronymic) {
+                $updateData['patronymic'] = $clientPatronymic;
+                $needUpdate = true;
+            }
+            
+            if ($needUpdate) {
+                $this->getDatabase()->update('Client', $updateData, ['id' => $existingClient['id']]);
+            }
+            $clientId = $existingClient['id'];
+        } else {
+            // Создаем нового клиента
+            $clientId = $this->getDatabase()->insert('Client', [
+                'last_name' => $clientLastName,
+                'name' => $clientFirstName,
+                'patronymic' => $clientPatronymic,
+                'phone' => $clientPhone
+            ]);
+        }
+
+        // Поиск или создание машины
         $car = $this->getDatabase()->first_found_in_db('Car', ['state_number' => $stateNumber]);
 
         if (!$car) {
@@ -336,16 +401,39 @@ class GoodsAndServicesController extends Controller
                 'state_number' => $stateNumber,
                 'car_brand' => $this->request()->input('car_brand'),
                 'car_model' => null,
-                'class_id' => $newClassId,
-                'client_id' => null,
+                'class_id' => $newClassId
             ]);
             $car = $this->getDatabase()->first_found_in_db('Car', ['id' => $carId]);
+            
+            // Связываем клиента с машиной через таблицу Client_cars
+            if ($clientId) {
+                $this->getDatabase()->insert('Client_cars', [
+                    'client_id' => $clientId,
+                    'car_id' => $carId
+                ]);
+            }
         } else {
             $carId = $car['id'];
             // Проверяем и обновляем класс, если он изменился
             if ($car['class_id'] != $newClassId) {
                 $this->getDatabase()->update('Car', ['class_id' => $newClassId], ['id' => $carId]);
                 $car['class_id'] = $newClassId; // Обновляем данные в $car для последующих расчетов
+            }
+            
+            // Проверяем, связан ли клиент с этой машиной
+            if ($clientId) {
+                $existingLink = $this->getDatabase()->first_found_in_db('Client_cars', [
+                    'client_id' => $clientId,
+                    'car_id' => $carId
+                ]);
+                
+                if (!$existingLink) {
+                    // Связываем клиента с машиной
+                    $this->getDatabase()->insert('Client_cars', [
+                        'client_id' => $clientId,
+                        'car_id' => $carId
+                    ]);
+                }
             }
         }
 
@@ -708,5 +796,48 @@ class GoodsAndServicesController extends Controller
             echo json_encode(['status' => 'error', 'message' => 'Ошибка при удалении услуги: ' . $e->getMessage()]);
         }
         ob_end_flush();
+    }
+
+    /**
+     * Получить клиента по номеру машины (AJAX)
+     */
+    public function getClientByCarNumber()
+    {
+        $state_number = $_GET['state_number'] ?? '';
+        if (empty($state_number)) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Номер машины не передан']);
+            exit;
+        }
+
+        $service = new ClientService($this->getDatabase());
+        
+        // Ищем клиента по номеру машины
+        $sql = "SELECT DISTINCT c.id, c.last_name, c.name AS first_name, c.patronymic, c.phone
+                FROM Client c
+                JOIN Client_cars cc ON c.id = cc.client_id
+                JOIN Car car ON cc.car_id = car.id
+                WHERE car.state_number = ?";
+        
+        $clients = $this->getDatabase()->query($sql, [$state_number]);
+        
+        header('Content-Type: application/json');
+        if ($clients && count($clients) > 0) {
+            // Берем первого клиента (если несколько машин у одного клиента)
+            $client = $clients[0];
+            echo json_encode([
+                'success' => true, 
+                'client' => [
+                    'id' => $client['id'],
+                    'last_name' => $client['last_name'],
+                    'first_name' => $client['first_name'],
+                    'patronymic' => $client['patronymic'],
+                    'phone' => $client['phone']
+                ]
+            ]);
+        } else {
+            echo json_encode(['success' => false, 'client' => null]);
+        }
+        exit;
     }
 }

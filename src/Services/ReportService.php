@@ -76,7 +76,7 @@ class ReportService
         $endDate = $filters['end_date'] ?? null;
 
         $query = "
-            SELECT 
+            SELECT DISTINCT
                 Service.name AS name,
                 checks.car_brand AS car_brand,
                 checks.car_number AS car_number,

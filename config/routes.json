@@ -326,6 +326,18 @@
         },
         {
             "method": "GET",
+            "uri": "/admin/dashboard/service_sales/getClientByCarNumber",
+            "action": {
+                "controller": "Source\\Controllers\\GoodsAndServicesController",
+                "method": "getClientByCarNumber"
+            },
+            "middlewares": [
+                "Source\\Middleware\\AuthMiddleware"
+            ],
+            "access_level": 1
+        },
+        {
+            "method": "GET",
             "uri": "/admin/dashboard/access_managments",
             "action": {
                 "controller": "Source\\Controllers\\AccessManagmentsController",
