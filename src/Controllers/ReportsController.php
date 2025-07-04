@@ -161,6 +161,8 @@ class ReportsController extends Controller
                     'product_name' => $r->productName(),
                     'quantity' => $r->quantity(),
                     'price' => $r->price(),
+                    'cash' => $r->cash(),
+                    'card' => $r->card(),
                     'total' => $r->total(),
                     'employee_name' => $r->employeeName(),
                     'sale_date' => $r->saleDate(),
