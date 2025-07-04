@@ -15,6 +15,7 @@ class LogActionListener implements EventListenerInterface
 
     public function handle(EventInterface $event): void
     {
+        error_log('LogActionListener::handle called');
         $database = new Database(new Config);
         try {
             $action_info = json_encode($event->getPayload()['action_info']);

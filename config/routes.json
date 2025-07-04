@@ -678,6 +678,69 @@
             "id": "[0-9]+"
         },
         "access_level": 2
+    },
+    {
+        "method": "GET",
+        "uri": "/admin/dashboard/client_managments",
+        "action": {
+            "controller": "Source\\Controllers\\ClientController",
+            "method": "index"
+        },
+        "middlewares": [
+            "Source\\Middleware\\AuthMiddleware"
+        ],
+        "access_level": 3
+    },
+    {
+        "method": "GET",
+        "uri": "/admin/dashboard/client_managments/getClient/{id}",
+        "action": {
+            "controller": "Source\\Controllers\\ClientController",
+            "method": "getClient"
+        },
+        "middlewares": [
+            "Source\\Middleware\\AuthMiddleware"
+        ],
+        "parameters": {
+            "id": "[0-9]+"
+        },
+        "access_level": 3
+    },
+    {
+        "method": "POST",
+        "uri": "/admin/dashboard/client_managments/editClient",
+        "action": {
+            "controller": "Source\\Controllers\\ClientController",
+            "method": "editClient"
+        },
+        "middlewares": [
+            "Source\\Middleware\\AuthMiddleware"
+        ],
+        "access_level": 3
+    },
+    {
+        "method": "POST",
+        "uri": "/admin/dashboard/client_managments/deleteClient",
+        "action": {
+            "controller": "Source\\Controllers\\ClientController",
+            "method": "deleteClient"
+        },
+        "middlewares": [
+            "Source\\Middleware\\AuthMiddleware"
+        ],
+        "access_level": 3
+    },
+    {
+        "method": "POST",
+        "uri": "/admin/dashboard/client_managments/addClient",
+        "action": {
+            "controller": "Source\\Controllers\\ClientController",
+            "method": "addClient"
+        },
+        "middlewares": [
+            "Source\\Middleware\\AuthMiddleware"
+        ],
+        "access_level": 3
     }
         
         

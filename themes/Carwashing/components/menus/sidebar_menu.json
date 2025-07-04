@@ -50,11 +50,18 @@
             "access_level" : 4
         },
         {
+            "name": "Управление клиентами",
+            "icon": "icon-user",
+            "url": "/admin/dashboard/client_managments",
+            "access_level" : 3
+        },
+        {
             "name": "Настройки",
             "icon": "icon-settings",
             "url": "/admin/dashboard/settings",
             "access_level" : 4
         }
+        
         
     ]
 }

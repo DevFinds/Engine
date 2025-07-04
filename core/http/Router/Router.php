@@ -36,8 +36,11 @@ class Router implements RouterInterface
         private StorageInterface $storage,
         private FileManager $fileManager,
         private ConfigInterface $config,
-        private EventManager $eventManager
+        private ?EventManager $eventManager = null
     ) {
+        if ($this->eventManager === null) {
+            $this->eventManager = new EventManager();
+        }
         $this->initRoutes();
     }
 

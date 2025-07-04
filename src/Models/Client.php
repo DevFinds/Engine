@@ -33,8 +33,4 @@ class Client
         return $this->phone;
     }
 
-    public function company_id()
-    {
-        return $this->company_id;
-    }
 }
