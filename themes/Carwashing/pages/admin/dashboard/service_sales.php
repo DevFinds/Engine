@@ -73,7 +73,7 @@ $services_array = $data['service']->getAllFromDBAsArray();
                     <div class="service-line" data-index="0">
                         <div class="service-line-service">
                             <label>Услуга</label>
-                            <select name="services[0][service_id]" class="serviceSelect" style="width: auto;"></select>
+                            <select name="services[0][service_id]" class="serviceSelect about-service-form" style="width: 520px;"></select>
                         </div>
                         <div class="service-line-btn">
                             <label for="">ㅤ</label>
@@ -118,21 +118,21 @@ $services_array = $data['service']->getAllFromDBAsArray();
                     <ul class="about-service-forms-third-column">
                         <li>
                             <label class="about-service-form-label">Фамилия клиента</label>
-                            <input type="text" name="client_last_name" id="clientLastNameInput" placeholder="Ввести фамилию" required>
+                            <input type="text" name="client_last_name" id="clientLastNameInput" class="about-service-form" placeholder="Ввести фамилию" required>
                         </li>
                         <li>
                             <label class="about-service-form-label">Имя клиента</label>
-                            <input type="text" name="client_first_name" id="clientFirstNameInput" placeholder="Ввести имя" required>
+                            <input type="text" name="client_first_name" id="clientFirstNameInput" class="about-service-form" placeholder="Ввести имя" required>
                         </li>
                     </ul>
                     <ul class="about-service-forms-fourth-column">
                         <li>
                             <label class="about-service-form-label">Отчество клиента</label>
-                            <input type="text" name="client_patronymic" id="clientPatronymicInput" placeholder="Ввести отчество">
+                            <input type="text" name="client_patronymic" id="clientPatronymicInput" class="about-service-form" placeholder="Ввести отчество">
                         </li>
                         <li>
                             <label class="about-service-form-label">Телефон клиента</label>
-                            <input type="text" name="client_phone" id="clientPhoneInput" placeholder="+7 (___) ___-__-__" required>
+                            <input type="text" name="client_phone" id="clientPhoneInput" class="about-service-form" placeholder="+7 (___) ___-__-__" required>
                         </li>
                     </ul>
                     

@@ -580,6 +580,13 @@ video {
   --medium-container-height: 389px;
   /* Контейнеры */
   --sidebar-width: 20%;
+  /* Положение стрелки по умолчанию */
+  --select-arrow-position: calc(100% - 10px) center;
+  --goods-select-arrow-position: calc(100% - 10px) center;
+  
+  /* Дополнительные настройки для товаров и услуг */
+  --goods-select-arrow-offset-right: 10px;
+  --goods-select-arrow-offset-top: center;
 }
 
 /* Кастомные стили */
@@ -1006,17 +1013,32 @@ li {
   cursor: pointer;
   color: white;
 }
+
+
 .car-class-form-container {
   margin-bottom: 20px;
 }
 
 .car-class-delete-button {
-  background-color: #dc3545; /* Красный цвет для удаления */
+  background-color: #dc3545;
   color: white;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  font-family: var(--font-family, sans-serif);
+  font-size: 14px;
+  line-height: 20px;
+  min-width: 120px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.car-class-delete-button:hover {
+  background-color: #c82333;
 }
 
 .car-class-form-section {
@@ -1031,36 +1053,84 @@ li {
 }
 
 .car-class-form-label {
-  font-weight: bold;
-  margin-bottom: 5px;
+  color: var(--white);
+  font-size: 16px;
+  padding-bottom: 8px;
+  padding-left: 8px;
+  display: block;
+  font-family: var(--font-family, sans-serif);
+  margin-bottom: 8px;
 }
 
 .car-class-form-section input {
-  padding: 8px;
-  border-radius: 4px;
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 14px;
+  background-color: #272B35;
+  border: none;
+  border-radius: 8px;
+  color: var(--dark-inactive);
+  margin-bottom: 12px;
+  margin-top: 8px;
+  font-family: var(--font-family, sans-serif);
+}
+
+.car-class-form-section input:focus {
+  outline: 2px solid #707FDD;
+}
+
+.car-class-form-section input::placeholder {
+  color: var(--dark-inactive);
+  opacity: 1;
 }
 
 .car-class-form-buttons {
   display: flex;
   gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
 }
 
 .car-class-form-button-save {
   background-color: #707FDD;
   color: white;
-  padding: 8px 16px;
+  padding: 10px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  font-family: var(--font-family, sans-serif);
+  font-size: 14px;
+  line-height: 20px;
+  min-width: 120px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.car-class-form-button-save:hover {
 }
 
 .car-class-form-button-clear {
-  background-color: #ccc;
-  color: black;
-  padding: 8px 16px;
+  background-color: var(--dark-hover);
+  color: white;
+  padding: 10px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
+  font-family: var(--font-family, sans-serif);
+  font-size: 14px;
+  line-height: 20px;
+  min-width: 120px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.car-class-form-button-clear:hover {
 }
 
 /* ------------------------------------------------ */
@@ -1188,7 +1258,7 @@ input[type="text"]:focus,
 
 .about-service-form {
   background-image: url('assets\img\arrow-down-select.svg');
-  background-position: calc(100% - 10px) center;
+  background-position: var(--select-arrow-position, calc(100% - 10px) center);
   background-repeat: no-repeat;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -1810,8 +1880,8 @@ input[type="text"]:focus,
 
 .warehouse-button{
   display: flex;
-  margin-top: 16px;
-  padding: 12px 16px;
+  margin-top: -20px;
+  padding: 3px 5px;
   align-items: center;
   justify-content: center;
   max-width: max-content;
@@ -1970,6 +2040,9 @@ input[type="text"]:focus,
   color: var(--dark-inactive);
   font-family: var(--font-family);
   font-size: var(--font-size-menu);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .warehouse-form-button-container {
@@ -3142,7 +3215,7 @@ input[type="number"]::-webkit-outer-spin-button {
   display: flex;
   flex-direction: row;
   align-items: bottom;
-  gap: 16px;
+  gap: 31px;
   margin-bottom: 16px;
 }
 
@@ -3661,3 +3734,166 @@ input[type="number"]::-webkit-outer-spin-button {
   height: 36px;
 }
 .remove-car-btn { background: #F05B5B; }
+
+.car-class-modal-content {
+  background: var(--dark-middle-bg);
+  margin: 15% auto;
+  padding: 20px;
+  width: 25%;
+  border-radius: 5px;
+  position: relative;
+}
+
+.car-class-modal-content input[type="text"] {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 14px;
+  background-color: #272B35;
+  border: none;
+  border-radius: 8px;
+  color: var(--dark-inactive);
+  margin-bottom: 12px;
+  font-family: var(--font-family, sans-serif);
+}
+
+.car-class-modal-content input[type="text"]:focus {
+  outline: 2px solid #707FDD;
+}
+
+.car-class-modal-content input[type="text"]::placeholder {
+  color: var(--dark-inactive);
+  opacity: 1;
+}
+
+.car-class-modal-content label {
+  color: var(--white);
+  font-size: 16px;
+  padding-bottom: 8px;
+  padding-left: 8px;
+  display: block;
+  font-family: var(--font-family, sans-serif);
+}
+
+.car-class-modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.car-class-modal-content .company-button,
+.car-class-modal-content .car-class-delete-button {
+  background-color: #707FDD;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font-family, sans-serif);
+  font-size: 14px;
+  line-height: 20px;
+  width: 120px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+  margin-top: 0;
+  flex: 1;
+}
+
+.car-class-modal-content .company-button:hover {
+  background-color: #5A6ACF;
+}
+
+.car-class-modal-content .car-class-delete-button {
+  background-color: #dc3545;
+}
+
+.car-class-modal-content .car-class-delete-button:hover {
+  background-color: #c82333;
+}
+
+.car-class-modal-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+/* Настройки стрелки для select элементов на странице товаров и услуг */
+.goods-form-provider-select,
+.goods-form-storage-select,
+.goods-form-unit-measurement-select,
+.goods-form-information-selects select {
+  background-image: url('assets\img\arrow-down-select.svg');
+  background-position: var(--goods-select-arrow-position, calc(100% - 10px) center);
+  background-repeat: no-repeat;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+/* Классы для настройки положения стрелки */
+.select-arrow-right {
+  --goods-select-arrow-position: calc(100% - 10px) center;
+}
+
+.select-arrow-left {
+  --goods-select-arrow-position: 10px center;
+}
+
+.select-arrow-center {
+  --goods-select-arrow-position: center center;
+}
+
+.select-arrow-top-right {
+  --goods-select-arrow-position: calc(100% - 10px) 10px;
+}
+
+.select-arrow-bottom-right {
+  --goods-select-arrow-position: calc(100% - 10px) calc(100% - 10px);
+}
+
+.select-arrow-top-left {
+  --goods-select-arrow-position: 10px 10px;
+}
+
+.select-arrow-bottom-left {
+  --goods-select-arrow-position: 10px calc(100% - 10px);
+}
+
+/* Кастомные позиции через CSS переменные */
+.select-arrow-custom {
+  --goods-select-arrow-position: var(--custom-arrow-position, calc(100% - 10px) center);
+}
+
+/* Скрыть стрелку */
+.select-arrow-none {
+  background-image: none !important;
+}
+
+/* Дополнительные настройки размера и отступов */
+.select-arrow-small {
+  background-size: 12px 12px;
+}
+
+.select-arrow-medium {
+  background-size: 16px 16px;
+}
+
+.select-arrow-large {
+  background-size: 20px 20px;
+}
+
+/* Настройка отступов для стрелки */
+.select-arrow-padding-small {
+  --goods-select-arrow-offset-right: 5px;
+}
+
+.select-arrow-padding-medium {
+  --goods-select-arrow-offset-right: 10px;
+}
+
+.select-arrow-padding-large {
+  --goods-select-arrow-offset-right: 15px;
+}

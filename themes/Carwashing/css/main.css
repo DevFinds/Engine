@@ -1,0 +1,30 @@
+.car-class-input{
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 14px;
+  background-color: #272B35;
+  border: none;
+  border-radius: 8px;
+  color: var(--dark-inactive);
+  margin-bottom: 12px;
+  font-family: var(--font-family, sans-serif);
+}
+
+.car-class-input:focus {
+  outline: 2px solid #707FDD;
+}
+
+.car-class-input::placeholder {
+  color: var(--dark-inactive);
+  opacity: 1;
+}
+
+.car-class-form-label {
+  color: var(--white);
+  font-size: 16px;
+  padding-bottom: 8px;
+  padding-left: 8px;
+  display: block;
+  font-family: var(--font-family, sans-serif);
+  margin-bottom: 8px;
+} 

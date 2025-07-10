@@ -145,7 +145,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Товары успешно перемещены');
                 movePopup.classList.add('hidden');
                 location.reload();
             } else {
@@ -232,7 +231,6 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             console.log('Данные ответа:', data);
             if (data.success) {
-                alert('Товары успешно удалены');
                 deletePopup.classList.add('hidden');
                 location.reload();
             } else {

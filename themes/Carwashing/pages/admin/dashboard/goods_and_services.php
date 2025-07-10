@@ -106,12 +106,7 @@ $user = $this->auth->getUser();
                                     </select>
                                 </li>
                             </div>
-                            <div class="goods-form-note-section">
-                                <button type="button" class="goods-form-note-button" onclick="toggleNoteField('note-field-goods-and-services')">Добавить примечание</button>
-                                <div class="goods-form-note-container" id="note-field-goods-and-services">
-                                    <textarea class="goods-form-note-area" name="description" placeholder="Введите комментарий"></textarea>
-                                </div>
-                            </div>
+                            
                             <div class="goods-form-buttons">
                                 <button type="submit" class="goods-form-button-save">Сохранить</button>
                                 <button type="button" class="goods-form-button-clear">Очистить</button>
@@ -217,12 +212,7 @@ $user = $this->auth->getUser();
                                 <input type="text" name="name" placeholder="Наименование услуги" required>
                             </div>
                         </div>
-                        <div class="goods-form-note-section">
-                            <button type="button" class="goods-form-note-button" onclick="toggleNoteField('note-field-services')">Добавить примечание</button>
-                            <div class="goods-form-note-container" id="note-field-services">
-                                <textarea name="description" class="goods-form-note-area" placeholder="Введите комментарий"></textarea>
-                            </div>
-                        </div>
+                        
                         <div class="goods-form-buttons">
                             <button type="submit" class="goods-form-button-save">Сохранить</button>
                             <button type="button" class="goods-form-button-clear">Очистить</button>

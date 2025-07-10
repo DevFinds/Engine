@@ -280,8 +280,7 @@ $employees = $employees_service->getAllFromDB();
                         <form class="car-class-form-section" action="/admin/dashboard/company_managments/addCarClass" method="post" id="addCarClassForm">
                             <input type="hidden" name="_token" value="">
                             <div class="car-class-form-fields">
-                                <label for="name" class="car-class-form-label">Название класса</label>
-                                <input type="text" name="name" placeholder="Название класса" required>
+                                <input type="text" name="name" class="car-class-input" placeholder="Название класса" required>
                             </div>
                             <div class="car-class-form-buttons">
                                 <button type="submit" class="car-class-form-button-save">Сохранить</button>
@@ -331,8 +330,10 @@ $employees = $employees_service->getAllFromDB();
                             <input type="hidden" name="id" id="carClassEditId">
                             <label for="carClassEditName">Название</label>
                             <input type="text" name="name" id="carClassEditName" required>
-                            <button type="submit" class="company-button">Сохранить изменения</button>
-                            <button class="car-class-delete-button" onclick="confirmCarClassDelete(document.getElementById('carClassEditId').value)">Удалить</button>
+                            <div class="car-class-modal-buttons">
+                                <button type="submit" class="company-button">Сохранить изменения</button>
+                                <button class="car-class-delete-button" onclick="confirmCarClassDelete(document.getElementById('carClassEditId').value)">Удалить</button>
+                            </div>
                         </form>
                     </div>
                 </div>

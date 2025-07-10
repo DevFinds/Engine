@@ -39,12 +39,19 @@ $suppliers = $data['suppliers']->getAllFromDB();
             <div id="warehouseOOOContainer" class="tab-content">
                 <div class="warehouseOOO-tab-container">
                     <div class="warehouse-forms-container">
+                        
                         <ul class="warehouse-first-column">
 
                             
                             <li><label class="warehouse-list-label">Список товаров</label></li>
                             <li>
                                 <div class="warehouse-list">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                        <div></div>
+                                        <div>
+                                            <input type="text" id="warehouse-search-OOO" placeholder="Поиск по товарам..." style="padding: 8px 12px; width: 300px; border: 1px solid var(--dark-hover); border-radius: 8px; background-color: var(--dark-bg); color: var(--white);">
+                                        </div>
+                                    </div>
                                     <table id="warehouse-table-OOO">
                                         <thead>
                                             <tr>
@@ -66,11 +73,6 @@ $suppliers = $data['suppliers']->getAllFromDB();
                                     </table>
                                 </div>
                             </li>
-                            <div class="warehouse-move-label"><label>Переместить из склада</label></div>
-                            <div class="warehouse-action-buttons">
-                                <button class="warehouse-button move-button">Переместить на склад ИП</button>
-                                <button class="warehouse-button delete-button">Удалить выбранные товары</button>
-                            </div>
                         </ul>
 
 
@@ -101,6 +103,11 @@ $suppliers = $data['suppliers']->getAllFromDB();
                                     </div>
                                 </form>
                             </li>
+                            <div class="warehouse-move-label"><label>Переместить из склада</label></div>
+                            <div class="warehouse-action-buttons">
+                                <button class="warehouse-button move-button">Переместить на склад ИП</button>
+                                <button class="warehouse-button delete-button">Удалить выбранные товары</button>
+                            </div>
                         </ul>
                     </div>
                 </div>
@@ -114,6 +121,12 @@ $suppliers = $data['suppliers']->getAllFromDB();
                             <li>
                                 <!-- Таьблица склада ИП -->
                                 <div class="warehouse-list">
+                                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                                        <div></div>
+                                        <div>
+                                            <input type="text" id="warehouse-search-IP" placeholder="Поиск по товарам..." style="padding: 8px 12px; width: 300px; border: 1px solid var(--dark-hover); border-radius: 8px; background-color: var(--dark-bg); color: var(--white);">
+                                        </div>
+                                    </div>
                                     <table id="warehouse-table-IP">
                                         <thead>
                                             <tr>
@@ -134,11 +147,7 @@ $suppliers = $data['suppliers']->getAllFromDB();
                                     </table>
                                 </div>
                             </li>
-                            <div class="warehouse-move-label"><label>Переместить из склада</label></div>
-                            <div class="warehouse-action-buttons">
-                                <button class="warehouse-button move-button">Переместить на склад ООО</button>
-                                <button class="warehouse-button delete-button">Удалить выбранные товары</button>
-                            </div>
+                            
                         </ul>
 
                         <ul class="warehouse-second-column">
@@ -166,6 +175,11 @@ $suppliers = $data['suppliers']->getAllFromDB();
                                     </div>
                                 </form>
                             </li>
+                            <div class="warehouse-move-label"><label>Переместить из склада</label></div>
+                            <div class="warehouse-action-buttons">
+                                <button class="warehouse-button move-button">Переместить на склад ООО</button>
+                                <button class="warehouse-button delete-button">Удалить выбранные товары</button>
+                            </div>
 
                         </ul>
                     </div>
@@ -196,6 +210,45 @@ $suppliers = $data['suppliers']->getAllFromDB();
 </div>
     </div>
 </div>
-</div>
+
+<script>
+    // Функция поиска по товарам на складе ООО
+    function filterWarehouseOOO() {
+        const input = document.getElementById('warehouse-search-OOO');
+        const filter = input.value.toLowerCase();
+        const rows = document.querySelectorAll('#warehouse-table-OOO tbody tr');
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(filter) ? '' : 'none';
+        });
+    }
+
+    // Функция поиска по товарам на складе ИП
+    function filterWarehouseIP() {
+        const input = document.getElementById('warehouse-search-IP');
+        const filter = input.value.toLowerCase();
+        const rows = document.querySelectorAll('#warehouse-table-IP tbody tr');
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(filter) ? '' : 'none';
+        });
+    }
+
+    // Инициализация поиска при загрузке страницы
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchOOO = document.getElementById('warehouse-search-OOO');
+        const searchIP = document.getElementById('warehouse-search-IP');
+
+        if (searchOOO) {
+            searchOOO.addEventListener('input', filterWarehouseOOO);
+        }
+
+        if (searchIP) {
+            searchIP.addEventListener('input', filterWarehouseIP);
+        }
+    });
+</script>
 
 <?php $render->component('dashboard_footer'); ?>
