@@ -94,7 +94,7 @@ $clients = $data['clients'];
                     <form action="/admin/dashboard/client_managments/addClient" method="post" id="clients-tab-container-form" autocomplete="off">
                         <input type="hidden" name="id" id="clientIdInput" autocomplete="off">
                         <label for="last_name">Фамилия</label>
-                        <input type="text" name="last_name" id="lastNameInput" required autocomplete="off">
+                        <input type="text" name="last_name" id="lastNameInput" autocomplete="off">
                         <label for="first_name">Имя</label>
                         <input type="text" name="first_name" id="firstNameInput" required autocomplete="off">
                         <label for="patronymic">Отчество</label>

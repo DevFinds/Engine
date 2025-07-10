@@ -49,7 +49,7 @@
                                         </select>
                                     </li>
                                     <li>
-                                        <input type="date" name="start_date" value="<?= htmlspecialchars($selectedStartDate ?? '') ?>" placeholder="Дата начала">
+                                        <input type="date" name="start_date" value="<?= htmlspecialchars($selectedStartDate !== '' ? $selectedStartDate : date('Y-m-d')) ?>" placeholder="Дата начала">
                                     </li>
                                 </ul>
                                 <ul class="financial-accounting-first__create-second-column">
@@ -109,7 +109,7 @@
                                     
                                     </div>
                                     <div id="reportControls" style="margin-left: 24px;">
-                                            <input type="text" id="reportSearchInput" placeholder="Поиск по отчету..." style="padding: 5px; width: 300px; border: 1px solid #ccc;">
+                                            <input type="text" id="reportSearchInput" placeholder="Поиск по отчету..." style="padding: 8px 12px; width: 300px; border: 1px solid var(--dark-hover); border-radius: 8px; background-color: var(--dark-bg); color: var(--white);">
                                             <div id="reportSums" style="font-weight: bold;"></div>
                                     </div>
                                 </div>

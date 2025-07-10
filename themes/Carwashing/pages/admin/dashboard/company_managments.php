@@ -158,31 +158,35 @@ $employees = $employees_service->getAllFromDB();
                     <h2>Добавить контрагента</h2>
                 <div class="partners-tab-container-form">
                 <form action="/admin/dashboard/company_managments/addSupplier" method="post" id="partners-tab-container-form">
-                    <label for="name">Название</label>
-                    <input type="text" name="name" required>
+                    <div style="display: flex; gap: 32px; flex-wrap: wrap;">
+                        <div style="flex: 1 1 260px; min-width: 220px; display: flex; flex-direction: column; gap: 12px;">
+                            <label for="name">Название</label>
+                            <input type="text" name="name" required>
 
-                    <label for="inn">ИНН</label>
-                    <input type="text" name="inn" required>
+                            <label for="phone">Телефон</label>
+                            <input type="text" name="phone" required>
 
-                    <label for="ogrn">ОГРН</label>
-                    <input type="text" name="ogrn" required>
+                            <label for="email">Email</label>
+                            <input type="email" name="email" required>
 
-                    <label for="legal_address">Юридический адрес</label>
-                    <input type="text" name="legal_address" required>
+                            <label for="contact_info">Контактная информация</label>
+                            <input type="text" name="contact_info" required>
+                        </div>
+                        <div style="flex: 1 1 260px; min-width: 220px; display: flex; flex-direction: column; gap: 12px;">
+                            <label for="inn">ИНН</label>
+                            <input type="text" name="inn" required>
 
-                    <label for="actual_address">Фактический адрес</label>
-                    <input type="text" name="actual_address" required>
+                            <label for="ogrn">ОГРН</label>
+                            <input type="text" name="ogrn" required>
 
-                    <label for="phone">Телефон</label>
-                    <input type="text" name="phone" required>
+                            <label for="legal_address">Юридический адрес</label>
+                            <input type="text" name="legal_address" required>
 
-                    <label for="email">Email</label>
-                    <input type="email" name="email" required>
-
-                    <label for="contact_info">Контактная информация</label>
-                    <input type="text" name="contact_info" required>
-
-                    <button type="submit" class="company-button">Добавить контрагента</button>
+                            <label for="actual_address">Фактический адрес</label>
+                            <input type="text" name="actual_address" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="company-button" style="margin-top: 20px;">Добавить контрагента</button>
                 </form>
                 </div>
 

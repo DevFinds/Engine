@@ -66,7 +66,7 @@ $user = $this->auth->getUser();
                                     <li><input type="number" name="amount" placeholder="Количество" required></li>
                                 </ul>
                                 <ul class="goods-form-main-fields-column">
-                                    <li><input type="date" name="created_at" placeholder="Дата добавления" required></li>
+                                    <li><input type="date" name="created_at" placeholder="Дата добавления" required value="<?php echo date('Y-m-d'); ?>"></li>
                                     <li>
                                         <select class="goods-form-unit-measurement-select" name="unit_measurement" required>
                                             <option disabled selected>Ед. изм.</option>
@@ -130,6 +130,9 @@ $user = $this->auth->getUser();
 
                     <div class="financial-accounting-first__list-container">
                         <label class="financial-accounting-first__list-label">Добавленные позиции</label>
+                        <div style="display: flex; align-items: center; justify-content: flex-end; margin-bottom: 12px;">
+                            <input type="text" id="product-search-input" placeholder="Поиск по товарам..." style="padding: 8px 12px; width: 300px; border: 1px solid var(--dark-hover); border-radius: 8px; background-color: var(--dark-bg); color: var(--white);">
+                        </div>
                         <div class="financial-accounting-first__list">
                             <table>
                                 <thead>
@@ -221,6 +224,9 @@ $user = $this->auth->getUser();
 
                     <div class="financial-accounting-first__list-container">
                         <label class="financial-accounting-first__list-label">Добавленные позиции</label>
+                        <div style="display: flex; align-items: center; justify-content: flex-end; margin-bottom: 12px;">
+                            <input type="text" id="service-search-input" placeholder="Поиск по услугам..." style="padding: 8px 12px; width: 300px; border: 1px solid var(--dark-hover); border-radius: 8px; background-color: var(--dark-bg); color: var(--white);">
+                        </div>
                         <div class="financial-accounting-first__list">
                             <table>
                                 <thead>
@@ -540,6 +546,31 @@ $user = $this->auth->getUser();
             const field = document.getElementById(id);
             field.style.display = field.style.display === 'none' ? 'block' : 'none';
         };
+
+        // Поиск по товарам
+        const productSearchInput = document.getElementById('product-search-input');
+        if (productSearchInput) {
+            productSearchInput.addEventListener('input', function() {
+                const filter = this.value.toLowerCase();
+                const rows = document.querySelectorAll('.tab-content#goodsContainer table tbody tr');
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(filter) ? '' : 'none';
+                });
+            });
+        }
+        // Поиск по услугам
+        const serviceSearchInput = document.getElementById('service-search-input');
+        if (serviceSearchInput) {
+            serviceSearchInput.addEventListener('input', function() {
+                const filter = this.value.toLowerCase();
+                const rows = document.querySelectorAll('.tab-content#servicesContainer table tbody tr');
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(filter) ? '' : 'none';
+                });
+            });
+        }
     });
 </script>
 

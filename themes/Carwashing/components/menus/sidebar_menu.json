@@ -35,7 +35,7 @@
             "name": "Финансовый учет",
             "icon": "icon-settings",
             "url": "/admin/dashboard/financial_accounting",
-            "access_level" : 3
+            "access_level" : 4
         },
         {
             "name": "Управление компанией",

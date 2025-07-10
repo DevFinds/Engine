@@ -118,7 +118,7 @@ $services_array = $data['service']->getAllFromDBAsArray();
                     <ul class="about-service-forms-third-column">
                         <li>
                             <label class="about-service-form-label">Фамилия клиента</label>
-                            <input type="text" name="client_last_name" id="clientLastNameInput" class="about-service-form" placeholder="Ввести фамилию" required>
+                            <input type="text" name="client_last_name" id="clientLastNameInput" class="about-service-form" placeholder="Ввести фамилию">
                         </li>
                         <li>
                             <label class="about-service-form-label">Имя клиента</label>
@@ -156,13 +156,13 @@ $services_array = $data['service']->getAllFromDBAsArray();
                     <div id="splitPaymentFieldsService" class="split-payment-fields about-service-forms" style="display:none; margin-bottom: 10px; margin-right: 80px;">
                         <ul class="about-service-forms-first-column">
                             <li>
-                                <label class="about-service-form-label">Сумма по налу</label>
+                                <label class="about-service-form-label">Сумма наличными</label>
                                 <input type="number" min="0" step="0.01" name="cash_amount" class="about-service-form" placeholder="0 руб">
                             </li>
                         </ul>
                         <ul class="about-service-forms-second-column">
                             <li>
-                                <label class="about-service-form-label">Сумма по безналу</label>
+                                <label class="about-service-form-label">Сумма безналичными</label>
                                 <input type="number" min="0" step="0.01" name="card_amount" class="about-service-form" placeholder="0 руб">
                             </li>
                         </ul>
@@ -231,7 +231,7 @@ $services_array = $data['service']->getAllFromDBAsArray();
                             </label>
                         </fieldset>
                     </div>
-                    <div id="splitPaymentFieldsProduct" class="split-payment-fields about-service-forms" style="display:none; margin-bottom: 10px;">
+                    <div id="splitPaymentFieldsProduct" class="split-payment-fields about-service-forms" style="display:none; margin-bottom: 10px; margin-right: 80px;">
                         <ul class="about-service-forms-first-column">
                             <li>
                                 <label class="about-service-form-label">Сумма наличными</label>
