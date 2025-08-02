@@ -21,8 +21,14 @@ class ReportService
             check_items.name AS product_name,
             check_items.quantity AS quantity,
             check_items.price AS price,
-            checks.card AS card,
-            checks.cash AS cash,
+            CASE 
+                WHEN checks.card > 0 AND checks.cash <= 0 THEN check_items.total
+                ELSE 0
+            END AS card,
+            CASE 
+                WHEN checks.cash > 0 AND checks.card <= 0 THEN check_items.total
+                ELSE 0
+            END AS cash,
             check_items.total AS total,
             users.username AS employee_name,
             checks.date AS sale_date
@@ -48,6 +54,10 @@ class ReportService
 
         try {
             $reports = $this->db->query($query, $params);
+            error_log('Product report query executed. Rows returned: ' . count($reports));
+            if (!empty($reports)) {
+                error_log('Sample product data: ' . json_encode($reports[0]));
+            }
         } catch (\Exception $e) {
             error_log('SQL Error: ' . $e->getMessage());
             return [];
@@ -82,8 +92,14 @@ class ReportService
                 checks.car_number AS car_number,
                 Car_Classes.name AS car_class, -- Добавляем имя класса
                 checks.date AS sale_date,
-                checks.card AS card,
-                checks.cash AS cash,
+                CASE 
+                    WHEN checks.card > 0 AND checks.cash <= 0 THEN check_items.total
+                    ELSE 0
+                END AS card,
+                CASE 
+                    WHEN checks.cash > 0 AND checks.card <= 0 THEN check_items.total
+                    ELSE 0
+                END AS cash,
                 CASE 
                     WHEN checks.cash > 0 AND checks.card <= 0 THEN 'cash'
                     WHEN checks.card > 0 AND checks.cash <= 0 THEN 'card'
@@ -115,6 +131,9 @@ class ReportService
         try {
             $reports = $this->db->query($query, $params);
             error_log('Service report query executed. Rows returned: ' . count($reports));
+            if (!empty($reports)) {
+                error_log('Sample service data: ' . json_encode($reports[0]));
+            }
             if (empty($reports)) {
                 error_log('No data returned for service report. Query: ' . $query . ' Params: ' . json_encode($params));
             }
@@ -137,5 +156,61 @@ class ReportService
             );
         }, $reports);
         return $reports;
+    }
+
+    public function calculateProductReportTotals(array $reports): array
+    {
+        $totalCash = 0;
+        $totalCard = 0;
+        $totalAmount = 0;
+
+        foreach ($reports as $report) {
+            $cash = $report->cash();
+            $card = $report->card();
+            $total = $report->total();
+            
+            $totalCash += $cash;
+            $totalCard += $card;
+            $totalAmount += $total;
+            
+            // Отладочная информация
+            error_log("Product Report: Cash={$cash}, Card={$card}, Total={$total}, Product={$report->productName()}");
+        }
+
+        error_log("Product Totals: Cash={$totalCash}, Card={$totalCard}, Amount={$totalAmount}");
+
+        return [
+            'total_cash' => $totalCash,
+            'total_card' => $totalCard,
+            'total_amount' => $totalAmount
+        ];
+    }
+
+    public function calculateServiceReportTotals(array $reports): array
+    {
+        $totalCash = 0;
+        $totalCard = 0;
+        $totalAmount = 0;
+
+        foreach ($reports as $report) {
+            $cash = $report->cash();
+            $card = $report->card();
+            $total = $report->total();
+            
+            $totalCash += $cash;
+            $totalCard += $card;
+            $totalAmount += $total;
+            
+            // Отладочная информация
+            error_log("Service Report: Cash={$cash}, Card={$card}, Total={$total}, Service={$report->serviceName()}");
+        }
+
+        error_log("Service Totals: Cash={$totalCash}, Card={$totalCard}, Amount={$totalAmount}");
+
+        return [
+            'total_cash' => $totalCash,
+            'total_card' => $totalCard,
+            'total_amount' => $totalAmount
+        ];
     }
 }

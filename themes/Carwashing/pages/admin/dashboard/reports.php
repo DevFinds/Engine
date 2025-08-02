@@ -106,11 +106,20 @@
                             <table id="reportTable">
                                 <div style="display: flex; align-items: center; justify-content: space-between;">
                                     <div id="reportSums" style="font-weight: 500; display: flex; justify-content: space-between;" >
-                                    
+                                        <?php if (!empty($reports) && isset($totals)): ?>
+                                            <div style="margin-right: 20px;">
+                                                <strong>Всего наличными:</strong> <?= number_format($totals['total_cash'], 2) ?> ₽
+                                            </div>
+                                            <div style="margin-right: 20px;">
+                                                <strong>Всего картой:</strong> <?= number_format($totals['total_card'], 2) ?> ₽
+                                            </div>
+                                            <div>
+                                                <strong>Общая сумма:</strong> <?= number_format($totals['total_amount'], 2) ?> ₽
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                     <div id="reportControls" style="margin-left: 24px;">
                                             <input type="text" id="reportSearchInput" placeholder="Поиск по отчету..." style="padding: 8px 12px; width: 300px; border: 1px solid var(--dark-hover); border-radius: 8px; background-color: var(--dark-bg); color: var(--white);">
-                                            <div id="reportSums" style="font-weight: bold;"></div>
                                     </div>
                                 </div>
                                 
@@ -263,53 +272,18 @@
     }
 
     function calculateReportSums() {
-        const rows = document.querySelectorAll('#reportTable tbody tr');
-        let cashTotal = 0, cardTotal = 0, grandTotal = 0;
+        // Проверяем, есть ли уже данные из PHP
+        const existingSums = document.querySelector('#reportSums div');
+        console.log('Existing sums element:', existingSums);
+        console.log('Existing sums text:', existingSums?.textContent);
+        
+        if (existingSums && existingSums.textContent.includes('Всего наличными:')) {
+            console.log('Data from PHP found, skipping JavaScript calculation');
+            return; // Данные уже есть из PHP, не перезаписываем
+        }
 
-        // определим тип отчета по заголовкам таблицы
-        const headers = Array.from(document.querySelectorAll('#reportTable thead th')).map(h => h.textContent.trim());
-        const isServiceReport = headers.includes('Марка машины'); // или можно по reportType из PHP
+        console.log('No PHP data found, calculating with JavaScript...');
 
-        rows.forEach(row => {
-            const cells = row.querySelectorAll('td');
-            if (!cells.length || cells[0].textContent.includes('Выберите параметры')) return;
-
-            let cash = 0, card = 0, total = 0;
-
-            try {
-                if (isServiceReport) {
-                    cash = parseFloat(cells[6]?.innerText.replace(',', '.')) || 0;
-                    card = parseFloat(cells[7]?.innerText.replace(',', '.')) || 0;
-                    total = parseFloat(cells[8]?.innerText.replace(',', '.')) || 0;
-                } else {
-                    cash = parseFloat(cells[3]?.innerText.replace(',', '.')) || 0;
-                    card = parseFloat(cells[4]?.innerText.replace(',', '.')) || 0;
-                    total = parseFloat(cells[5]?.innerText.replace(',', '.')) || 0;
-                }
-            } catch {}
-
-            cashTotal += cash;
-            cardTotal += card;
-            grandTotal += total;
-        });
-
-        const reportSums = document.getElementById('reportSums');
-        reportSums.innerHTML = `
-            <div style="margin-left: 12px;">Всего наличными: ${formatCurrency(cashTotal)}</div>
-            <div style="margin-left: 12px;">Всего картой: ${formatCurrency(cardTotal)}</div>
-            <div style="margin-left: 12px;">Общая сумма: ${formatCurrency(grandTotal)}</div>
-        `;
-    }
-
-    document.addEventListener('DOMContentLoaded', calculateReportSums);
-</script>
-
-<script>
-    function formatCurrency(value) {
-        return Number(value).toFixed(2) + ' ₽';
-    }
-
-    function calculateReportSums() {
         const rows = document.querySelectorAll('#reportTable tbody tr');
         let cashTotal = 0, cardTotal = 0, grandTotal = 0;
 
@@ -341,6 +315,8 @@
             grandTotal += total;
         });
 
+        console.log('JavaScript calculated totals:', { cashTotal, cardTotal, grandTotal });
+
         const reportSums = document.getElementById('reportSums');
         reportSums.innerHTML = `
             <div style="margin-left: 12px;">Всего наличными: ${formatCurrency(cashTotal)}</div>
@@ -349,6 +325,10 @@
         `;
     }
 
+    document.addEventListener('DOMContentLoaded', calculateReportSums);
+</script>
+
+<script>
     function filterReportRows() {
         const input = document.getElementById('reportSearchInput');
         const filter = input.value.toLowerCase();
@@ -359,7 +339,11 @@
             row.style.display = text.includes(filter) ? '' : 'none';
         });
 
-        calculateReportSums(); // обновим суммы только по видимым строкам
+        // Пересчитываем суммы только по видимым строкам, если нет данных из PHP
+        const existingSums = document.querySelector('#reportSums div');
+        if (!existingSums || !existingSums.textContent.includes('Всего наличными:')) {
+            calculateReportSums();
+        }
     }
 
     document.addEventListener('DOMContentLoaded', () => {

@@ -34,6 +34,7 @@ class ReportsController extends Controller
             'selectedId' => '',
             'selectedStartDate' => '',
             'selectedEndDate' => '',
+            'totals' => null,
         ]);
     }
 
@@ -57,6 +58,14 @@ class ReportsController extends Controller
         $reports = $reportType === 'service'
             ? $reportService->generateServiceReport($filters)
             : $reportService->generateProductReport($filters);
+
+        // Подсчет итоговых сумм
+        $totals = $reportType === 'service'
+            ? $reportService->calculateServiceReportTotals($reports)
+            : $reportService->calculateProductReportTotals($reports);
+
+        // Отладочная информация
+        error_log("Controller totals for {$reportType}: " . json_encode($totals));
 
         $formattedReports = array_map(function ($r) use ($reportType) {
             if ($reportType === 'service') {
@@ -118,6 +127,7 @@ class ReportsController extends Controller
             'selectedId' => $selectedId,
             'selectedStartDate' => $selectedStartDate,
             'selectedEndDate' => $selectedEndDate,
+            'totals' => $totals,
         ]);
     }
 
@@ -142,6 +152,14 @@ class ReportsController extends Controller
             $reports = $reportType === 'service'
                 ? $reportService->generateServiceReport($filters)
                 : $reportService->generateProductReport($filters);
+
+            // Подсчет итоговых сумм
+            $totals = $reportType === 'service'
+                ? $reportService->calculateServiceReportTotals($reports)
+                : $reportService->calculateProductReportTotals($reports);
+
+            // Отладочная информация
+            error_log("Controller totals for {$reportType}: " . json_encode($totals));
 
             $rows = array_map(function ($r) use ($reportType) {
                 if ($reportType === 'service') {
@@ -168,6 +186,33 @@ class ReportsController extends Controller
                     'sale_date' => $r->saleDate(),
                 ];
             }, $reports);
+
+            // Добавляем итоговые строки
+            $rows[] = []; // Пустая строка
+            if ($reportType === 'service') {
+                $rows[] = [
+                    'name' => 'ИТОГО:',
+                    'car_class' => '',
+                    'car_brand' => '',
+                    'car_number' => '',
+                    'sale_date' => '',
+                    'payment_method' => '',
+                    'cash' => $totals['total_cash'],
+                    'card' => $totals['total_card'],
+                    'total' => $totals['total_amount'],
+                ];
+            } else {
+                $rows[] = [
+                    'product_name' => 'ИТОГО:',
+                    'quantity' => '',
+                    'price' => '',
+                    'cash' => $totals['total_cash'],
+                    'card' => $totals['total_card'],
+                    'total' => $totals['total_amount'],
+                    'employee_name' => '',
+                    'sale_date' => '',
+                ];
+            }
 
             $this->getEventManager()->addListener('log.action', new LogActionListener());
 
